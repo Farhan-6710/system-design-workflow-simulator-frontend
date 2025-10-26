@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useWorkflowStore } from "@/stores/workflowStore";
-import { getEdgeNumber } from "@/utils/workflow";
+import { getEdgeNumber } from "@/utils/workflow-studio/workflow";
 import { nodeOptions } from "@/data/nodeOptions";
 import ConfigurationForm from "./ConfigurationForm";
 

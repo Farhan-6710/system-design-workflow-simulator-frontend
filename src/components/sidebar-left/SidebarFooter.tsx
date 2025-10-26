@@ -14,7 +14,7 @@ import { ChevronUp, LogOut, Settings, User } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { AuthDialog } from "../auth/AuthDialog";
 import { ConfirmationModal } from "../atoms/ConfirmationModal";
-import { getUserInitials, getUserDisplayName } from "@/utils/userUtils";
+import { getUserInitials, getUserDisplayName } from "@/utils/auth/userUtils";
 import { toast } from "sonner";
 
 interface SidebarFooterProps {

@@ -1,10 +1,14 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import type { CanvasState } from "../../../utils/annotationUtils";
+import type {
+  AnnotationLayerHandle,
+  Tool,
+} from "./annotation-layer/AnnotationLayer";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { NodeHandlers, EdgeHandlers } from "@/types/workflow-studio/workflow";
 import { WorkflowHeader, WorkflowCanvas, WorkflowFooter } from ".";
 import { useWorkflowStore } from "@/stores/workflowStore";
+import { useAnnotationStore } from "@/stores/annotationStore";
 import { useWorkflowCanvas } from "@/hooks/useWorkflowCanvas";
 import { WorkflowProvider } from "@/contexts/WorkflowContext";
 import { CanvasControlsProvider } from "@/contexts/CanvasControlsContext";
@@ -17,12 +21,11 @@ import { canvasDockItems } from "@/data/canvasDockItems";
 import {
   createDockItemHandlers,
   handleDockItemClick,
-} from "@/utils/dockHandlers";
+} from "@/utils/workflow-studio/dockHandlers";
 import SidebarRight from "./sidebar-right/SidebarRight";
 import DockComponent from "../../atoms/DockComponent";
 import RunButton from "./RunButton";
 import ZoomIndicator from "./ZoomIndicator";
-import { type Tool } from "./annotation-layer";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,32 +38,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import "@/styles/workflowAnimations.css";
 
-// Auto-save interval for annotation state (configurable)
-const AUTO_SAVE_INTERVAL_MS = 2500;
-
 const WorkflowEditorContent: React.FC = () => {
-  // Annotation persistence across fullscreen
-  const annotationLayerRef = useRef<
-    import("./annotation-layer").AnnotationLayerHandle | null
-  >(null);
+  // Use annotation store instead of local state
+  const {
+    activeTool,
+    selectTool,
+    clearHistory: clearAnnotationHistory,
+  } = useAnnotationStore();
 
-  // Use refs to store annotation state to avoid unnecessary effect re-runs
-  const annotationSnapshotRef = useRef<CanvasState | null>(null);
-  const annotationHistoryRef = useRef<{
-    history: CanvasState[];
-    currentIndex: number;
-  } | null>(null);
-
-  // Guard to prevent concurrent auto-save operations
-  const annotationSavingRef = useRef<boolean>(false);
+  // Refs for annotation layer integration
+  const annotationLayerRef = useRef<AnnotationLayerHandle>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
-
-  // Simple annotation state - back to clean approach!
-  const [activeTool, setActiveTool] = useState<Tool>("select");
-  const [isAnnotationLayerVisible, setIsAnnotationLayerVisible] =
-    useState(false);
 
   // Clear confirmation dialog state
   const [showClearDialog, setShowClearDialog] = useState(false);
@@ -70,161 +60,36 @@ const WorkflowEditorContent: React.FC = () => {
 
   /**
    * Handle annotation persistence across fullscreen transitions
-   * Only depends on isFullscreen to avoid unnecessary re-runs
-   * Reads latest state from refs instead of state dependencies
+   * Simplified since our new annotation store handles persistence automatically
    */
   useEffect(() => {
-    const currentRef = annotationLayerRef.current;
-    if (!currentRef) return;
-
-    // Small delay to ensure canvas is ready after mode change
-    const timer = setTimeout(() => {
-      if (annotationLayerRef.current) {
-        // Read latest values from refs (updated by auto-save)
-        const latestHistory = annotationHistoryRef.current;
-        const latestSnapshot = annotationSnapshotRef.current;
-
-        // Restore history if available
-        if (latestHistory) {
-          try {
-            annotationLayerRef.current.importHistory(latestHistory);
-            const canvas = annotationLayerRef.current?.getCanvas();
-            canvas?.renderAll();
-          } catch (error) {
-            console.error("[WorkflowEditor] Failed to restore history:", error);
-            // Fallback to snapshot
-            if (latestSnapshot) {
-              annotationLayerRef.current
-                .load(latestSnapshot)
-                .then(() => {
-                  const canvas = annotationLayerRef.current?.getCanvas();
-                  canvas?.renderAll();
-                })
-                .catch((err) =>
-                  console.error(
-                    "[WorkflowEditor] Fallback restore failed:",
-                    err
-                  )
-                );
-            }
-          }
-        } else if (latestSnapshot) {
-          // No history, use snapshot
-          annotationLayerRef.current
-            .load(latestSnapshot)
-            .then(() => {
-              const canvas = annotationLayerRef.current?.getCanvas();
-              canvas?.renderAll();
-            })
-            .catch((error) =>
-              console.error("[WorkflowEditor] Snapshot restore failed:", error)
-            );
-        }
-      }
-    }, 150);
-
-    return () => clearTimeout(timer);
-  }, [isFullscreen]); // Only depend on isFullscreen, not snapshot/history
-
-  /**
-   * Continuously sync annotation state to refs
-   * This ensures state is always current regardless of how fullscreen is toggled
-   */
-  useEffect(() => {
-    if (!annotationLayerRef.current) return;
-
-    // Auto-save state periodically and on changes
-    const saveCurrentState = () => {
-      // Skip if a save operation is already in progress to avoid race conditions
-      if (annotationSavingRef.current || !annotationLayerRef.current) return;
-
-      // Set guard to prevent concurrent saves
-      annotationSavingRef.current = true;
-
-      try {
-        const snapshot = annotationLayerRef.current.snapshot();
-        const history = annotationLayerRef.current.exportHistory();
-
-        // Update refs for restoration effect to read
-        if (snapshot) {
-          annotationSnapshotRef.current = snapshot;
-          // Don't update state to avoid causing re-renders
-        }
-        if (history) {
-          annotationHistoryRef.current = history;
-          // Don't update state to avoid causing re-renders
-        }
-      } catch (error) {
-        console.error(
-          "[WorkflowEditor] Failed to auto-save annotation state:",
-          error
-        );
-      } finally {
-        // Always release the guard, even if an error occurred
-        annotationSavingRef.current = false;
-      }
-    };
-
-    // Save on a regular interval to catch all changes (configurable interval)
-    const interval = setInterval(saveCurrentState, AUTO_SAVE_INTERVAL_MS);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  /**
-   * Save annotation state before ANY fullscreen transition
-   */
-  const saveAnnotationState = useCallback(() => {
-    // Skip if a save operation is already in progress or no ref available
-    if (annotationSavingRef.current || !annotationLayerRef.current) return;
-
-    // Set guard to prevent concurrent saves
-    annotationSavingRef.current = true;
-
-    try {
-      const snapshot = annotationLayerRef.current.snapshot();
-      const history = annotationLayerRef.current.exportHistory();
-
-      // Update refs for restoration effect to read
-      if (snapshot) {
-        annotationSnapshotRef.current = snapshot;
-        // Don't update state to avoid causing re-renders
-      }
-      if (history) {
-        annotationHistoryRef.current = history;
-        // Don't update state to avoid causing re-renders
-      }
-    } catch (error) {
-      console.error("[WorkflowEditor] Failed to save annotations:", error);
-    } finally {
-      // Always release the guard, even if an error occurred
-      annotationSavingRef.current = false;
+    // Our new annotation store handles persistence automatically,
+    // so we don't need complex manual persistence logic here
+    if (annotationLayerRef.current) {
+      console.log("Annotation layer ref updated for fullscreen:", isFullscreen);
     }
-  }, []);
-
+  }, [isFullscreen]);
   /**
    * Handle fullscreen toggle - save first, then toggle
    */
   const handleFullscreenToggle = useCallback(() => {
-    saveAnnotationState();
     toggleFullscreen();
-  }, [saveAnnotationState, toggleFullscreen]);
+  }, [toggleFullscreen]);
 
   /**
    * Handle fullscreen exit - save first, then exit
    */
   const handleExitFullscreen = useCallback(() => {
-    saveAnnotationState();
     exitFullscreen();
-  }, [saveAnnotationState, exitFullscreen]);
+  }, [exitFullscreen]);
 
   // Handle confirmed clear action
   const handleConfirmedClear = useCallback(() => {
     annotationLayerRef.current?.clear();
+    clearAnnotationHistory();
     // Save state after clear
-    saveAnnotationState();
     setShowClearDialog(false);
-  }, [saveAnnotationState]);
+  }, [clearAnnotationHistory]);
 
   // Canvas controls - clean and simple!
   const canvasControls = useCanvasControlsContext();
@@ -234,21 +99,13 @@ const WorkflowEditorContent: React.FC = () => {
     { toggleFullscreen: handleFullscreenToggle },
     {
       setActiveTool: (tool: Tool) => {
-        setActiveTool(tool);
-        // Show annotation layer when a drawing tool is selected
-        if (tool !== "select") {
-          setIsAnnotationLayerVisible(true);
-        }
+        selectTool(tool); // Use store's selectTool which auto-manages visibility
       },
       undo: () => {
         annotationLayerRef.current?.undo();
-        // Save state after undo
-        saveAnnotationState();
       },
       redo: () => {
         annotationLayerRef.current?.redo();
-        // Save state after redo
-        saveAnnotationState();
       },
       clearAll: () => {
         // Show confirmation dialog instead of clearing immediately
@@ -357,15 +214,8 @@ const WorkflowEditorContent: React.FC = () => {
                 onMouseUp={handleCanvasMouseUp}
                 runCode={runCode}
                 activeTool={activeTool}
-                isAnnotationLayerVisible={isAnnotationLayerVisible}
                 annotationLayerRef={annotationLayerRef}
-                onAnnotationToolChange={setActiveTool}
-                onAnnotationSnapshotChange={(snapshot) => {
-                  // Update ref for persistence but don't update state to avoid re-renders
-                  if (snapshot) {
-                    annotationSnapshotRef.current = snapshot;
-                  }
-                }}
+                onAnnotationToolChange={selectTool}
               />
 
               {/* Dock Navigation - positioned in top-left of workflow editor */}

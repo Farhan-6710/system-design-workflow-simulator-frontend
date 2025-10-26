@@ -14,7 +14,7 @@ import {
   generateRandomPosition,
   edgeExists,
   filterEdgesForNode,
-} from "@/utils/workflow";
+} from "@/utils/workflow-studio/workflow";
 import { initialNodes, initialEdges } from "@/data/initialNodes";
 
 // Initial state

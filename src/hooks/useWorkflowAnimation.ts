@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useWorkflowContext } from "@/contexts/WorkflowContext";
 import { EdgeStyle, NodeGlowConfig, GlowType } from "@/types/workflow-studio";
-import { calculateAnimationDuration } from "@/utils/animationUtils";
+import { calculateAnimationDuration } from "@/utils/workflow-studio/animationUtils";
 import {
   getEdgeStyle,
   getNodeGlowConfig,
   shouldNodeGlow,
   getGlowTypeFromRPS,
-} from "@/utils/stylingUtils";
+} from "@/utils/workflow-studio/stylingUtils";
 
 /**
  * Custom hook for edge animations

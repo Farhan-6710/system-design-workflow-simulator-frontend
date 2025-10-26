@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/auth-context";
-import { getUserInitials, getUserDisplayName } from "@/utils/userUtils";
+import { getUserInitials, getUserDisplayName } from "@/utils/auth/userUtils";
 import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
 import { LogOut, User } from "lucide-react";
 import { toast } from "sonner";

@@ -2,8 +2,11 @@ import React, { forwardRef, useEffect, useRef, useCallback } from "react";
 import { WorkflowCanvasProps } from "@/types/workflow-studio";
 import { WorkflowLayer } from "./workflow-layer/WorkflowLayer";
 import { CanvasGrid } from "./CanvasGrid";
-import { AnnotationLayer, type Tool } from "./annotation-layer";
-import type { CanvasState } from "@/utils/annotationUtils";
+import {
+  AnnotationLayer,
+  type AnnotationLayerHandle,
+  type Tool,
+} from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -11,12 +14,8 @@ import { cn } from "@/lib/utils";
 interface WorkflowCanvasWithAnnotationProps extends WorkflowCanvasProps {
   // Simple annotation props - no complexity!
   activeTool?: Tool;
-  isAnnotationLayerVisible?: boolean;
-  annotationLayerRef?: React.MutableRefObject<
-    import("./annotation-layer").AnnotationLayerHandle | null
-  >;
+  annotationLayerRef?: React.MutableRefObject<AnnotationLayerHandle | null>;
   onAnnotationToolChange?: (tool: Tool) => void;
-  onAnnotationSnapshotChange?: (snapshot: CanvasState | null) => void;
 }
 
 export const WorkflowCanvas = forwardRef<
@@ -38,10 +37,8 @@ export const WorkflowCanvas = forwardRef<
       runCode = false,
       // Simple annotation props
       activeTool = "select",
-      isAnnotationLayerVisible = false,
       annotationLayerRef,
       onAnnotationToolChange,
-      onAnnotationSnapshotChange,
     },
     ref
   ) => {
@@ -57,9 +54,7 @@ export const WorkflowCanvas = forwardRef<
     } = useCanvasControlsContext();
 
     // Internal ref for annotation layer
-    const internalAnnotationRef = useRef<
-      import("./annotation-layer").AnnotationLayerHandle | null
-    >(null);
+    const internalAnnotationRef = useRef<AnnotationLayerHandle | null>(null);
 
     // Connect internal ref to parent ref whenever the annotation layer component changes
     useEffect(() => {
@@ -70,7 +65,7 @@ export const WorkflowCanvas = forwardRef<
 
     // Also create a callback ref to ensure immediate connection when AnnotationLayer mounts
     const handleAnnotationLayerRef = useCallback(
-      (element: import("./annotation-layer").AnnotationLayerHandle | null) => {
+      (element: AnnotationLayerHandle | null) => {
         internalAnnotationRef.current = element;
         if (annotationLayerRef) {
           annotationLayerRef.current = element;
@@ -80,16 +75,16 @@ export const WorkflowCanvas = forwardRef<
     );
 
     const handleMouseDown = (event: React.MouseEvent) => {
-      // Don't start panning if annotation layer is active and not in select mode
-      if (isAnnotationLayerVisible && activeTool !== "select") {
+      // Don't start panning if annotation tool is active (not in select mode)
+      if (activeTool !== "select") {
         return;
       }
       handlePanStart(event);
     };
 
     const handleMouseMoveCanvas = (event: React.MouseEvent) => {
-      // Don't pan if annotation layer is active and not in select mode
-      if (isAnnotationLayerVisible && activeTool !== "select") {
+      // Don't pan if annotation tool is active (not in select mode)
+      if (activeTool !== "select") {
         onMouseMove?.(event);
         return;
       }
@@ -98,8 +93,8 @@ export const WorkflowCanvas = forwardRef<
     };
 
     const handleMouseUpCanvas = () => {
-      // Don't end panning if annotation layer is active and not in select mode
-      if (isAnnotationLayerVisible && activeTool !== "select") {
+      // Don't end panning if annotation tool is active (not in select mode)
+      if (activeTool !== "select") {
         onMouseUp?.();
         return;
       }
@@ -144,11 +139,6 @@ export const WorkflowCanvas = forwardRef<
 
     const handleAnnotationFinish = () => {
       onAnnotationToolChange?.("select");
-      // Save snapshot when finishing drawing
-      const snapshot = internalAnnotationRef.current?.snapshot();
-      if (snapshot) {
-        onAnnotationSnapshotChange?.(snapshot);
-      }
     };
 
     return (
@@ -160,7 +150,7 @@ export const WorkflowCanvas = forwardRef<
         transition={{ duration: 0.3, ease: "easeOut" }}
         className={cn(
           "canvas-container flex-1 relative overflow-hidden bg-gray-50 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950",
-          isAnnotationLayerVisible && activeTool !== "select"
+          activeTool !== "select"
             ? "cursor-crosshair"
             : "cursor-grab active:cursor-grabbing"
         )}
@@ -168,8 +158,8 @@ export const WorkflowCanvas = forwardRef<
         onMouseMove={handleMouseMoveCanvas}
         onMouseUp={handleMouseUpCanvas}
         onWheel={(e) => {
-          // Don't zoom if annotation layer is active and not in select mode
-          if (isAnnotationLayerVisible && activeTool !== "select") {
+          // Don't zoom if annotation tool is active (not in select mode)
+          if (activeTool !== "select") {
             return;
           }
           handleWheel(e);
@@ -183,34 +173,32 @@ export const WorkflowCanvas = forwardRef<
           className="flex justify-center items-center workflow-and-annotation-container absolute z-20 inset-0 !w-full !h-full"
           style={getCanvasTransformStyle()}
         >
-            {/* Workflow Layer - handles nodes, edges */}
-            <WorkflowLayer
-              nodes={nodes}
-              edges={edges}
-              tempLine={tempLine}
-              selectedNode={selectedNode}
-              selectedEdge={selectedEdge}
-              draggingNode={draggingNode}
-              nodeHandlers={nodeHandlers}
-              edgeHandlers={edgeHandlers}
-              runCode={runCode}
-            />
+          {/* Workflow Layer - handles nodes, edges */}
+          <WorkflowLayer
+            nodes={nodes}
+            edges={edges}
+            tempLine={tempLine}
+            selectedNode={selectedNode}
+            selectedEdge={selectedEdge}
+            draggingNode={draggingNode}
+            nodeHandlers={nodeHandlers}
+            edgeHandlers={edgeHandlers}
+            runCode={runCode}
+          />
 
-            {/* Annotation Layer - covers full viewport but content scales with canvas */}
-            {isAnnotationLayerVisible && (
-              <AnnotationLayer
-                key="annotation-layer-stable"
-                ref={handleAnnotationLayerRef}
-                activeTool={activeTool}
-                onFinish={handleAnnotationFinish}
-                className={cn(
-                  "absolute inset-0 w-full h-full",
-                  activeTool === "select"
-                    ? "pointer-events-none"
-                    : "pointer-events-auto"
-                )}
-              />
+          {/* Annotation Layer - uses Zustand store for clean state management */}
+          <AnnotationLayer
+            key="annotation-layer-stable"
+            ref={handleAnnotationLayerRef}
+            activeTool={activeTool}
+            onFinish={() => {}}
+            className={cn(
+              "absolute inset-0 w-full h-full",
+              activeTool === "select"
+                ? "pointer-events-none"
+                : "pointer-events-auto"
             )}
+          />
         </div>
       </motion.div>
     );

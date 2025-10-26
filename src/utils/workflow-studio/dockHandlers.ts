@@ -1,5 +1,5 @@
-import { CanvasControlsHook } from "@/types/workflow-studio/canvas";
-import type { Tool } from "@/components/main-sections/workflow-studio/annotation-layer";
+import { CanvasControlsHook } from "@/types/workflow-studio/workflow";
+import type { Tool } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
 export interface DockItemHandlers {
   handleZoomIn: () => void;

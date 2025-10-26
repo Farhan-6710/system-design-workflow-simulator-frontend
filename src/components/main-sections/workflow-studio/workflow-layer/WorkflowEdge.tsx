@@ -1,5 +1,5 @@
 import { WorkflowEdgeProps } from "@/types/workflow-studio";
-import { calculatePortToPortPath } from "@/utils/workflow";
+import { calculatePortToPortPath } from "@/utils/workflow-studio/workflow";
 import { useEdgeAnimation } from "@/hooks/useWorkflowAnimation";
 import "@/styles/workflowAnimations.css";
 

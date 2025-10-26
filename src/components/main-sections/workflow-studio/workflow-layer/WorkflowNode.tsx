@@ -20,9 +20,12 @@ import {
   Circle,
 } from "lucide-react";
 import { WorkflowNodeProps } from "@/types/workflow-studio";
-import { getNodeClasses, getNodeTextClasses } from "@/utils/workflow";
+import {
+  getNodeClasses,
+  getNodeTextClasses,
+} from "@/utils/workflow-studio/workflow";
 import { useNodeAnimation } from "@/hooks/useWorkflowAnimation";
-import { shouldNodeGlow } from "@/utils/stylingUtils";
+import { shouldNodeGlow } from "@/utils/workflow-studio/stylingUtils";
 import "@/styles/workflowAnimations.css";
 
 // Icon mapping for dynamic icon rendering
