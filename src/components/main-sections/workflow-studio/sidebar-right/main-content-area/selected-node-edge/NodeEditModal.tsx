@@ -75,11 +75,16 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
       description="Modify node details and configuration settings"
     >
       <div className="space-y-6">
-        {/* Node Label Input */}
+        {/* Node Label Input with ID */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            Node Label:
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Node Label:
+            </label>
+            <span className="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+              ID: {node.id}
+            </span>
+          </div>
           <input
             type="text"
             value={editingLabel}
@@ -87,18 +92,6 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
             className="w-full px-2 py-1.5 text-sm border border-slate-200 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="Enter node label"
           />
-        </div>
-
-        {/* Node ID Display (non-editable) */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            Node ID:
-          </label>
-          <div className="px-2 py-1.5 text-sm bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded">
-            <span className="font-mono text-slate-800 dark:text-slate-200">
-              {node.id}
-            </span>
-          </div>
         </div>
 
         {/* Change Node Type */}
