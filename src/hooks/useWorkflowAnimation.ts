@@ -1,23 +1,23 @@
 import { useMemo } from "react";
 import { useWorkflowContext } from "@/contexts/WorkflowContext";
+import { useWorkflowStore } from "@/stores/workflowStore";
 import { EdgeStyle, NodeGlowConfig, GlowType } from "@/types/workflow-studio";
-import { calculateAnimationDuration } from "@/utils/workflow-studio/animationUtils";
 import {
+  calculateAnimationDuration,
   getEdgeStyle,
   getNodeGlowConfig,
-  shouldNodeGlow,
-  getGlowTypeFromRPS,
-} from "@/utils/workflow-studio/stylingUtils";
+  getNodeGlowConfigFromRPS,
+} from "@/utils/workflow-studio/animationUtils";
 
 /**
  * Custom hook for edge animations
  */
 export const useEdgeAnimation = () => {
-  const { requestsPerSecond, rpsRange } = useWorkflowContext();
+  const { requestsPerSecond } = useWorkflowContext();
 
   const edgeStyle = useMemo((): EdgeStyle => {
-    return getEdgeStyle(rpsRange);
-  }, [rpsRange]);
+    return getEdgeStyle(requestsPerSecond);
+  }, [requestsPerSecond]);
 
   const animationDuration = useMemo((): number => {
     return calculateAnimationDuration(requestsPerSecond);
@@ -37,23 +37,25 @@ export const useEdgeAnimation = () => {
 };
 
 /**
- * Custom hook for node animations
+ * Custom hook for node animations (OPTIMIZED)
  */
-export const useNodeAnimation = (nodeLabel: string) => {
-  const { rpsRange } = useWorkflowContext();
+export const useNodeAnimation = () => {
+  const { requestsPerSecond } = useWorkflowContext();
+  const runCode = useWorkflowStore((state) => state.runCode);
 
   const shouldGlow = useMemo((): boolean => {
-    return shouldNodeGlow(nodeLabel);
-  }, [nodeLabel]);
+    // Only glow when code is running
+    return runCode;
+  }, [runCode]);
 
   const glowConfig = useMemo((): NodeGlowConfig => {
     if (!shouldGlow) {
       return getNodeGlowConfig(GlowType.NONE);
     }
 
-    const glowType = getGlowTypeFromRPS(rpsRange);
-    return getNodeGlowConfig(glowType);
-  }, [shouldGlow, rpsRange]);
+    // Use RPS directly instead of converting through range
+    return getNodeGlowConfigFromRPS(requestsPerSecond);
+  }, [shouldGlow, requestsPerSecond]);
 
   return {
     shouldGlow,

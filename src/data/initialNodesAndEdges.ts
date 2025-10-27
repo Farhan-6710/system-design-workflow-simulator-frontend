@@ -1,5 +1,6 @@
 import { Node, Edge } from "@/types/workflow-studio";
 import { nodeOptions } from "@/data/nodeOptions";
+import { createEdgeId } from "@/utils/workflow-studio/workflow";
 
 // Helper function to create a node from nodeOptions with position
 const createNodeFromOption = (
@@ -66,36 +67,36 @@ export const initialNodes: Node[] = [
   createNodeFromOption("database", 20, "Pay DB", 770, 470),
 ];
 
-// Initial edges connecting the nodes
+// Initial edges connecting the nodes - using UUID format for consistency
 export const initialEdges: Edge[] = [
   // Client to Gateway
-  { id: "e1", source: 1, target: 2 },
+  { id: createEdgeId(1), source: 1, target: 2 },
   // Gateway to Services
-  { id: "e2", source: 2, target: 3 },
-  { id: "e3", source: 2, target: 4 },
-  { id: "e4", source: 2, target: 5 },
+  { id: createEdgeId(2), source: 2, target: 3 },
+  { id: createEdgeId(3), source: 2, target: 4 },
+  { id: createEdgeId(4), source: 2, target: 5 },
   // Services to Load Balancers
-  { id: "e5", source: 3, target: 6 },
-  { id: "e6", source: 4, target: 7 },
-  { id: "e7", source: 5, target: 8 },
+  { id: createEdgeId(5), source: 3, target: 6 },
+  { id: createEdgeId(6), source: 4, target: 7 },
+  { id: createEdgeId(7), source: 5, target: 8 },
   // Load Balancers to Servers
-  { id: "e8", source: 6, target: 9 },
-  { id: "e9", source: 6, target: 10 },
-  { id: "e10", source: 6, target: 11 },
-  { id: "e11", source: 7, target: 12 },
-  { id: "e12", source: 7, target: 13 },
-  { id: "e13", source: 7, target: 14 },
-  { id: "e14", source: 8, target: 15 },
-  { id: "e15", source: 8, target: 16 },
-  { id: "e16", source: 8, target: 17 },
+  { id: createEdgeId(8), source: 6, target: 9 },
+  { id: createEdgeId(9), source: 6, target: 10 },
+  { id: createEdgeId(10), source: 6, target: 11 },
+  { id: createEdgeId(11), source: 7, target: 12 },
+  { id: createEdgeId(12), source: 7, target: 13 },
+  { id: createEdgeId(13), source: 7, target: 14 },
+  { id: createEdgeId(14), source: 8, target: 15 },
+  { id: createEdgeId(15), source: 8, target: 16 },
+  { id: createEdgeId(16), source: 8, target: 17 },
   // Servers to Databases
-  { id: "e17", source: 9, target: 18 },
-  { id: "e18", source: 10, target: 18 },
-  { id: "e19", source: 11, target: 18 },
-  { id: "e20", source: 12, target: 19 },
-  { id: "e21", source: 13, target: 19 },
-  { id: "e22", source: 14, target: 19 },
-  { id: "e23", source: 15, target: 20 },
-  { id: "e24", source: 16, target: 20 },
-  { id: "e25", source: 17, target: 20 },
+  { id: createEdgeId(17), source: 9, target: 18 },
+  { id: createEdgeId(18), source: 10, target: 18 },
+  { id: createEdgeId(19), source: 11, target: 18 },
+  { id: createEdgeId(20), source: 12, target: 19 },
+  { id: createEdgeId(21), source: 13, target: 19 },
+  { id: createEdgeId(22), source: 14, target: 19 },
+  { id: createEdgeId(23), source: 15, target: 20 },
+  { id: createEdgeId(24), source: 16, target: 20 },
+  { id: createEdgeId(25), source: 17, target: 20 },
 ];

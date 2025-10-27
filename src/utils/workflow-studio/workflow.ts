@@ -1,4 +1,5 @@
 import { Node, Edge } from "@/types/workflow-studio/workflow";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Generates a unique ID for new nodes
@@ -8,30 +9,46 @@ export const generateNodeId = (existingNodes: Node[]): number => {
 };
 
 /**
- * Generates a unique ID for new edges with number
+ * Generates a unique ID for new edges with UUID and monotonic counter
+ * Uses the highest existing edge number + 1 to prevent duplicates after deletions
  */
 export const generateEdgeId = (existingEdges: Edge[]): string => {
-  const edgeNumber = existingEdges.length + 1;
-  return `e${Date.now()}-${edgeNumber}`;
+  // Find the highest edge number from existing edges
+  let maxEdgeNumber = 0;
+
+  existingEdges.forEach((edge) => {
+    const edgeNumber = getEdgeNumber(edge.id);
+    if (edgeNumber > maxEdgeNumber) {
+      maxEdgeNumber = edgeNumber;
+    }
+  });
+
+  const nextEdgeNumber = maxEdgeNumber + 1;
+  const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
+  return `${uuid}-${nextEdgeNumber}`;
+};
+
+/**
+ * Creates an edge ID with UUID and specific number (for initial data)
+ */
+export const createEdgeId = (edgeNumber: number): string => {
+  const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
+  return `${uuid}-${edgeNumber}`;
 };
 
 /**
  * Extracts edge number from edge ID
- * Handles both old format (e{timestamp}) and new format (e{timestamp}-{number})
+ * Handles UUID format: {uuid}-{number}
  */
-export const getEdgeNumber = (edgeId: string, allEdges?: Edge[]): number => {
+export const getEdgeNumber = (edgeId: string): number => {
   const parts = edgeId.split("-");
   if (parts.length > 1) {
-    // New format: e{timestamp}-{number}
-    return parseInt(parts[1]);
-  } else {
-    // Old format: e{timestamp} - assign number based on position in array
-    if (allEdges) {
-      const index = allEdges.findIndex((edge) => edge.id === edgeId);
-      return index >= 0 ? index + 1 : 1;
-    }
-    return 1;
+    // UUID format: {uuid}-{number}
+    const number = parseInt(parts[parts.length - 1]);
+    return isNaN(number) ? 1 : number;
   }
+  // Fallback for any unexpected format
+  return 1;
 };
 
 /**
@@ -151,41 +168,4 @@ export const getNodeSecondaryTextClasses = (nodeType: string): string => {
   return nodeType === "start" || nodeType === "end"
     ? "text-slate-200"
     : "text-slate-800 dark:text-slate-200";
-};
-
-/**
- * Gets edge gradient and class based on requests per second
- */
-export const getEdgeStyleByRPS = (
-  requestsPerSecond: number
-): { gradient: string; className: string } => {
-  if (requestsPerSecond <= 500) {
-    return {
-      gradient: "url(#flowGradient)",
-      className: "animated-edge",
-    };
-  } else if (requestsPerSecond <= 5000) {
-    return {
-      gradient: "url(#flowGradientYellow)",
-      className: "animated-edge-yellow",
-    };
-  } else {
-    return {
-      gradient: "url(#flowGradientRed)",
-      className: "animated-edge-red",
-    };
-  }
-};
-
-/**
- * Gets database node glow class based on requests per second
- */
-export const getDatabaseGlowClass = (requestsPerSecond: number): string => {
-  if (requestsPerSecond <= 500) {
-    return "database-glow-blue";
-  } else if (requestsPerSecond <= 5000) {
-    return "database-glow-yellow";
-  } else {
-    return "database-glow-red";
-  }
 };

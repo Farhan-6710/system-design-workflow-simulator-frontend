@@ -1,5 +1,6 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { RPSValue, RPSRange, GlowType } from "@/types/workflow-studio/workflow";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 // Context interface
 interface WorkflowContextType {
@@ -38,15 +39,19 @@ const getGlowType = (rpsRange: RPSRange): GlowType => {
 // Provider component
 interface WorkflowProviderProps {
   children: ReactNode;
-  requestsPerSecond: RPSValue;
-  setRequestsPerSecond: (rps: RPSValue) => void;
 }
 
 export const WorkflowProvider: React.FC<WorkflowProviderProps> = ({
   children,
-  requestsPerSecond,
-  setRequestsPerSecond,
 }) => {
+  // Get RPS data from Zustand store instead of props
+  const requestsPerSecond = useWorkflowStore(
+    (state) => state.requestsPerSecond
+  );
+  const setRequestsPerSecond = useWorkflowStore(
+    (state) => state.setRequestsPerSecond
+  );
+
   const rpsRange = getRPSRange(requestsPerSecond);
   const globalGlowType = getGlowType(rpsRange);
 

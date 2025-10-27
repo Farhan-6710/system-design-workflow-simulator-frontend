@@ -191,7 +191,7 @@ export const WorkflowCanvas = forwardRef<
             key="annotation-layer-stable"
             ref={handleAnnotationLayerRef}
             activeTool={activeTool}
-            onFinish={() => {}}
+            onFinish={handleAnnotationFinish}
             className={cn(
               "absolute inset-0 w-full h-full",
               activeTool === "select"

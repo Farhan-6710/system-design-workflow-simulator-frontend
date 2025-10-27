@@ -8,14 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { nodeOptions, nodeCategories, nodeTypes } from "@/data/nodeOptions";
+import { nodeOptions, nodeCategories } from "@/data/nodeOptions";
 import { AddNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
 
 const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedNewNodeType, setSelectedNewNodeType] = useState<string>("");
-  const [selectedPositionType, setSelectedPositionType] = useState<string>("");
   const [configurations, setConfigurations] = useState<
     Record<string, string | number | boolean>
   >({});
@@ -43,17 +42,11 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
   const handleCategoryChange = (categoryName: string) => {
     setSelectedCategory(categoryName);
     setSelectedNewNodeType("");
-    setSelectedPositionType("");
     setConfigurations({});
   };
 
   const handleNewNodeTypeChange = (nodeTypeId: string) => {
     setSelectedNewNodeType(nodeTypeId);
-    setSelectedPositionType("");
-  };
-
-  const handlePositionTypeChange = (positionType: string) => {
-    setSelectedPositionType(positionType);
   };
 
   const handleConfigurationChange = (
@@ -67,7 +60,7 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
   };
 
   const handleAddNode = () => {
-    if (selectedNewNodeType && selectedPositionType) {
+    if (selectedNewNodeType) {
       const nodeType = nodeOptions.find(
         (type) => type.id === selectedNewNodeType
       );
@@ -76,7 +69,7 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
         const nodeData = {
           label: nodeType.label,
           icon: nodeType.icon,
-          type: selectedPositionType,
+          type: nodeType.type, // Use predefined type from nodeOptions
           configurations: configurations,
         };
 
@@ -86,7 +79,6 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
       // Reset all selections after adding
       setSelectedCategory("");
       setSelectedNewNodeType("");
-      setSelectedPositionType("");
       setConfigurations({});
     }
   };
@@ -96,9 +88,8 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
     ? nodeOptions.filter((nodeType) => nodeType.category === selectedCategory)
     : [];
 
-  // Check if all three dropdowns are selected
-  const allSelectionsMade =
-    selectedCategory && selectedNewNodeType && selectedPositionType;
+  // Check if both dropdowns are selected
+  const allSelectionsMade = selectedCategory && selectedNewNodeType;
 
   return (
     <div className="space-y-4">
@@ -156,34 +147,8 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
           </Select>
         </div>
       )}
-      {/* Step 3: Position Selection */}
-      {selectedNewNodeType && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-            Step 3: Choose Position
-          </h3>
-          <div className="grid grid-cols-1 gap-3">
-            {nodeTypes.map((position) => (
-              <Button
-                key={position.id}
-                variant={
-                  selectedPositionType === position.id ? "default" : "outline"
-                }
-                className="p-4 h-auto text-left flex flex-col items-start space-y-2"
-                onClick={() => handlePositionTypeChange(position.id)}
-              >
-                <span className="font-medium">{position.label}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {position.description}
-                </span>
-              </Button>
-            ))}
-          </div>
-        </div>
-      )}
-      {/* Step 4: Configuration */}
+      {/* Step 3: Configuration */}
       {selectedNewNodeType &&
-        selectedPositionType &&
         (() => {
           const nodeOption = nodeOptions.find(
             (option) => option.id === selectedNewNodeType
@@ -193,7 +158,7 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
             nodeConfig && (
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                  Step 4: Configure Node
+                  Step 3: Configure Node
                 </h3>
                 <div className="border rounded-lg p-4 dark:border-gray-700">
                   <ConfigurationForm
@@ -221,10 +186,9 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
       </Button>
       {/* Progress indicator */}
       <div className="text-xs text-slate-500 dark:text-slate-400">
-        Progress: {selectedCategory ? "1" : "0"}/4 steps completed
-        {selectedNewNodeType && " → 2/4"}
-        {selectedPositionType && " → 3/4"}
-        {selectedPositionType && " → 4/4 ✓"}
+        Progress: {selectedCategory ? "1" : "0"}/3 steps completed
+        {selectedNewNodeType && " → 2/3"}
+        {selectedNewNodeType && " → 3/3 ✓"}
       </div>
     </div>
   );

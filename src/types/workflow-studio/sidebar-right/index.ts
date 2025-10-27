@@ -28,8 +28,6 @@ export interface SidebarRightItem {
 
 // Main SidebarRight Props
 export interface SidebarRightProps {
-  requestsPerSecond: number;
-  onRequestsPerSecondChange: (value: number) => void;
   nodes?: Node[];
   onAddNode?: (nodeType: {
     label: string;
@@ -72,8 +70,6 @@ export interface MainContentAreaProps {
     nodeId: number,
     updates: { label: string; icon: string }
   ) => void;
-  requestsPerSecond: number;
-  onRequestsPerSecondChange: (value: number) => void;
   onTabChange: (tabId: string) => void;
 }
 

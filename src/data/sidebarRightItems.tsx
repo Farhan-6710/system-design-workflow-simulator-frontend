@@ -1,4 +1,4 @@
-import { Plus, Edit3, BarChart3, Activity, Sparkles } from "lucide-react";
+import { Plus, Edit3, BarChart3, Sparkles } from "lucide-react";
 import { SidebarRightItem } from "@/types/workflow-studio/sidebar-right";
 
 export const sidebarRightItems: SidebarRightItem[] = [
@@ -20,14 +20,6 @@ export const sidebarRightItems: SidebarRightItem[] = [
     tooltip: "Selected Edge/Node",
     component: (
       <BarChart3 size={16} className="text-slate-700 dark:text-white" />
-    ),
-  },
-  {
-    id: "metrics",
-    name: "Metrics",
-    tooltip: "System Metrics",
-    component: (
-      <Activity size={16} className="text-slate-700 dark:text-white" />
     ),
   },
   {

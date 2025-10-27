@@ -2,11 +2,52 @@ import {
   RPSValue,
   RPSRange,
   AnimationDuration,
+  EdgeStyle,
+  NodeGlowConfig,
+  GlowType,
+  EdgeGradientType,
+  EdgeAnimationClass,
+  NodeGlowClass,
 } from "@/types/workflow-studio/workflow";
 
 /**
- * Animation utility functions
+ * CONSOLIDATED ANIMATION & STYLING UTILITIES
+ *
+ * All node and edge animation/styling logic in one place for better maintainability.
+ * Uses 50% warning and 70% critical server load thresholds.
  */
+
+// =============================================================================
+// SHARED CONSTANTS - Single source of truth for all thresholds
+// =============================================================================
+
+export const MAX_SERVER_CAPACITY = 50000; // Max requests per second
+export const WARNING_THRESHOLD = 0.5; // 50% load threshold
+export const CRITICAL_THRESHOLD = 0.8; // 80% load threshold
+
+export type LoadLevel = "BLUE" | "YELLOW" | "RED";
+
+/**
+ * Calculate server load percentage (0-100)
+ */
+export function calculateServerLoad(rps: number): number {
+  return Math.round((rps / MAX_SERVER_CAPACITY) * 100);
+}
+
+/**
+ * Get load level based on RPS (core logic for all animations)
+ */
+export function getLoadLevel(rps: number): LoadLevel {
+  const loadPercentage = rps / MAX_SERVER_CAPACITY;
+
+  if (loadPercentage >= CRITICAL_THRESHOLD) return "RED"; // ≥80%
+  if (loadPercentage >= WARNING_THRESHOLD) return "YELLOW"; // ≥50%
+  return "BLUE"; // <50%
+}
+
+// =============================================================================
+// ANIMATION DURATION & SPEED
+// =============================================================================
 
 /**
  * Calculate animation duration based on requests per second using logarithmic scaling
@@ -30,12 +71,20 @@ export const calculateAnimationDuration = (
 };
 
 /**
- * Get RPS range from numeric value
+ * Get RPS range from numeric value (for backwards compatibility)
  */
 export const getRPSRange = (requestsPerSecond: RPSValue): RPSRange => {
-  if (requestsPerSecond <= 500) return RPSRange.LOW;
-  if (requestsPerSecond <= 5000) return RPSRange.MEDIUM;
-  return RPSRange.HIGH;
+  const loadLevel = getLoadLevel(requestsPerSecond);
+
+  switch (loadLevel) {
+    case "RED": // ≥80% server load
+      return RPSRange.HIGH;
+    case "YELLOW": // ≥50% server load
+      return RPSRange.MEDIUM;
+    case "BLUE":
+    default:
+      return RPSRange.LOW; // <50% server load
+  }
 };
 
 /**
@@ -51,5 +100,150 @@ export const getAnimationSpeed = (rpsRange: RPSRange): number => {
       return 2.0; // 2x faster
     default:
       return 1.0;
+  }
+};
+
+// =============================================================================
+// EDGE ANIMATIONS & STYLING
+// =============================================================================
+
+/**
+ * Get edge style configuration based on server load (MAIN EDGE FUNCTION)
+ */
+export const getEdgeStyle = (rps: number): EdgeStyle => {
+  const loadLevel = getLoadLevel(rps);
+
+  switch (loadLevel) {
+    case "RED": // ≥80% server load
+      return {
+        gradient: EdgeGradientType.RED,
+        className: "animated-edge-red" as EdgeAnimationClass,
+      };
+    case "YELLOW": // ≥50% server load
+      return {
+        gradient: EdgeGradientType.YELLOW,
+        className: "animated-edge-yellow" as EdgeAnimationClass,
+      };
+    case "BLUE": // <50% server load
+    default:
+      return {
+        gradient: EdgeGradientType.BLUE,
+        className: "animated-edge" as EdgeAnimationClass,
+      };
+  }
+};
+
+/**
+ * Get edge gradient and class (alternative format for backwards compatibility)
+ */
+export const getEdgeStyleByRPS = (
+  requestsPerSecond: number
+): { gradient: string; className: string } => {
+  const loadLevel = getLoadLevel(requestsPerSecond);
+
+  switch (loadLevel) {
+    case "RED": // ≥80% server load
+      return {
+        gradient: "url(#flowGradientRed)",
+        className: "animated-edge-red",
+      };
+    case "YELLOW": // ≥50% server load
+      return {
+        gradient: "url(#flowGradientYellow)",
+        className: "animated-edge-yellow",
+      };
+    case "BLUE": // <50% server load
+    default:
+      return {
+        gradient: "url(#flowGradient)",
+        className: "animated-edge",
+      };
+  }
+};
+
+// =============================================================================
+// NODE GLOW ANIMATIONS & STYLING
+// =============================================================================
+
+/**
+ * Get node glow class based on server load (MAIN NODE FUNCTION)
+ */
+export const getNodeGlowClass = (rps: number): string => {
+  const loadLevel = getLoadLevel(rps);
+
+  switch (loadLevel) {
+    case "RED":
+      return "node-glow-red"; // ≥80% server load
+    case "YELLOW":
+      return "node-glow-yellow"; // ≥50% server load
+    case "BLUE":
+    default:
+      return "node-glow-blue"; // <50% server load
+  }
+};
+
+/**
+ * Get node glow configuration based on glow type
+ */
+export const getNodeGlowConfig = (glowType: GlowType): NodeGlowConfig => {
+  switch (glowType) {
+    case GlowType.BLUE:
+      return {
+        glowType: GlowType.BLUE,
+        className: "node-glow-blue" as NodeGlowClass,
+      };
+    case GlowType.YELLOW:
+      return {
+        glowType: GlowType.YELLOW,
+        className: "node-glow-yellow" as NodeGlowClass,
+      };
+    case GlowType.RED:
+      return {
+        glowType: GlowType.RED,
+        className: "node-glow-red" as NodeGlowClass,
+      };
+    case GlowType.NONE:
+    default:
+      return {
+        glowType: GlowType.NONE,
+        className: "" as NodeGlowClass,
+      };
+  }
+};
+
+/**
+ * Get node glow configuration directly from RPS
+ */
+export const getNodeGlowConfigFromRPS = (rps: number): NodeGlowConfig => {
+  const loadLevel = getLoadLevel(rps);
+
+  switch (loadLevel) {
+    case "RED":
+      return getNodeGlowConfig(GlowType.RED);
+    case "YELLOW":
+      return getNodeGlowConfig(GlowType.YELLOW);
+    case "BLUE":
+    default:
+      return getNodeGlowConfig(GlowType.BLUE);
+  }
+};
+
+// =============================================================================
+// UTILITY CONVERTERS
+// =============================================================================
+
+/**
+ * Convert RPS range to GlowType (for backwards compatibility)
+ */
+export const getGlowTypeFromRPS = (rpsRange: RPSRange): GlowType => {
+  switch (rpsRange) {
+    case RPSRange.LOW:
+      return GlowType.BLUE;
+    case RPSRange.MEDIUM:
+      return GlowType.YELLOW;
+    case RPSRange.HIGH:
+      return GlowType.RED;
+    default:
+      return GlowType.NONE;
   }
 };

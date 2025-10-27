@@ -15,7 +15,7 @@ import {
   edgeExists,
   filterEdgesForNode,
 } from "@/utils/workflow-studio/workflow";
-import { initialNodes, initialEdges } from "@/data/initialNodes";
+import { initialNodes, initialEdges } from "@/data/initialNodesAndEdges";
 
 // Initial state
 const initialState: WorkflowStoreState = {

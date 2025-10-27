@@ -159,4 +159,15 @@
   .bg-gradient-primary-hover {
     background-image: var(--gradient-primary-hover);
   }
+
+  /* Cursor Animation Styles */
+  .cursor-hidden {
+    cursor: none !important;
+  }
+
+  .cursor-tail-segment {
+    pointer-events: none;
+    will-change: transform, opacity;
+    transform-origin: center top;
+  }
 }

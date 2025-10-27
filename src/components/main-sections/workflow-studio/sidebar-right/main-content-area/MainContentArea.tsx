@@ -2,10 +2,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import AddNodeContent from "./AddNodeContent";
 import EditNodeContent from "./EditNodeContent";
-import MetricsContent from "./MetricsContent";
 import CollapsedState from "../CollapsedState";
 import { MainContentAreaProps } from "@/types/workflow-studio/sidebar-right";
-import SelectedEdgeNodeSummary from "./SelectedEdgeNodeSummary";
+import SelectedEdgeNodeSummary from "./selected-node-edge/SelectedEdgeNodeSummary";
 import AiAssistantContent from "./AiAssistantContent";
 import NotFoundContent from "./NotFoundContent";
 
@@ -15,8 +14,6 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
   nodes,
   onAddNode,
   onUpdateNode,
-  requestsPerSecond,
-  onRequestsPerSecondChange,
   onTabChange,
 }) => {
   const getSelectedTabContent = () => {
@@ -33,14 +30,6 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
 
       case "selected-edge/node":
         return <SelectedEdgeNodeSummary />;
-
-      case "metrics":
-        return (
-          <MetricsContent
-            requestsPerSecond={requestsPerSecond}
-            onRequestsPerSecondChange={onRequestsPerSecondChange}
-          />
-        );
 
       case "ai-assistant":
         return <AiAssistantContent />;

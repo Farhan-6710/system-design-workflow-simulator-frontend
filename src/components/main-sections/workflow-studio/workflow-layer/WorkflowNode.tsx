@@ -25,7 +25,6 @@ import {
   getNodeTextClasses,
 } from "@/utils/workflow-studio/workflow";
 import { useNodeAnimation } from "@/hooks/useWorkflowAnimation";
-import { shouldNodeGlow } from "@/utils/workflow-studio/stylingUtils";
 import "@/styles/workflowAnimations.css";
 
 // Icon mapping for dynamic icon rendering
@@ -124,11 +123,10 @@ export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
   isDragging,
   handlers,
 }) => {
-  const { glowConfig } = useNodeAnimation(node.label);
-  const nodeNeedsGlow = shouldNodeGlow(node.label);
+  const { glowConfig, shouldGlow } = useNodeAnimation();
 
-  // Get the glow class directly for Database nodes
-  const glowClassName = nodeNeedsGlow ? glowConfig.className : "";
+  // Get the glow class when node should glow
+  const glowClassName = shouldGlow ? glowConfig.className : "";
 
   // Get the icon component
   const IconComponent = getIconComponent(node.icon);

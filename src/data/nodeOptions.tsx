@@ -12,14 +12,10 @@ import {
   HardDrive,
   Zap,
   Monitor,
-  Activity,
   Link,
+  GitBranch,
 } from "lucide-react";
-import {
-  NodeOption,
-  NodeDefinition,
-  NodeCategory,
-} from "@/types/workflow-studio";
+import { NodeOption, NodeCategory } from "@/types/workflow-studio";
 
 // Available categories
 export const nodeCategories: NodeCategory[] = [
@@ -30,25 +26,6 @@ export const nodeCategories: NodeCategory[] = [
   "Monitoring & Infra",
 ];
 
-// Node types for workflow positioning
-export const nodeTypes: NodeDefinition[] = [
-  {
-    id: "start",
-    label: "Start Node",
-    description: "Entry point of the workflow",
-  },
-  {
-    id: "process",
-    label: "Process Node",
-    description: "Processing component in the workflow",
-  },
-  {
-    id: "end",
-    label: "End Node",
-    description: "Terminal point of the workflow",
-  },
-];
-
 export const nodeOptions: NodeOption[] = [
   // Entry Layer
   {
@@ -56,6 +33,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Client / User Node",
     icon: "Smartphone",
     category: "Entry Layer",
+    type: "start",
     component: <Smartphone size={16} className="text-blue-600" />,
     configurations: {
       rps: {
@@ -99,6 +77,7 @@ export const nodeOptions: NodeOption[] = [
     label: "DNS Resolver",
     icon: "Globe",
     category: "Entry Layer",
+    type: "process",
     component: <Globe size={16} className="text-green-600" />,
     configurations: {
       lookupLatency: {
@@ -135,6 +114,7 @@ export const nodeOptions: NodeOption[] = [
     label: "API Gateway",
     icon: "Router",
     category: "Entry Layer",
+    type: "process",
     component: <Router size={16} className="text-purple-600" />,
     configurations: {
       maxRps: {
@@ -175,6 +155,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Load Balancer",
     icon: "Network",
     category: "Routing & Compute",
+    type: "process",
     component: <Network size={16} className="text-orange-600" />,
     configurations: {
       algorithm: {
@@ -218,6 +199,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Synchronous Compute Node",
     icon: "Server",
     category: "Routing & Compute",
+    type: "process",
     component: <Server size={16} className="text-blue-500" />,
     configurations: {
       cpuCores: {
@@ -270,6 +252,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Asynchronous Compute Node",
     icon: "Zap",
     category: "Routing & Compute",
+    type: "process",
     component: <Zap size={16} className="text-yellow-500" />,
     configurations: {
       cpuCores: {
@@ -314,9 +297,10 @@ export const nodeOptions: NodeOption[] = [
   {
     id: "message-queue",
     label: "Message Queue",
-    icon: "Activity",
+    icon: "GitBranch",
     category: "Routing & Compute",
-    component: <Activity size={16} className="text-red-500" />,
+    type: "process",
+    component: <GitBranch size={16} className="text-red-500" />,
     configurations: {
       queueSize: {
         key: "queueSize",
@@ -370,6 +354,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Database",
     icon: "Database",
     category: "Data & Storage",
+    type: "end",
     component: <Database size={16} className="text-green-500" />,
     configurations: {
       type: {
@@ -433,6 +418,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Cache",
     icon: "HardDrive",
     category: "Data & Storage",
+    type: "process",
     component: <HardDrive size={16} className="text-blue-400" />,
     configurations: {
       memory: {
@@ -480,6 +466,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Object Storage",
     icon: "HardDrive",
     category: "Data & Storage",
+    type: "process",
     component: <HardDrive size={16} className="text-gray-500" />,
     configurations: {
       storageCapacity: {
@@ -534,6 +521,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Search Service",
     icon: "Search",
     category: "Data & Storage",
+    type: "process",
     component: <Search size={16} className="text-indigo-500" />,
     configurations: {
       queryLatency: {
@@ -579,6 +567,7 @@ export const nodeOptions: NodeOption[] = [
     label: "CDN",
     icon: "Globe",
     category: "Performance & Access",
+    type: "process",
     component: <Globe size={16} className="text-cyan-500" />,
     configurations: {
       cacheSize: {
@@ -624,6 +613,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Authentication Service",
     icon: "Shield",
     category: "Performance & Access",
+    type: "process",
     component: <Shield size={16} className="text-emerald-600" />,
     configurations: {
       tokenExpiry: {
@@ -670,6 +660,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Monitoring Node",
     icon: "Monitor",
     category: "Monitoring & Infra",
+    type: "process",
     component: <Monitor size={16} className="text-slate-600" />,
     configurations: {
       samplingInterval: {
@@ -703,6 +694,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Network Link",
     icon: "Link",
     category: "Monitoring & Infra",
+    type: "process",
     component: <Link size={16} className="text-gray-400" />,
     configurations: {
       bandwidth: {
@@ -750,6 +742,7 @@ export const nodeOptions: NodeOption[] = [
     label: "User Service",
     icon: "Users",
     category: "Routing & Compute",
+    type: "process",
     component: <Users size={16} className="text-violet-500" />,
     configurations: {
       cpuCores: {
@@ -793,6 +786,7 @@ export const nodeOptions: NodeOption[] = [
     label: "Payment Service",
     icon: "CreditCard",
     category: "Routing & Compute",
+    type: "process",
     component: <CreditCard size={16} className="text-pink-500" />,
     configurations: {
       cpuCores: {

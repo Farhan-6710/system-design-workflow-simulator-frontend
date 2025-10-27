@@ -12,7 +12,7 @@ interface HeaderProps {
   onToggle: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggle }) => {
+const MainHeader: React.FC<HeaderProps> = ({ onToggle }) => {
   const { user, loading } = useAuth();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
@@ -52,4 +52,4 @@ const Header: React.FC<HeaderProps> = ({ onToggle }) => {
   );
 };
 
-export default Header;
+export default MainHeader;

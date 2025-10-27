@@ -69,8 +69,8 @@
 
 /* Custom animation classes defined in workflowAnimations.css */
 @source inline("{animated-edge,animated-edge-yellow,animated-edge-red}");
-@source inline("{database-glow-blue,database-glow-yellow,database-glow-red}");
-@source inline("{icon-database-glow-blue,icon-database-glow-yellow,icon-database-glow-red}");
+@source inline("{node-glow-blue,node-glow-yellow,node-glow-red}");
+@source inline("{icon-node-glow-blue,icon-node-glow-yellow,icon-node-glow-red}");
 @source inline("pulse-dot");
 
 /* Canvas controls and dock navigation classes */

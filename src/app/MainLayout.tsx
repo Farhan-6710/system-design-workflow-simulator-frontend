@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import SidebarLeft from "@/components/sidebar-left/SidebarLeft";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Header from "../components/header/Header";
+import MainHeader from "../components/header/MainHeader";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -57,7 +57,7 @@ export function MainLayout({
         />
 
         <div className="flex-1 flex flex-col overflow-hidden w-full">
-          <Header onToggle={handleToggleSidebar} />
+          <MainHeader onToggle={handleToggleSidebar} />
 
           <main className="flex-1 overflow-auto">{children}</main>
         </div>

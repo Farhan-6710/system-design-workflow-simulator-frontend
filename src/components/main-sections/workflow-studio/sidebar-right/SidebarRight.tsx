@@ -11,8 +11,6 @@ import { SidebarRightProps } from "@/types/workflow-studio/sidebar-right";
 import { useWorkflowStore } from "@/stores/workflowStore";
 
 const SidebarRight: React.FC<SidebarRightProps> = ({
-  requestsPerSecond,
-  onRequestsPerSecondChange,
   nodes = [],
   onAddNode,
   onUpdateNode,
@@ -73,8 +71,6 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         nodes={nodes}
         onAddNode={onAddNode}
         onUpdateNode={onUpdateNode}
-        requestsPerSecond={requestsPerSecond}
-        onRequestsPerSecondChange={onRequestsPerSecondChange}
         onTabChange={handleDockItemClick}
       />
 

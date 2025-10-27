@@ -125,18 +125,12 @@ const WorkflowEditorContent: React.FC = () => {
   const selectedEdge = useWorkflowStore((state) => state.selectedEdge);
   const draggingNode = useWorkflowStore((state) => state.draggingNode);
   const tempLine = useWorkflowStore((state) => state.tempLine);
-  const requestsPerSecond = useWorkflowStore(
-    (state) => state.requestsPerSecond
-  );
   const runCode = useWorkflowStore((state) => state.runCode);
 
   // Actions using direct Zustand selectors
   const addNode = useWorkflowStore((state) => state.addNode);
   const clearSelection = useWorkflowStore((state) => state.clearSelection);
   const updateNode = useWorkflowStore((state) => state.updateNode);
-  const setRequestsPerSecond = useWorkflowStore(
-    (state) => state.setRequestsPerSecond
-  );
   const setRunCode = useWorkflowStore((state) => state.setRunCode);
 
   // Optimized interaction handlers using the new hook architecture
@@ -183,10 +177,7 @@ const WorkflowEditorContent: React.FC = () => {
   };
 
   const workflowContent = (
-    <WorkflowProvider
-      requestsPerSecond={requestsPerSecond}
-      setRequestsPerSecond={setRequestsPerSecond}
-    >
+    <WorkflowProvider>
       <div className="relative flex h-full">
         {/* Main content area - with right margin for sidebar */}
         <div className="flex-1 flex flex-col mr-[74px]">
@@ -256,8 +247,6 @@ const WorkflowEditorContent: React.FC = () => {
 
         {/* Right Sidebar - now sibling to main content, extends full height */}
         <SidebarRight
-          requestsPerSecond={requestsPerSecond}
-          onRequestsPerSecondChange={setRequestsPerSecond}
           nodes={nodes}
           onAddNode={addNode}
           onUpdateNode={updateNode}

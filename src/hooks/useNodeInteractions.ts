@@ -154,12 +154,16 @@ export const useNodeInteractions = ({
       const node = nodes.find((n) => n.id === nodeId);
       if (!node) return;
 
+      // Start from output port (right side of node)
+      const outputPortX = node.x + 28; // w-40 = 160px, so half is 80px
+      const outputPortY = node.y;
+
       setConnecting(nodeId);
       setTempLine({
-        x1: node.x,
-        y1: node.y,
-        x2: node.x,
-        y2: node.y,
+        x1: outputPortX,
+        y1: outputPortY,
+        x2: outputPortX,
+        y2: outputPortY,
       });
     },
     [nodes, setConnecting, setTempLine]
@@ -173,10 +177,16 @@ export const useNodeInteractions = ({
       const sourceNode = nodes.find((n) => n.id === connecting);
       if (!sourceNode) return;
 
+      // Start from output port (right side of source node)
+      const outputPortX = sourceNode.x + 28;
+      const outputPortY = sourceNode.y;
+
+      // Get accurate cursor position in canvas coordinates (handles zoom/pan)
       const canvasCoords = getCanvasCoordinates(e.clientX, e.clientY);
+
       setTempLine({
-        x1: sourceNode.x,
-        y1: sourceNode.y,
+        x1: outputPortX,
+        y1: outputPortY,
         x2: canvasCoords.x,
         y2: canvasCoords.y,
       });

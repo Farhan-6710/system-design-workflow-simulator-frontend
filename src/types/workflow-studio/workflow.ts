@@ -75,6 +75,7 @@ export interface NodeOption {
   label: string;
   icon: string;
   category: string;
+  type: NodeType;
   component: ReactNode;
   configurations: NodeConfiguration;
 }
@@ -174,9 +175,9 @@ export type EdgeAnimationClass =
   | "animated-edge-red";
 
 export type NodeGlowClass =
-  | "database-glow-blue"
-  | "database-glow-yellow"
-  | "database-glow-red"
+  | "node-glow-blue"
+  | "node-glow-yellow"
+  | "node-glow-red"
   | "";
 
 // RPS utility types
