@@ -5,7 +5,7 @@ import {
   getServerStatus,
   getLoadColor,
   getRPSColor,
-} from "@/utils/workflow-studio/serverMetrics";
+} from "@/utils/workflow-studio/animationUtils";
 import { MetricsContentProps } from "@/types/workflow-studio/sidebar-right";
 
 const MetricsContent: React.FC<MetricsContentProps> = ({

@@ -1,5 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
-import type { AnnotationLayerHandle } from "./annotation-layer/AnnotationLayer";
+import React, { useRef } from "react";
 import { WorkflowHeader, WorkflowCanvas, WorkflowFooter } from ".";
 import { useWorkflowStore } from "@/stores/workflowStore";
 import { useAnnotationStore } from "@/stores/annotationStore";
@@ -11,99 +10,52 @@ import {
 } from "@/contexts/FullscreenContext";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
 import { canvasDockItems } from "@/data/canvasDockItems";
-import {
-  createDockItemHandlers,
-  handleDockItemClick,
-} from "@/utils/workflow-studio/workflowActions";
+import { useWorkflowDialogs } from "@/hooks/useWorkflowDialogs";
+import { useWorkflowDock } from "@/hooks/useWorkflowDock";
+import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
 import DockComponent from "../../atoms/DockComponent";
 import SidebarRight from "./sidebar-right/SidebarRight";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
 import RunButton from "./RunButton";
 import ZoomIndicator from "./ZoomIndicator";
 import { MAX_ZOOM, MIN_ZOOM } from "@/hooks/useCanvasViewport";
 
 const WorkflowEditorContent: React.FC = () => {
-  // Use annotation store
-  const {
-    activeTool,
-    selectTool,
-    clearHistory: clearAnnotationHistory,
-  } = useAnnotationStore();
-
-  // Refs for workspace and annotation integration
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const annotationLayerRef = useRef<AnnotationLayerHandle>(null);
-
-  // Dialog states
-  const [showClearDialog, setShowClearDialog] = useState(false);
-  const [showRefreshDialog, setShowRefreshDialog] = useState(false);
-
-  // Fullscreen context
-  const { isFullscreen, toggleFullscreen } = useFullscreenContext();
-
-  // Handle fullscreen toggle
-  const handleFullscreenToggle = useCallback(() => {
-    toggleFullscreen();
-  }, [toggleFullscreen]);
-
-  // Get workflow data from store
+  // Direct store selectors for better performance (single subscriptions)
   const nodes = useWorkflowStore((state) => state.nodes);
-  const edges = useWorkflowStore((state) => state.edges);
   const runCode = useWorkflowStore((state) => state.runCode);
-  const setRunCode = useWorkflowStore((state) => state.setRunCode);
-
-  // Get workflow actions from store
   const addNode = useWorkflowStore((state) => state.addNode);
   const updateNode = useWorkflowStore((state) => state.updateNode);
-  const resetWorkflowStore = useWorkflowStore((state) => state.reset);
+  const setRunCode = useWorkflowStore((state) => state.setRunCode);
+  const activeTool = useAnnotationStore((state) => state.activeTool);
 
-  // Canvas controls
+  // Computed values
+  const nodeCount = nodes.length;
+  const edgeCount = useWorkflowStore((state) => state.edges.length);
+
+  // Custom hooks for complex logic (keep these as they provide value)
+  const {
+    showClearDialog,
+    showRefreshDialog,
+    showClearConfirmation,
+    showRefreshConfirmation,
+    handleClearConfirm,
+    handleRefreshConfirm,
+    handleClearCancel,
+    handleRefreshCancel,
+  } = useWorkflowDialogs();
+
+  const { annotationLayerRef, handleWorkflowDockItemClick } = useWorkflowDock({
+    showClearConfirmation,
+    showRefreshConfirmation,
+  });
+
+  // Simple refs for DOM elements
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  // Context hooks
+  const { isFullscreen } = useFullscreenContext();
   const canvasControls = useCanvasControlsContext();
-
-  // Create dock handlers
-  const dockHandlers = createDockItemHandlers(
-    canvasControls,
-    { toggleFullscreen: handleFullscreenToggle },
-    {
-      setActiveTool: (tool) => {
-        selectTool(tool);
-      },
-      annotationLayerRef:
-        annotationLayerRef as React.RefObject<AnnotationLayerHandle>,
-    },
-    {
-      showClearDialog: () => setShowClearDialog(true),
-      showRefreshDialog: () => setShowRefreshDialog(true),
-    }
-  );
-
-  // Handle dock item clicks
-  const handleWorkflowDockItemClick = (itemId: string) => {
-    handleDockItemClick(itemId, dockHandlers);
-  };
-
-  // Confirmation handlers
-  const handleClearConfirm = () => {
-    clearAnnotationHistory();
-    setShowClearDialog(false);
-  };
-
-  const handleRefreshConfirm = () => {
-    resetWorkflowStore();
-    clearAnnotationHistory();
-    canvasControls.resetViewport();
-    setShowRefreshDialog(false);
-  };
 
   const workflowContent = (
     <WorkflowProvider>
@@ -152,10 +104,7 @@ const WorkflowEditorContent: React.FC = () => {
             </div>
 
             {!isFullscreen && (
-              <WorkflowFooter
-                nodeCount={nodes.length}
-                edgeCount={edges.length}
-              />
+              <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
             )}
           </div>
         </div>
@@ -174,34 +123,25 @@ const WorkflowEditorContent: React.FC = () => {
     <>
       {workflowContent}
 
-      {/* Clear All Confirmation Dialog */}
-      <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Clear All Annotations</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will clear all annotations from the canvas. This action
-              cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button variant="outline" onClick={() => setShowClearDialog(false)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleClearConfirm}>
-              Clear All
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Confirmation Dialogs */}
+      <ConfirmationModal
+        open={showClearDialog}
+        onOpenChange={handleClearCancel}
+        title="Clear All Annotations"
+        description="This will clear all annotations from the canvas. This action cannot be undone."
+        confirmText="Clear All"
+        cancelText="Cancel"
+        onConfirm={handleClearConfirm}
+        variant="destructive"
+      />
 
-      {/* Refresh Confirmation Modal */}
       <ConfirmationModal
         open={showRefreshDialog}
-        onOpenChange={setShowRefreshDialog}
+        onOpenChange={handleRefreshCancel}
         title="Reset Everything"
         description="This will reset the entire workflow and clear all annotations. This action cannot be undone."
         confirmText="Reset All"
+        cancelText="Cancel"
         onConfirm={handleRefreshConfirm}
         variant="destructive"
       />
