@@ -17,14 +17,6 @@ interface WorkflowCanvasProps {
 
 export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
   ({ annotationLayerRef }, ref) => {
-    // Get data from stores directly
-    const nodes = useWorkflowStore((state) => state.nodes);
-    const edges = useWorkflowStore((state) => state.edges);
-    const tempLine = useWorkflowStore((state) => state.tempLine);
-    const selectedNode = useWorkflowStore((state) => state.selectedNode);
-    const selectedEdge = useWorkflowStore((state) => state.selectedEdge);
-    const draggingNode = useWorkflowStore((state) => state.draggingNode);
-    const runCode = useWorkflowStore((state) => state.runCode);
 
     // Canvas controls
     const { getCanvasTransformStyle } = useCanvasControlsContext();
@@ -75,29 +67,16 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
         >
           {/* Workflow Layer - handles nodes, edges */}
           <WorkflowLayer
-            nodes={nodes}
-            edges={edges}
-            tempLine={tempLine}
-            selectedNode={selectedNode}
-            selectedEdge={selectedEdge}
-            draggingNode={draggingNode}
             nodeHandlers={nodeHandlers}
             edgeHandlers={edgeHandlers}
-            runCode={runCode}
           />
 
           {/* Annotation Layer - uses Zustand store for clean state management */}
           <AnnotationLayer
             key="annotation-layer-stable"
             ref={handleAnnotationLayerRef}
-            activeTool={activeTool}
             onFinish={handleAnnotationFinish}
-            className={cn(
-              "absolute inset-0 w-full h-full",
-              activeTool === "select"
-                ? "pointer-events-none"
-                : "pointer-events-auto"
-            )}
+            className="absolute inset-0 w-full h-full"
           />
         </div>
       </motion.div>

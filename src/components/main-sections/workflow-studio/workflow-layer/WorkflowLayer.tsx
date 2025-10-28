@@ -5,40 +5,27 @@ import { WorkflowEdge } from "./WorkflowEdge";
 import { TempConnectionLine } from "./TempConnectionLine";
 import { useWorkflowAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
 import {
-  Node,
-  Edge,
-  TempLine,
   NodeHandlers,
   EdgeHandlers,
 } from "@/types/workflow-studio/workflow";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface WorkflowLayerProps {
-  nodes: Node[];
-  edges: Edge[];
-  tempLine: TempLine | null;
-  selectedNode: number | null;
-  selectedEdge: string | null;
-  draggingNode: number | null;
   nodeHandlers: NodeHandlers;
   edgeHandlers: EdgeHandlers;
   runCode?: boolean;
 }
 
 export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
-  (
-    {
-      nodes,
-      edges,
-      tempLine,
-      selectedNode,
-      selectedEdge,
-      draggingNode,
-      nodeHandlers,
-      edgeHandlers,
-      runCode = false,
-    },
-    ref
-  ) => {
+  ({ nodeHandlers, edgeHandlers }, ref) => {
+    // Get data from stores directly
+    const nodes = useWorkflowStore((state) => state.nodes);
+    const edges = useWorkflowStore((state) => state.edges);
+    const tempLine = useWorkflowStore((state) => state.tempLine);
+    const selectedNode = useWorkflowStore((state) => state.selectedNode);
+    const selectedEdge = useWorkflowStore((state) => state.selectedEdge);
+    const draggingNode = useWorkflowStore((state) => state.draggingNode);
+    const runCode = useWorkflowStore((state) => state.runCode);
     const { globalAnimationStyle } = useWorkflowAnimation();
 
     // Calculate dynamic bounds for the SVG based on node positions

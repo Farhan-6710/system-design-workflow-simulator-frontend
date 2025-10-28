@@ -115,7 +115,6 @@ const WorkflowEditorContent: React.FC = () => {
 
         {/* Right Sidebar - now sibling to main content, extends full height */}
         <SidebarRight
-          nodes={nodes}
           onAddNode={addNode}
           onUpdateNode={updateNode}
         />

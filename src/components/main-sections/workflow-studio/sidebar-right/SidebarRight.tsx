@@ -11,11 +11,11 @@ import { SidebarRightProps } from "@/types/workflow-studio/sidebar-right";
 import { useWorkflowStore } from "@/stores/workflowStore";
 
 const SidebarRight: React.FC<SidebarRightProps> = ({
-  nodes = [],
   onAddNode,
   onUpdateNode,
 }) => {
   // Use Zustand store for sidebar state instead of local state
+  const nodes = useWorkflowStore((state) => state.nodes);
   const sidebarExpanded = useWorkflowStore(
     (state) => state.sidebarRightExpanded
   );

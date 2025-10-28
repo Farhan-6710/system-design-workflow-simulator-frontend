@@ -7,6 +7,7 @@
 
 import React, { forwardRef } from "react";
 import { useAnnotationStore } from "@/stores/annotationStore";
+import { cn } from "@/lib/utils";
 import {
   AnnotationCanvas,
   type AnnotationCanvasHandle,
@@ -14,8 +15,6 @@ import {
 } from "./AnnotationCanvas";
 
 export interface AnnotationLayerProps {
-  /** Currently active tool, controlled by parent */
-  activeTool?: Tool;
   /** Called when a drawing operation completes */
   onFinish?: () => void;
   /** Called when export operation is triggered */
@@ -69,23 +68,19 @@ export type Tool =
 export const AnnotationLayer = forwardRef<
   AnnotationLayerHandle,
   AnnotationLayerProps
->(({ activeTool, onFinish, onExport, initialJSON, className, style }, ref) => {
-  const {
-    history,
-    historyIndex,
-    selectTool,
-    clearHistory,
-    setCanvasState,
-    canvasState,
-  } = useAnnotationStore();
+>(({ onFinish, onExport, initialJSON, className, style }, ref) => {
+  // Individual selectors for optimal performance - only re-render when specific values change
+  const activeTool = useAnnotationStore((state) => state.activeTool);
+  const history = useAnnotationStore((state) => state.history);
+  const historyIndex = useAnnotationStore((state) => state.historyIndex);
+  const canvasState = useAnnotationStore((state) => state.canvasState);
+
+  // Actions (these never change, so they can be destructured)
+  const { clearHistory, setCanvasState } = useAnnotationStore();
+
   const canvasRef = React.useRef<AnnotationCanvasHandle>(null);
 
-  // Sync external activeTool prop with store and auto-show layer
-  React.useEffect(() => {
-    if (activeTool !== undefined) {
-      selectTool(activeTool); // This will auto-show/hide the layer
-    }
-  }, [activeTool, selectTool]);
+  // Remove the external activeTool prop sync since we use internal state now
 
   // Expose the same API as the original AnnotationLayer
   React.useImperativeHandle(
@@ -142,7 +137,10 @@ export const AnnotationLayer = forwardRef<
   return (
     <AnnotationCanvas
       ref={canvasRef}
-      className={className}
+      className={cn(
+        className,
+        activeTool === "select" ? "pointer-events-none" : "pointer-events-auto"
+      )}
       style={style}
       onFinish={onFinish}
       initialJSON={initialJSON || canvasState}

@@ -28,7 +28,6 @@ export interface SidebarRightItem {
 
 // Main SidebarRight Props
 export interface SidebarRightProps {
-  nodes?: Node[];
   onAddNode?: (nodeType: {
     label: string;
     icon: string;
