@@ -7,8 +7,8 @@ import { useCallback, useRef, useEffect, useState } from "react";
 import { useWorkflowStore } from "@/stores/workflowStore";
 
 // Constants
-const MIN_ZOOM = 0.1;
-const MAX_ZOOM = 3.0;
+export const MIN_ZOOM = 0.1;
+export const MAX_ZOOM = 3.0;
 const ZOOM_STEP = 0.1;
 const ZOOM_SENSITIVITY = 0.001;
 

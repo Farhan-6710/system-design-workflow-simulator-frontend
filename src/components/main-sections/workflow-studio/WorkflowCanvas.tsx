@@ -1,47 +1,50 @@
 import React, { forwardRef, useEffect, useRef, useCallback } from "react";
-import { WorkflowCanvasProps } from "@/types/workflow-studio";
 import { WorkflowLayer } from "./workflow-layer/WorkflowLayer";
 import { CanvasGrid } from "./CanvasGrid";
 import {
   AnnotationLayer,
   type AnnotationLayerHandle,
-  type Tool,
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
+import { useCanvasCoordinates } from "@/hooks/useCanvasCoordinates";
+import { useWorkflowStore } from "@/stores/workflowStore";
+import { useAnnotationStore } from "@/stores/annotationStore";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import {
+  createNodeHandlers,
+  createEdgeHandlers,
+  createCanvasHandlers,
+} from "@/utils/workflow-studio/workflowHandlers";
 
-interface WorkflowCanvasWithAnnotationProps extends WorkflowCanvasProps {
-  // Simple annotation props - no complexity!
-  activeTool?: Tool;
+interface WorkflowCanvasProps {
   annotationLayerRef?: React.MutableRefObject<AnnotationLayerHandle | null>;
-  onAnnotationToolChange?: (tool: Tool) => void;
 }
 
-export const WorkflowCanvas = forwardRef<
-  HTMLDivElement,
-  WorkflowCanvasWithAnnotationProps
->(
-  (
-    {
-      nodes,
-      edges,
-      tempLine,
-      selectedNode,
-      selectedEdge,
-      draggingNode,
-      nodeHandlers,
-      edgeHandlers,
-      onMouseMove,
-      onMouseUp,
-      runCode = false,
-      // Simple annotation props
-      activeTool = "select",
-      annotationLayerRef,
-      onAnnotationToolChange,
-    },
-    ref
-  ) => {
+export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
+  ({ annotationLayerRef }, ref) => {
+    // Get data from stores directly
+    const nodes = useWorkflowStore((state) => state.nodes);
+    const edges = useWorkflowStore((state) => state.edges);
+    const tempLine = useWorkflowStore((state) => state.tempLine);
+    const selectedNode = useWorkflowStore((state) => state.selectedNode);
+    const selectedEdge = useWorkflowStore((state) => state.selectedEdge);
+    const draggingNode = useWorkflowStore((state) => state.draggingNode);
+    const runCode = useWorkflowStore((state) => state.runCode);
+
+    const activeTool = useAnnotationStore((state) => state.activeTool);
+    const selectTool = useAnnotationStore((state) => state.selectTool);
+
+    // Canvas coordinate utilities
+    const { getCanvasCoordinates } = useCanvasCoordinates({
+      canvasRef: ref as React.RefObject<HTMLDivElement>,
+    });
+
+    // Create handlers with coordinate utilities
+    const coordinateUtils = { getCanvasCoordinates };
+    const nodeHandlers = createNodeHandlers(coordinateUtils);
+    const edgeHandlers = createEdgeHandlers();
+    const canvasHandlers = createCanvasHandlers(coordinateUtils);
     const {
       handlePanStart,
       handlePanMove,
@@ -85,21 +88,21 @@ export const WorkflowCanvas = forwardRef<
     const handleMouseMoveCanvas = (event: React.MouseEvent) => {
       // Don't pan if annotation tool is active (not in select mode)
       if (activeTool !== "select") {
-        onMouseMove?.(event);
+        canvasHandlers.onMouseMove(event);
         return;
       }
       handlePanMove(event);
-      onMouseMove?.(event);
+      canvasHandlers.onMouseMove(event);
     };
 
     const handleMouseUpCanvas = () => {
       // Don't end panning if annotation tool is active (not in select mode)
       if (activeTool !== "select") {
-        onMouseUp?.();
+        canvasHandlers.onMouseUp();
         return;
       }
       handlePanEnd();
-      onMouseUp?.();
+      canvasHandlers.onMouseUp();
     };
 
     // Attach native touch listeners with passive: false for preventDefault
@@ -138,7 +141,11 @@ export const WorkflowCanvas = forwardRef<
     }, [ref, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
     const handleAnnotationFinish = () => {
-      onAnnotationToolChange?.("select");
+      selectTool("select");
+    };
+
+    const handleCanvasClick = () => {
+      canvasHandlers.onClick();
     };
 
     return (
@@ -154,6 +161,7 @@ export const WorkflowCanvas = forwardRef<
             ? "cursor-crosshair"
             : "cursor-grab active:cursor-grabbing"
         )}
+        onClick={handleCanvasClick}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMoveCanvas}
         onMouseUp={handleMouseUpCanvas}

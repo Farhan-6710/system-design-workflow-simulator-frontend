@@ -7,7 +7,7 @@ import {
   Minus,
   PenTool,
   Type,
-  MessageSquare,
+  RotateCcw,
   Maximize,
   Undo2,
   Redo2,
@@ -78,15 +78,6 @@ export const canvasDockItems = [
     component: <Type size={14} className="text-slate-700 dark:text-white" />,
   },
   {
-    id: "comment",
-    name: "Comment",
-    tooltip: "Comment",
-    route: "",
-    component: (
-      <MessageSquare size={14} className="text-slate-700 dark:text-white" />
-    ),
-  },
-  {
     id: "undo",
     name: "Undo",
     tooltip: "Undo (Ctrl+Z)",
@@ -106,6 +97,15 @@ export const canvasDockItems = [
     tooltip: "Clear All",
     route: "",
     component: <Trash2 size={14} className="text-slate-700 dark:text-white" />,
+  },
+  {
+    id: "refresh",
+    name: "Refresh",
+    tooltip: "Reset All (Clear Workflow & Annotations)",
+    route: "",
+    component: (
+      <RotateCcw size={14} className="text-slate-700 dark:text-white" />
+    ),
   },
   {
     id: "fullscreen",

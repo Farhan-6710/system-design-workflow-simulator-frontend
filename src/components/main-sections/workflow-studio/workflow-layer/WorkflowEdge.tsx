@@ -20,8 +20,8 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
 
   const { edgeStyle, animationStyle } = useEdgeAnimation();
 
-  // Handle edge mouse up - same pattern as nodes
-  const handleEdgeMouseUp = (e: React.MouseEvent) => {
+  // Handle edge click - same pattern as nodes
+  const handleEdgeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     handlers.onSelect(edge.id);
   };
@@ -64,7 +64,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
         strokeWidth="12"
         fill="none"
         strokeLinecap="round"
-        onMouseUp={handleEdgeMouseUp}
+        onClick={handleEdgeClick}
         style={{
           cursor: "pointer",
         }}
