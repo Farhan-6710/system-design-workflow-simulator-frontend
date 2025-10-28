@@ -1,9 +1,14 @@
+import { useWorkflowStore } from "@/stores/workflowStore";
 import React from "react";
-import { TempConnectionLineProps } from "@/types/workflow-studio";
 
-export const TempConnectionLine: React.FC<TempConnectionLineProps> = ({
-  tempLine,
-}) => {
+export const TempConnectionLine = () => {
+  const tempLine = useWorkflowStore((state) => state.tempLine);
+
+  // Don't render anything if tempLine is null
+  if (!tempLine) {
+    return null;
+  }
+
   return (
     <g>
       <path

@@ -148,9 +148,11 @@ export const createNodeHandlers = (coordinateUtils?: {
       const node = nodes.find((n) => n.id === nodeId);
       if (!node) return;
 
-      // Calculate output port position (right side of node)
-      const outputPortX = node.x + 160; // Node width is typically 160px (w-40)
-      const outputPortY = node.y + 32; // Node height center
+      // Calculate output port position
+      // Node is 55px x 55px with center at node.x, node.y
+      // Output port is positioned at -right-2 (8px from right edge) and center vertically
+      const outputPortX = node.x + 27; // center + half width + port offset = 35.5px from center
+      const outputPortY = node.y; // port is at vertical center
 
       setConnecting(nodeId);
       setTempLine({

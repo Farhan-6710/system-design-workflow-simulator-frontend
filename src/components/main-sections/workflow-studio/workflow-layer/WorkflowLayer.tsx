@@ -104,7 +104,7 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
             })}
 
             {/* Temporary connection line */}
-            {tempLine && <TempConnectionLine tempLine={tempLine} />}
+            {tempLine && <TempConnectionLine />}
           </g>
         </svg>
 
