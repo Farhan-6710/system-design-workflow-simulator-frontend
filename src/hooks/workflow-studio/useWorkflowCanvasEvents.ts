@@ -1,12 +1,12 @@
 /**
  * Custom hook for WorkflowCanvas event handling
- * Extracts complex event logic from the component
+ * Handles canvas events, coordinate transformations, and business logic integration
  */
 
 import { useEffect, useRef, useCallback } from "react";
 import { useAnnotationStore } from "@/stores/annotationStore";
+import { useWorkflowStore } from "@/stores/workflowStore";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { useCanvasCoordinates } from "@/hooks/useCanvasCoordinates";
 import {
   createNodeHandlers,
   createEdgeHandlers,
@@ -26,6 +26,7 @@ export const useWorkflowCanvasEvents = ({
   // Store state
   const activeTool = useAnnotationStore((state) => state.activeTool);
   const selectTool = useAnnotationStore((state) => state.selectTool);
+  const canvasTransform = useWorkflowStore((state) => state.canvasTransform);
 
   // Canvas controls
   const {
@@ -38,12 +39,78 @@ export const useWorkflowCanvasEvents = ({
     handleWheel,
   } = useCanvasControlsContext();
 
-  // Coordinate utilities
-  const { getCanvasCoordinates } = useCanvasCoordinates({
-    canvasRef,
-  });
+  // Coordinate transformation utilities (merged from useCanvasCoordinates)
+  const getCanvasCoordinates = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!canvasRef.current) {
+        return { x: clientX, y: clientY };
+      }
 
-  // Create handlers
+      const rect = canvasRef.current.getBoundingClientRect();
+      const rawX = clientX - rect.left;
+      const rawY = clientY - rect.top;
+
+      const {
+        scale = 1,
+        translateX = 0,
+        translateY = 0,
+      } = canvasTransform ?? {};
+
+      // Reverse canvas transform to get actual canvas coordinates
+      const canvasX = (rawX - translateX) / scale;
+      const canvasY = (rawY - translateY) / scale;
+
+      return { x: canvasX, y: canvasY };
+    },
+    [canvasRef, canvasTransform]
+  );
+
+  const getViewportCoordinates = useCallback(
+    (canvasX: number, canvasY: number) => {
+      if (!canvasRef.current) {
+        return { x: canvasX, y: canvasY };
+      }
+
+      const rect = canvasRef.current.getBoundingClientRect();
+      const {
+        scale = 1,
+        translateX = 0,
+        translateY = 0,
+      } = canvasTransform ?? {};
+
+      const viewportX = canvasX * scale + translateX + rect.left;
+      const viewportY = canvasY * scale + translateY + rect.top;
+
+      return { x: viewportX, y: viewportY };
+    },
+    [canvasRef, canvasTransform]
+  );
+
+  const isPointVisible = useCallback(
+    (canvasX: number, canvasY: number, margin = 0) => {
+      if (!canvasRef.current) return true;
+
+      const rect = canvasRef.current.getBoundingClientRect();
+      const {
+        scale = 1,
+        translateX = 0,
+        translateY = 0,
+      } = canvasTransform ?? {};
+
+      const viewportX = canvasX * scale + translateX;
+      const viewportY = canvasY * scale + translateY;
+
+      return (
+        viewportX >= -margin &&
+        viewportY >= -margin &&
+        viewportX <= rect.width + margin &&
+        viewportY <= rect.height + margin
+      );
+    },
+    [canvasRef, canvasTransform]
+  );
+
+  // Create handlers with coordinate utilities
   const coordinateUtils = { getCanvasCoordinates };
   const nodeHandlers = createNodeHandlers(coordinateUtils);
   const edgeHandlers = createEdgeHandlers();
@@ -167,6 +234,11 @@ export const useWorkflowCanvasEvents = ({
     nodeHandlers,
     edgeHandlers,
     canvasHandlers,
+
+    // Coordinate utilities (merged from useCanvasCoordinates)
+    getCanvasCoordinates,
+    getViewportCoordinates,
+    isPointVisible,
 
     // State
     activeTool,

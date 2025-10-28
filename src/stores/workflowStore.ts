@@ -27,6 +27,7 @@ const initialState: WorkflowStoreState = {
   dragOffset: { x: 0, y: 0 },
   connecting: null,
   tempLine: null,
+  isFullscreen: false,
   sidebarRightExpanded: false,
   selectedTab: null,
   requestsPerSecond: 1,
@@ -223,6 +224,19 @@ export const useWorkflowStore = create<WorkflowStore>()(
           // Also collapse sidebar when clearing all selections
           state.sidebarRightExpanded = false;
           state.selectedTab = null;
+        });
+      },
+
+      // Fullscreen actions
+      toggleFullscreen: () => {
+        set((state) => {
+          state.isFullscreen = !state.isFullscreen;
+        });
+      },
+
+      setFullscreen: (isFullscreen) => {
+        set((state) => {
+          state.isFullscreen = isFullscreen;
         });
       },
     })),

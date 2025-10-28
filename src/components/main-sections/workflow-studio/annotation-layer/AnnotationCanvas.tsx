@@ -8,6 +8,7 @@ import React, {
   useImperativeHandle,
 } from "react";
 import { useAnnotationStore } from "@/stores/annotationStore";
+import { useWorkflowStore } from "@/stores/workflowStore";
 import {
   initializeCanvas,
   updateCanvasMode,
@@ -52,7 +53,6 @@ export const AnnotationCanvas = forwardRef<
 >(({ className = "", style, onFinish, initialJSON }, ref) => {
   const {
     activeTool,
-    isFullscreen,
     canvasState,
     saveToHistory,
     undo: storeUndo,
@@ -60,6 +60,7 @@ export const AnnotationCanvas = forwardRef<
     setCanvasState,
     isLoadingFromHistory,
   } = useAnnotationStore();
+  const isFullscreen = useWorkflowStore((state) => state.isFullscreen);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<FabricCanvas | null>(null);

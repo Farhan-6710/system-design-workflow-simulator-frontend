@@ -224,6 +224,7 @@ export interface WorkflowStoreState {
   dragOffset: DragOffset;
   connecting: number | null;
   tempLine: TempLine | null;
+  isFullscreen: boolean;
 
   // Sidebar state
   sidebarRightExpanded: boolean;
@@ -281,6 +282,10 @@ export interface WorkflowActions {
   // Utility actions
   reset: () => void;
   clearSelection: () => void;
+
+  // Fullscreen actions
+  toggleFullscreen: () => void;
+  setFullscreen: (isFullscreen: boolean) => void;
 }
 
 // Combined store interface
@@ -379,11 +384,6 @@ export interface WorkflowEditorSummaryProps {
 // ======================================================================
 // HOOK PROPS TYPES
 // ======================================================================
-
-// Workflow Canvas Hook Props
-export interface UseWorkflowCanvasProps {
-  canvasRef: React.RefObject<HTMLDivElement | null>;
-}
 
 // Node Interactions Hook Props
 export interface UseNodeInteractionsProps {

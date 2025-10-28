@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { useCanvasViewport } from "@/hooks/useCanvasViewport";
+import { useCanvasViewport } from "@/hooks/workflow-studio/useCanvasViewport";
 import { CanvasControlsHook } from "@/types/workflow-studio";
 
 const CanvasControlsContext = createContext<CanvasControlsHook | undefined>(

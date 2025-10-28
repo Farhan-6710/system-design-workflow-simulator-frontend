@@ -3,7 +3,7 @@ import { SvgDefinitions } from "./SvgDefinitions";
 import { WorkflowNode } from "./WorkflowNode";
 import { WorkflowEdge } from "./WorkflowEdge";
 import { TempConnectionLine } from "./TempConnectionLine";
-import { useWorkflowAnimation } from "@/hooks/useWorkflowAnimation";
+import { useWorkflowAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
 import {
   Node,
   Edge,

@@ -1,6 +1,6 @@
 import { WorkflowEdgeProps } from "@/types/workflow-studio";
 import { calculatePortToPortPath } from "@/utils/workflow-studio/workflow";
-import { useEdgeAnimation } from "@/hooks/useWorkflowAnimation";
+import { useEdgeAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
 import "@/styles/workflowAnimations.css";
 
 export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({

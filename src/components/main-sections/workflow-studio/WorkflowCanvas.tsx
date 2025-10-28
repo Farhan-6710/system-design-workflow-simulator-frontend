@@ -7,7 +7,7 @@ import {
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
 import { useWorkflowStore } from "@/stores/workflowStore";
-import { useWorkflowCanvasEvents } from "@/hooks/useWorkflowCanvasEvents";
+import { useWorkflowCanvasEvents } from "@/hooks/workflow-studio/useWorkflowCanvasEvents";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 

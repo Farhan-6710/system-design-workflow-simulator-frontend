@@ -15,7 +15,6 @@ export interface CanvasState {
 interface AnnotationState {
   // UI State
   activeTool: Tool;
-  isFullscreen: boolean;
 
   // Canvas State
   canvasState: CanvasState | null;
@@ -27,7 +26,6 @@ interface AnnotationState {
 
   // Actions
   setActiveTool: (tool: Tool) => void;
-  setFullscreen: (fullscreen: boolean) => void;
   setCanvasState: (state: CanvasState | null) => void;
 
   // History Actions
@@ -47,7 +45,6 @@ export const useAnnotationStore = create<AnnotationState>()(
     (set, get) => ({
       // Initial state
       activeTool: "select",
-      isFullscreen: false,
       canvasState: null,
 
       // History state
@@ -57,7 +54,6 @@ export const useAnnotationStore = create<AnnotationState>()(
 
       // Basic setters
       setActiveTool: (tool) => set({ activeTool: tool }),
-      setFullscreen: (fullscreen) => set({ isFullscreen: fullscreen }),
       setCanvasState: (state) => set({ canvasState: state }),
 
       // History management

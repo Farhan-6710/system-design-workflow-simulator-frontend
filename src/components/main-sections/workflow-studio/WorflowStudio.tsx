@@ -1,23 +1,21 @@
 import React, { useRef } from "react";
+import { createPortal } from "react-dom";
 import { WorkflowHeader, WorkflowCanvas, WorkflowFooter } from ".";
 import { useWorkflowStore } from "@/stores/workflowStore";
 import { useAnnotationStore } from "@/stores/annotationStore";
 import { WorkflowProvider } from "@/contexts/WorkflowContext";
 import { CanvasControlsProvider } from "@/contexts/CanvasControlsContext";
-import {
-  FullscreenProvider,
-  useFullscreenContext,
-} from "@/contexts/FullscreenContext";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
 import { canvasDockItems } from "@/data/canvasDockItems";
-import { useWorkflowDialogs } from "@/hooks/useWorkflowDialogs";
-import { useWorkflowDock } from "@/hooks/useWorkflowDock";
+import { useWorkflowDialogs } from "@/hooks/workflow-studio/useWorkflowDialogs";
+import { useWorkflowDock } from "@/hooks/workflow-studio/useWorkflowDock";
 import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
 import DockComponent from "../../atoms/DockComponent";
 import SidebarRight from "./sidebar-right/SidebarRight";
 import RunButton from "./RunButton";
 import ZoomIndicator from "./ZoomIndicator";
-import { MAX_ZOOM, MIN_ZOOM } from "@/hooks/useCanvasViewport";
+import { MAX_ZOOM, MIN_ZOOM } from "@/hooks/workflow-studio/useCanvasViewport";
+import { X } from "lucide-react";
 
 const WorkflowEditorContent: React.FC = () => {
   // Direct store selectors for better performance (single subscriptions)
@@ -27,6 +25,8 @@ const WorkflowEditorContent: React.FC = () => {
   const updateNode = useWorkflowStore((state) => state.updateNode);
   const setRunCode = useWorkflowStore((state) => state.setRunCode);
   const activeTool = useAnnotationStore((state) => state.activeTool);
+  const isFullscreen = useWorkflowStore((state) => state.isFullscreen);
+  const setFullscreen = useWorkflowStore((state) => state.setFullscreen);
 
   // Computed values
   const nodeCount = nodes.length;
@@ -54,8 +54,12 @@ const WorkflowEditorContent: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Context hooks
-  const { isFullscreen } = useFullscreenContext();
   const canvasControls = useCanvasControlsContext();
+
+  // Exit fullscreen handler
+  const handleExitFullscreen = () => {
+    setFullscreen(false);
+  };
 
   const workflowContent = (
     <WorkflowProvider>
@@ -121,7 +125,30 @@ const WorkflowEditorContent: React.FC = () => {
 
   return (
     <>
-      {workflowContent}
+      {/* Normal workflow content */}
+      {!isFullscreen && workflowContent}
+
+      {/* Fullscreen content using Portal */}
+      {isFullscreen &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] bg-white dark:bg-slate-950">
+            {/* Exit fullscreen button */}
+            <button
+              onClick={handleExitFullscreen}
+              className="fixed top-6 left-24 z-[10000] w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
+              title="Exit Fullscreen"
+            >
+              <X
+                size={20}
+                className="text-slate-600 dark:text-slate-300 group-hover:text-slate-800 dark:group-hover:text-white transition-colors"
+              />
+            </button>
+
+            {/* Fullscreen workflow content */}
+            {workflowContent}
+          </div>,
+          document.body
+        )}
 
       {/* Confirmation Dialogs */}
       <ConfirmationModal
@@ -152,13 +179,11 @@ const WorkflowEditorContent: React.FC = () => {
 // Main Workflow Studio Component
 const WorkflowStudio: React.FC = () => {
   return (
-    <FullscreenProvider>
-      <CanvasControlsProvider>
-        <div className="workflow-studio h-full">
-          <WorkflowEditorContent />
-        </div>
-      </CanvasControlsProvider>
-    </FullscreenProvider>
+    <CanvasControlsProvider>
+      <div className="workflow-studio h-full">
+        <WorkflowEditorContent />
+      </div>
+    </CanvasControlsProvider>
   );
 };
 

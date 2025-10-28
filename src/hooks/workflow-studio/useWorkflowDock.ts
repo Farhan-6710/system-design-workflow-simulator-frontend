@@ -5,8 +5,8 @@
 
 import { useCallback, useRef } from "react";
 import { useAnnotationStore } from "@/stores/annotationStore";
+import { useWorkflowStore } from "@/stores/workflowStore";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { useFullscreenContext } from "@/contexts/FullscreenContext";
 import {
   createDockItemHandlers,
   handleDockItemClick,
@@ -25,7 +25,7 @@ export const useWorkflowDock = ({
   // Store and context hooks
   const { selectTool } = useAnnotationStore();
   const canvasControls = useCanvasControlsContext();
-  const { toggleFullscreen } = useFullscreenContext();
+  const toggleFullscreen = useWorkflowStore((state) => state.toggleFullscreen);
 
   // Refs
   const annotationLayerRef = useRef<AnnotationLayerHandle>(null);
