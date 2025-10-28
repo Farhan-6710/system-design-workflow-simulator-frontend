@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Check } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/atoms/Modal";
+import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
 import {
   Select,
   SelectContent,
@@ -12,6 +13,7 @@ import {
 import ConfigurationForm from "../ConfigurationForm";
 import { Node } from "@/types/workflow-studio/workflow";
 import { nodeOptions } from "@/data/nodeOptions";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface NodeEditModalProps {
   isOpen: boolean;
@@ -25,6 +27,9 @@ interface NodeEditModalProps {
     value: string | number | boolean
   ) => void;
   onSave: (nodeType?: string) => void;
+  handleDeleteClick: () => void;
+  handleDeleteConfirm: () => void;
+  handleDeleteCancel: () => void;
 }
 
 const NodeEditModal: React.FC<NodeEditModalProps> = ({
@@ -36,13 +41,21 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
   configurations,
   onConfigurationChange,
   onSave,
+  handleDeleteClick,
+  handleDeleteConfirm,
+  handleDeleteCancel,
 }) => {
   const [selectedNodeType, setSelectedNodeType] = useState<string>("");
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
-  // Reset node type selection when modal opens
+  // Get delete function from store
+  const deleteNode = useWorkflowStore((state) => state.deleteNode);
+
+  // Reset node type selection and delete confirmation when modal opens
   useEffect(() => {
     if (isOpen) {
       setSelectedNodeType("");
+      setShowDeleteConfirmation(false);
     }
   }, [isOpen]);
 
@@ -74,7 +87,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
       title="Edit Node"
       description="Modify node details and configuration settings"
     >
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Node Label Input with ID */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -218,7 +231,30 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
             Save Changes
           </Button>
         </div>
+        <div className="w-full">
+          <Button
+            onClick={handleDeleteClick}
+            variant="destructive"
+            className="flex-1 w-full"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Node
+          </Button>
+        </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        open={showDeleteConfirmation}
+        onOpenChange={setShowDeleteConfirmation}
+        title="Delete Node"
+        description={`Are you sure you want to delete "${node.label}" (ID: ${node.id})? This action cannot be undone and will also remove all connected edges.`}
+        confirmText="Delete Node"
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        variant="destructive"
+      />
     </Modal>
   );
 };

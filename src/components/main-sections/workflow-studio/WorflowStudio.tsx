@@ -14,7 +14,7 @@ import DockComponent from "../../atoms/DockComponent";
 import SidebarRight from "./sidebar-right/SidebarRight";
 import RunButton from "./RunButton";
 import ZoomIndicator from "./ZoomIndicator";
-import { MAX_ZOOM, MIN_ZOOM } from "@/hooks/workflow-studio/useCanvasViewport";
+import { MAX_ZOOM, MIN_ZOOM } from "@/stores/workflowStore";
 import { X } from "lucide-react";
 
 const WorkflowEditorContent: React.FC = () => {
@@ -114,10 +114,7 @@ const WorkflowEditorContent: React.FC = () => {
         </div>
 
         {/* Right Sidebar - now sibling to main content, extends full height */}
-        <SidebarRight
-          onAddNode={addNode}
-          onUpdateNode={updateNode}
-        />
+        <SidebarRight onAddNode={addNode} onUpdateNode={updateNode} />
       </div>
     </WorkflowProvider>
   );

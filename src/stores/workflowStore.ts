@@ -1,6 +1,7 @@
 /**
  * Zustand store for workflow editor state management
- * Features: localStorage persistence, clean API, optimized performance
+ * Clean, optimized store with separated concerns
+ * Features: localStorage persistence, Immer integration, minimal store logic
  */
 
 import { create } from "zustand";
@@ -14,8 +15,15 @@ import {
   generateRandomPosition,
   edgeExists,
   filterEdgesForNode,
+  createZoomActions,
 } from "@/utils/workflow-studio/workflow";
-import { initialNodes, initialEdges } from "@/data/initialNodesAndEdges";
+import { initialEdges, initialNodes } from "@/data/initialNodesAndEdges";
+
+// Re-export constants for backward compatibility
+export { MIN_ZOOM, MAX_ZOOM } from "@/constants/canvas";
+
+// Create zoom action utilities
+const zoomActions = createZoomActions();
 
 // Initial state
 const initialState: WorkflowStoreState = {
@@ -193,6 +201,40 @@ export const useWorkflowStore = create<WorkflowStore>()(
       updateCanvasTransform: (updates) => {
         set((state) => {
           Object.assign(state.canvasTransform, updates);
+        });
+      },
+
+      // Zoom actions - using clean utility functions
+      zoomIn: () => {
+        set((state) => {
+          state.canvasTransform = zoomActions.zoomIn(state.canvasTransform);
+        });
+      },
+
+      zoomOut: () => {
+        set((state) => {
+          state.canvasTransform = zoomActions.zoomOut(state.canvasTransform);
+        });
+      },
+
+      setZoom: (scale) => {
+        set((state) => {
+          state.canvasTransform = zoomActions.setZoom(
+            state.canvasTransform,
+            scale
+          );
+        });
+      },
+
+      resetViewport: () => {
+        set((state) => {
+          state.canvasTransform = zoomActions.resetViewport();
+        });
+      },
+
+      zoomToFit: (bounds) => {
+        set((state) => {
+          state.canvasTransform = zoomActions.zoomToFit(bounds);
         });
       },
 

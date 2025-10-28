@@ -41,7 +41,7 @@ const MainContentArea: React.FC<MainContentAreaProps> = ({
   };
 
   return (
-    <div className="flex-1 p-4 relative overflow-hidden">
+    <div className="flex-1 p-4 pb-0 relative overflow-hidden">
       {/* Collapsed State */}
       {!sidebarExpanded && <CollapsedState onTabChange={onTabChange} />}
 

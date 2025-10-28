@@ -1,5 +1,11 @@
-import { Node, Edge } from "@/types/workflow-studio/workflow";
+import { Node, Edge, CanvasTransform } from "@/types/workflow-studio/workflow";
 import { v4 as uuidv4 } from "uuid";
+import {
+  MIN_ZOOM,
+  MAX_ZOOM,
+  INTERACTIVE_SELECTORS,
+  ZOOM_STEP,
+} from "@/constants/canvas";
 
 // ============================================================================
 // ID Generation
@@ -172,3 +178,123 @@ export const getSelectedNodeDetails = (
   if (!selectedNodeId) return null;
   return nodes.find((n) => n.id === selectedNodeId);
 };
+
+// ============================================================================
+// CANVAS & VIEWPORT UTILITIES
+// ============================================================================
+
+// Zoom constraint utility
+export const constrainScale = (scale: number): number =>
+  Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, scale));
+
+// Interactive element detection for pan prevention
+export const isInteractiveElement = (target: HTMLElement): boolean =>
+  Boolean(target.closest(INTERACTIVE_SELECTORS));
+
+// Pinch gesture detection for zoom
+export const isPinchGesture = (event: WheelEvent | React.WheelEvent): boolean =>
+  event.ctrlKey || event.metaKey;
+
+// Touch distance calculation for pinch zoom
+export const getTouchDistance = (touches: React.TouchList): number => {
+  if (touches.length < 2) return 0;
+  const [touch1, touch2] = [touches[0], touches[1]];
+  return Math.sqrt(
+    Math.pow(touch2.clientX - touch1.clientX, 2) +
+      Math.pow(touch2.clientY - touch1.clientY, 2)
+  );
+};
+
+// Generate canvas transform CSS style
+export const getCanvasTransformStyle = (
+  transform: CanvasTransform,
+  isPanning: boolean = false
+): React.CSSProperties => ({
+  transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
+  transformOrigin: "center center",
+  transition: isPanning ? "none" : "transform 0.15s ease-out",
+});
+
+// Calculate optimal zoom and position to fit content bounds
+export const calculateZoomToFit = (
+  bounds: { x: number; y: number; width: number; height: number },
+  containerWidth: number,
+  containerHeight: number,
+  padding: number = 50
+): CanvasTransform => {
+  const scaleX = (containerWidth - padding * 2) / bounds.width;
+  const scaleY = (containerHeight - padding * 2) / bounds.height;
+  const scale = constrainScale(Math.min(scaleX, scaleY));
+
+  // Center the content
+  const translateX = containerWidth / 2 - (bounds.x + bounds.width / 2) * scale;
+  const translateY =
+    containerHeight / 2 - (bounds.y + bounds.height / 2) * scale;
+
+  return { scale, translateX, translateY };
+};
+
+// Convert client coordinates to canvas coordinates
+export const getCanvasCoordinates = (
+  clientX: number,
+  clientY: number,
+  canvasRect: DOMRect,
+  transform: CanvasTransform
+): { x: number; y: number } => {
+  const canvasX = clientX - canvasRect.left;
+  const canvasY = clientY - canvasRect.top;
+
+  return {
+    x: (canvasX - transform.translateX) / transform.scale,
+    y: (canvasY - transform.translateY) / transform.scale,
+  };
+};
+
+// ============================================================================
+// ZOOM ACTION CREATORS
+// ============================================================================
+
+// Zoom action creators - pure functions that return state updates
+export const createZoomActions = () => ({
+  // Zoom in by step amount
+  zoomIn: (currentTransform: CanvasTransform): CanvasTransform => ({
+    ...currentTransform,
+    scale: constrainScale(currentTransform.scale + ZOOM_STEP),
+  }),
+
+  // Zoom out by step amount
+  zoomOut: (currentTransform: CanvasTransform): CanvasTransform => ({
+    ...currentTransform,
+    scale: constrainScale(currentTransform.scale - ZOOM_STEP),
+  }),
+
+  // Set specific zoom level
+  setZoom: (
+    currentTransform: CanvasTransform,
+    scale: number
+  ): CanvasTransform => ({
+    ...currentTransform,
+    scale: constrainScale(scale),
+  }),
+
+  // Reset viewport to default state
+  resetViewport: (): CanvasTransform => ({
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+  }),
+
+  // Zoom to fit content bounds (with container dimensions)
+  zoomToFit: (
+    bounds?: { x: number; y: number; width: number; height: number },
+    containerWidth: number = 800,
+    containerHeight: number = 600
+  ): CanvasTransform => {
+    if (!bounds) {
+      // If no bounds provided, reset to default
+      return { scale: 1, translateX: 0, translateY: 0 };
+    }
+
+    return calculateZoomToFit(bounds, containerWidth, containerHeight);
+  },
+});

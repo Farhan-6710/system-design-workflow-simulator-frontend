@@ -38,15 +38,6 @@ const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
         <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
           Edge Details
         </h3>
-        <Button
-          onClick={handleDeleteClick}
-          variant="destructive"
-          size="sm"
-          className="flex items-center gap-2"
-        >
-          <Trash2 size={16} />
-          Delete Edge
-        </Button>
       </div>
 
       <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-600 space-y-3">
@@ -85,6 +76,18 @@ const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="w-full">
+        <Button
+          onClick={handleDeleteClick}
+          variant="destructive"
+          size="sm"
+          className="flex items-center gap-2 w-full"
+        >
+          <Trash2 size={16} />
+          Delete Edge
+        </Button>
       </div>
 
       <ConfirmationModal

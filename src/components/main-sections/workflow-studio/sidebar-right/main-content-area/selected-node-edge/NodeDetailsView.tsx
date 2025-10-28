@@ -5,13 +5,19 @@ import { nodeOptions } from "@/data/nodeOptions";
 import NodeDetailsHeader from "./NodeDetailsHeader";
 import NodeDetailsConfiguration from "./NodeDetailsConfiguration";
 import NodeEditModal from "./NodeEditModal";
+import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface NodeDetailsViewProps {
   node: Node;
 }
 
 const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
   const updateNode = useWorkflowStore((state) => state.updateNode);
+  const deleteNode = useWorkflowStore((state) => state.deleteNode);
   const nodes = useWorkflowStore((state) => state.nodes);
 
   // Node editing state
@@ -75,6 +81,20 @@ const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
     setIsEditModalOpen(false);
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    deleteNode(node.id);
+    setShowDeleteConfirmation(false);
+    setIsEditModalOpen(false); // Close the modal after deletion
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirmation(false);
+  };
+
   return (
     <div className="space-y-4">
       <NodeDetailsHeader
@@ -83,6 +103,29 @@ const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
       />
 
       <NodeDetailsConfiguration node={node} />
+
+      <div className="w-full">
+        <Button
+          onClick={handleDeleteClick}
+          variant="destructive"
+          className="flex-1 w-full"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          Delete Node
+        </Button>
+      </div>
+
+      <ConfirmationModal
+        open={showDeleteConfirmation}
+        onOpenChange={setShowDeleteConfirmation}
+        title="Delete Node"
+        description={`Are you sure you want to delete "${node.label}" (ID: ${node.id})? This action cannot be undone and will also remove all connected edges.`}
+        confirmText="Delete Node"
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        variant="destructive"
+      />
 
       <NodeEditModal
         isOpen={isEditModalOpen}
@@ -93,6 +136,9 @@ const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
         configurations={configurations}
         onConfigurationChange={handleConfigurationChange}
         onSave={handleSave}
+        handleDeleteClick={handleDeleteClick}
+        handleDeleteConfirm={handleDeleteConfirm}
+        handleDeleteCancel={handleDeleteCancel}
       />
     </div>
   );

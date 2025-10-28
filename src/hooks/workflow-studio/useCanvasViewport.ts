@@ -1,43 +1,19 @@
 /**
  * Enhanced canvas controls with improved performance and cleaner API
  * Optimized for zoom, pan, and viewport management
+ *
+ * Note: Zoom actions moved to WorkflowStore for better architecture consistency
  */
 
 import { useCallback, useRef, useEffect, useState } from "react";
 import { useWorkflowStore } from "@/stores/workflowStore";
-
-// Constants
-export const MIN_ZOOM = 0.1;
-export const MAX_ZOOM = 3.0;
-const ZOOM_STEP = 0.1;
-const ZOOM_SENSITIVITY = 0.001;
-
-// Interactive elements that should not trigger panning
-const INTERACTIVE_SELECTORS = [
-  ".workflow-node",
-  ".dock-navigation",
-  ".workflow-header",
-  "[data-no-pan]",
-].join(", ");
-
-// Utility functions
-const constrainScale = (scale: number): number =>
-  Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, scale));
-
-const isInteractiveElement = (target: HTMLElement): boolean =>
-  Boolean(target.closest(INTERACTIVE_SELECTORS));
-
-const isPinchGesture = (event: WheelEvent | React.WheelEvent): boolean =>
-  event.ctrlKey || event.metaKey;
-
-const getTouchDistance = (touches: React.TouchList): number => {
-  if (touches.length < 2) return 0;
-  const [touch1, touch2] = [touches[0], touches[1]];
-  return Math.sqrt(
-    Math.pow(touch2.clientX - touch1.clientX, 2) +
-      Math.pow(touch2.clientY - touch1.clientY, 2)
-  );
-};
+import { MIN_ZOOM, MAX_ZOOM, ZOOM_SENSITIVITY } from "@/constants/canvas";
+import {
+  isInteractiveElement,
+  isPinchGesture,
+  getTouchDistance,
+  getCanvasTransformStyle,
+} from "@/utils/workflow-studio/workflow";
 
 export const useCanvasViewport = () => {
   // Store state and actions
@@ -45,9 +21,13 @@ export const useCanvasViewport = () => {
   const setCanvasTransform = useWorkflowStore(
     (state) => state.setCanvasTransform
   );
-  const updateCanvasTransform = useWorkflowStore(
-    (state) => state.updateCanvasTransform
-  );
+
+  // Zoom actions from store - cleaner architecture
+  const zoomIn = useWorkflowStore((state) => state.zoomIn);
+  const zoomOut = useWorkflowStore((state) => state.zoomOut);
+  const setZoom = useWorkflowStore((state) => state.setZoom);
+  const resetViewport = useWorkflowStore((state) => state.resetViewport);
+  const zoomToFit = useWorkflowStore((state) => state.zoomToFit);
 
   // Local interaction state
   const [isPanning, setIsPanning] = useState(false);
@@ -64,40 +44,6 @@ export const useCanvasViewport = () => {
   // Keep current transform in ref for stable access in callbacks
   const transformRef = useRef(transform);
   transformRef.current = transform;
-
-  // Zoom controls
-  const zoomIn = useCallback(() => {
-    updateCanvasTransform({
-      scale: constrainScale(transform.scale + ZOOM_STEP),
-    });
-  }, [transform.scale, updateCanvasTransform]);
-
-  const zoomOut = useCallback(() => {
-    updateCanvasTransform({
-      scale: constrainScale(transform.scale - ZOOM_STEP),
-    });
-  }, [transform.scale, updateCanvasTransform]);
-
-  const setZoom = useCallback(
-    (scale: number) => {
-      updateCanvasTransform({ scale: constrainScale(scale) });
-    },
-    [updateCanvasTransform]
-  );
-
-  const resetViewport = useCallback(() => {
-    setCanvasTransform({ scale: 1, translateX: 0, translateY: 0 });
-  }, [setCanvasTransform]);
-
-  // Zoom to fit content (future enhancement)
-  const zoomToFit = useCallback(
-    (bounds?: { x: number; y: number; width: number; height: number }) => {
-      // Implementation for zoom to fit functionality
-      // This would calculate optimal zoom and pan to fit all content
-      console.log("zoomToFit", bounds);
-    },
-    []
-  );
 
   // Pan controls
   const handlePanStart = useCallback(
@@ -167,10 +113,8 @@ export const useCanvasViewport = () => {
         if (touchState.current.initialDistance > 0) {
           const scaleFactor =
             currentDistance / touchState.current.initialDistance;
-          const newScale = constrainScale(
-            touchState.current.initialScale * scaleFactor
-          );
-          updateCanvasTransform({ scale: newScale });
+          const newScale = touchState.current.initialScale * scaleFactor;
+          setZoom(newScale); // Use store method which handles constraints
         }
       } else if (event.touches.length === 1 && isPanning) {
         // Pan
@@ -186,7 +130,7 @@ export const useCanvasViewport = () => {
         });
       }
     },
-    [isPanning, setCanvasTransform, updateCanvasTransform]
+    [isPanning, setCanvasTransform, setZoom]
   );
 
   const handleTouchEnd = useCallback((event: React.TouchEvent) => {
@@ -207,20 +151,15 @@ export const useCanvasViewport = () => {
       event.stopPropagation();
 
       const zoomFactor = -event.deltaY * ZOOM_SENSITIVITY;
-      const newScale = constrainScale(transform.scale * (1 + zoomFactor));
-
-      updateCanvasTransform({ scale: newScale });
+      const newScale = transform.scale * (1 + zoomFactor);
+      setZoom(newScale); // Use store method which handles constraints
     },
-    [transform.scale, updateCanvasTransform]
+    [transform.scale, setZoom]
   );
 
-  // Generate transform style
-  const getCanvasTransformStyle = useCallback(
-    (): React.CSSProperties => ({
-      transform: `translate(${transform.translateX}px, ${transform.translateY}px) scale(${transform.scale})`,
-      transformOrigin: "center center",
-      transition: isPanning ? "none" : "transform 0.15s ease-out",
-    }),
+  // Generate transform style using utility function
+  const getCanvasTransformStyleHook = useCallback(
+    (): React.CSSProperties => getCanvasTransformStyle(transform, isPanning),
     [transform, isPanning]
   );
 
@@ -275,7 +214,7 @@ export const useCanvasViewport = () => {
     handleWheel,
 
     // Style utility
-    getCanvasTransformStyle,
+    getCanvasTransformStyle: getCanvasTransformStyleHook,
 
     // Constants for external use
     MIN_ZOOM,
