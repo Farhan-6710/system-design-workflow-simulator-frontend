@@ -25,6 +25,7 @@ export interface FabricCanvas {
   loadFromJSON(json: Record<string, unknown>, callback: () => void): void;
   toDataURL(options?: Record<string, unknown>): string;
   toSVG(): string;
+  setViewportTransform(vpt: number[]): void;
 
   // Canvas properties
   isDrawingMode: boolean;

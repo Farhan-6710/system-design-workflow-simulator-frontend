@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useCallback } from "react";
+import React, { forwardRef } from "react";
 import { WorkflowLayer } from "./workflow-layer/WorkflowLayer";
 import { CanvasGrid } from "./CanvasGrid";
 import {
@@ -6,16 +6,10 @@ import {
   type AnnotationLayerHandle,
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { useCanvasCoordinates } from "@/hooks/useCanvasCoordinates";
 import { useWorkflowStore } from "@/stores/workflowStore";
-import { useAnnotationStore } from "@/stores/annotationStore";
+import { useWorkflowCanvasEvents } from "@/hooks/useWorkflowCanvasEvents";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import {
-  createNodeHandlers,
-  createEdgeHandlers,
-  createCanvasHandlers,
-} from "@/utils/workflow-studio/workflowHandlers";
 
 interface WorkflowCanvasProps {
   annotationLayerRef?: React.MutableRefObject<AnnotationLayerHandle | null>;
@@ -32,121 +26,25 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
     const draggingNode = useWorkflowStore((state) => state.draggingNode);
     const runCode = useWorkflowStore((state) => state.runCode);
 
-    const activeTool = useAnnotationStore((state) => state.activeTool);
-    const selectTool = useAnnotationStore((state) => state.selectTool);
+    // Canvas controls
+    const { getCanvasTransformStyle } = useCanvasControlsContext();
 
-    // Canvas coordinate utilities
-    const { getCanvasCoordinates } = useCanvasCoordinates({
-      canvasRef: ref as React.RefObject<HTMLDivElement>,
-    });
-
-    // Create handlers with coordinate utilities
-    const coordinateUtils = { getCanvasCoordinates };
-    const nodeHandlers = createNodeHandlers(coordinateUtils);
-    const edgeHandlers = createEdgeHandlers();
-    const canvasHandlers = createCanvasHandlers(coordinateUtils);
+    // Use custom hook for event handling
     const {
-      handlePanStart,
-      handlePanMove,
-      handlePanEnd,
-      handleTouchStart,
-      handleTouchMove,
-      handleTouchEnd,
-      handleWheel,
-      getCanvasTransformStyle,
-    } = useCanvasControlsContext();
-
-    // Internal ref for annotation layer
-    const internalAnnotationRef = useRef<AnnotationLayerHandle | null>(null);
-
-    // Connect internal ref to parent ref whenever the annotation layer component changes
-    useEffect(() => {
-      if (annotationLayerRef) {
-        annotationLayerRef.current = internalAnnotationRef.current;
-      }
-    }, [annotationLayerRef]);
-
-    // Also create a callback ref to ensure immediate connection when AnnotationLayer mounts
-    const handleAnnotationLayerRef = useCallback(
-      (element: AnnotationLayerHandle | null) => {
-        internalAnnotationRef.current = element;
-        if (annotationLayerRef) {
-          annotationLayerRef.current = element;
-        }
-      },
-      [annotationLayerRef]
-    );
-
-    const handleMouseDown = (event: React.MouseEvent) => {
-      // Don't start panning if annotation tool is active (not in select mode)
-      if (activeTool !== "select") {
-        return;
-      }
-      handlePanStart(event);
-    };
-
-    const handleMouseMoveCanvas = (event: React.MouseEvent) => {
-      // Don't pan if annotation tool is active (not in select mode)
-      if (activeTool !== "select") {
-        canvasHandlers.onMouseMove(event);
-        return;
-      }
-      handlePanMove(event);
-      canvasHandlers.onMouseMove(event);
-    };
-
-    const handleMouseUpCanvas = () => {
-      // Don't end panning if annotation tool is active (not in select mode)
-      if (activeTool !== "select") {
-        canvasHandlers.onMouseUp();
-        return;
-      }
-      handlePanEnd();
-      canvasHandlers.onMouseUp();
-    };
-
-    // Attach native touch listeners with passive: false for preventDefault
-    useEffect(() => {
-      const canvasDiv = ref && typeof ref !== "function" ? ref.current : null;
-      if (!canvasDiv) return;
-
-      const nativeTouchStart = (e: TouchEvent) => {
-        // Cast native TouchEvent to React TouchEvent via unknown
-        handleTouchStart(e as unknown as React.TouchEvent<Element>);
-      };
-
-      const nativeTouchMove = (e: TouchEvent) => {
-        handleTouchMove(e as unknown as React.TouchEvent<Element>);
-      };
-
-      const nativeTouchEnd = (e: TouchEvent) => {
-        handleTouchEnd(e as unknown as React.TouchEvent<Element>);
-      };
-
-      canvasDiv.addEventListener("touchstart", nativeTouchStart, {
-        passive: false,
-      });
-      canvasDiv.addEventListener("touchmove", nativeTouchMove, {
-        passive: false,
-      });
-      canvasDiv.addEventListener("touchend", nativeTouchEnd, {
-        passive: false,
-      });
-
-      return () => {
-        canvasDiv.removeEventListener("touchstart", nativeTouchStart);
-        canvasDiv.removeEventListener("touchmove", nativeTouchMove);
-        canvasDiv.removeEventListener("touchend", nativeTouchEnd);
-      };
-    }, [ref, handleTouchStart, handleTouchMove, handleTouchEnd]);
-
-    const handleAnnotationFinish = () => {
-      selectTool("select");
-    };
-
-    const handleCanvasClick = () => {
-      canvasHandlers.onClick();
-    };
+      handleMouseDown,
+      handleMouseMoveCanvas,
+      handleMouseUpCanvas,
+      handleWheelEvent,
+      handleCanvasClick,
+      handleAnnotationFinish,
+      handleAnnotationLayerRef,
+      nodeHandlers,
+      edgeHandlers,
+      activeTool,
+    } = useWorkflowCanvasEvents({
+      canvasRef: ref as React.RefObject<HTMLDivElement>,
+      annotationLayerRef,
+    });
 
     return (
       <motion.div
@@ -165,20 +63,14 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMoveCanvas}
         onMouseUp={handleMouseUpCanvas}
-        onWheel={(e) => {
-          // Don't zoom if annotation tool is active (not in select mode)
-          if (activeTool !== "select") {
-            return;
-          }
-          handleWheel(e);
-        }}
+        onWheel={handleWheelEvent}
       >
         {/* Fixed background grid */}
         <CanvasGrid />
 
         {/* Transform container - only workflow layer scales/moves */}
         <div
-          className="flex justify-center items-center workflow-and-annotation-container absolute z-20 inset-0 !w-full !h-full"
+          className="flex justify-center items-center workflow-and-annotation-container absolute z-20 inset-0"
           style={getCanvasTransformStyle()}
         >
           {/* Workflow Layer - handles nodes, edges */}

@@ -11,10 +11,10 @@ import {
 } from "@/types/workflow-studio/workflow";
 
 /**
- * CONSOLIDATED ANIMATION & STYLING UTILITIES
+ * CONSOLIDATED ANIMATION, STYLING & SERVER METRICS UTILITIES
  *
- * All node and edge animation/styling logic in one place for better maintainability.
- * Uses 50% warning and 70% critical server load thresholds.
+ * All server load, animation, and UI styling logic consolidated in one place.
+ * Uses 50% warning and 80% critical server load thresholds.
  */
 
 // =============================================================================
@@ -43,6 +43,63 @@ export function getLoadLevel(rps: number): LoadLevel {
   if (loadPercentage >= CRITICAL_THRESHOLD) return "RED"; // ≥80%
   if (loadPercentage >= WARNING_THRESHOLD) return "YELLOW"; // ≥50%
   return "BLUE"; // <50%
+}
+
+// =============================================================================
+// SERVER STATUS & UI DISPLAY
+// =============================================================================
+
+/**
+ * Get server status info for UI display
+ */
+export function getServerStatus(serverLoad: number) {
+  const criticalPercentage = CRITICAL_THRESHOLD * 100; // 80%
+  const warningPercentage = WARNING_THRESHOLD * 100; // 50%
+
+  if (serverLoad >= criticalPercentage) {
+    return {
+      status: "CRITICAL",
+      statusClass: "text-red-500",
+      iconClass: "text-red-500 border-red-500",
+    };
+  } else if (serverLoad >= warningPercentage) {
+    return {
+      status: "WARNING",
+      statusClass: "text-yellow-500",
+      iconClass: "text-yellow-500 border-yellow-500",
+    };
+  } else {
+    return {
+      status: "NORMAL",
+      statusClass: "text-green-500",
+      iconClass: "text-green-500 border-green-500",
+    };
+  }
+}
+
+/**
+ * Get load color classes for UI display
+ */
+export function getLoadColor(serverLoad: number): string {
+  const criticalPercentage = CRITICAL_THRESHOLD * 100; // 80%
+  const warningPercentage = WARNING_THRESHOLD * 100; // 50%
+
+  if (serverLoad >= criticalPercentage) return "text-red-500 bg-red-100";
+  if (serverLoad >= warningPercentage) return "text-yellow-500 bg-yellow-100";
+  return "text-green-500 bg-green-100";
+}
+
+/**
+ * Get RPS color classes for UI display
+ */
+export function getRPSColor(rps: number): string {
+  const serverLoad = calculateServerLoad(rps);
+  const criticalPercentage = CRITICAL_THRESHOLD * 100; // 80%
+  const warningPercentage = WARNING_THRESHOLD * 100; // 50%
+
+  if (serverLoad >= criticalPercentage) return "text-red-500";
+  if (serverLoad >= warningPercentage) return "text-yellow-500";
+  return "text-blue-500";
 }
 
 // =============================================================================

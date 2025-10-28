@@ -14,7 +14,7 @@ import { canvasDockItems } from "@/data/canvasDockItems";
 import {
   createDockItemHandlers,
   handleDockItemClick,
-} from "@/utils/workflow-studio/workflowHandlers";
+} from "@/utils/workflow-studio/workflowActions";
 import DockComponent from "../../atoms/DockComponent";
 import SidebarRight from "./sidebar-right/SidebarRight";
 import {
@@ -203,6 +203,7 @@ const WorkflowEditorContent: React.FC = () => {
         description="This will reset the entire workflow and clear all annotations. This action cannot be undone."
         confirmText="Reset All"
         onConfirm={handleRefreshConfirm}
+        variant="destructive"
       />
     </>
   );
