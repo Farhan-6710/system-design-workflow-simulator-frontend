@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 export const useDockComponent = (
   position: "top" | "bottom" | "left" | "right" | "top-left" | undefined,
   collapsible: boolean,
+  direction?: "horizontal" | "vertical",
   onItemClick?: (itemId: string, index: number) => void,
   onMouseEnter?: (index: number) => void,
   onMouseLeave?: () => void

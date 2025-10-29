@@ -22,5 +22,4 @@ export interface DockComponentProps {
   onMouseEnter?: (index: number) => void; // Optional mouse enter handler
   onMouseLeave?: () => void; // Optional mouse leave handler
   className?: string; // Additional custom classes
-  idMapping?: Record<string, string>; // Optional mapping for active state detection
 }

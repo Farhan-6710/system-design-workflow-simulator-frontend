@@ -15,17 +15,8 @@ import {
 } from "lucide-react";
 
 export const canvasDockItems = [
-  // {
-  //   id: "ai-diagram",
-  //   name: "AIDiagram",
-  //   tooltip: "AI Diagram",
-  //   route: "",
-  //   component: (
-  //     <Sparkles size={14} className="text-slate-700 dark:text-white" />
-  //   ),
-  // },
   {
-    id: "selection-tool",
+    id: "select",
     name: "SelectionTool",
     tooltip: "Selection Tool",
     route: "",
@@ -34,21 +25,21 @@ export const canvasDockItems = [
     ),
   },
   {
-    id: "rectangle-tool",
+    id: "rectangle",
     name: "RectangleTool",
     tooltip: "Rectangle Tool",
     route: "",
     component: <Square size={14} className="text-slate-700 dark:text-white" />,
   },
   {
-    id: "ellipse-tool",
+    id: "circle",
     name: "EllipseTool",
     tooltip: "Ellipse Tool",
     route: "",
     component: <Circle size={14} className="text-slate-700 dark:text-white" />,
   },
   {
-    id: "free-draw",
+    id: "freedraw",
     name: "FreeDraw",
     tooltip: "Free Draw",
     route: "",

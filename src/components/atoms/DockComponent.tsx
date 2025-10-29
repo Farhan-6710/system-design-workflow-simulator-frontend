@@ -12,15 +12,6 @@ import {
   getTooltipPosition,
 } from "@/utils/atoms/dockUtils";
 
-// Map external dock item ids to internal activeItem identifiers
-// Keeping this at module scope avoids re-allocating the object on every render & within each map iteration.
-const TOOL_ID_MAP: Record<string, string> = {
-  "selection-tool": "select",
-  "rectangle-tool": "rectangle",
-  "ellipse-tool": "circle",
-  "free-draw": "freedraw",
-};
-
 const DockComponent: React.FC<DockComponentProps> = ({
   activeItem,
   position = "top",
@@ -32,7 +23,6 @@ const DockComponent: React.FC<DockComponentProps> = ({
   onMouseEnter,
   onMouseLeave,
   className = "",
-  idMapping = {},
 }) => {
   const {
     hoverIndex,
@@ -46,6 +36,7 @@ const DockComponent: React.FC<DockComponentProps> = ({
   } = useDockComponent(
     position,
     collapsible,
+    direction,
     onItemClick,
     onMouseEnter,
     onMouseLeave
@@ -72,11 +63,9 @@ const DockComponent: React.FC<DockComponentProps> = ({
         transition={{ duration: 0.2 }}
       >
         {items.map((item: SidebarRightItem, index: number) => {
-          // Determine if current item matches active tool
-          const mappingToUse = idMapping || TOOL_ID_MAP;
-          const isActive =
-            (!!activeItem && mappingToUse[item.id] === activeItem) ||
-            item.id === activeItem;
+          // Simple and clean - just check if item.id matches activeItem
+          const isActive = item.id === activeItem;
+
           return (
             <TooltipComponent
               key={item.id}
