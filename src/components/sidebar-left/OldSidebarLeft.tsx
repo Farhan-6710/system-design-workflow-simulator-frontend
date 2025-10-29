@@ -114,9 +114,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({
             transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
             className={`${sidebarExpanded ? "w-full" : "w-fit"}`}
           >
-            <Tooltip
-              open={!sidebarExpanded && showTooltips ? undefined : false}
-            >
+            <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant={currentPage === navItem.id ? "default" : "ghost"}
@@ -198,7 +196,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.9, duration: 0.4 }}
         >
-          <Tooltip open={!sidebarExpanded && showTooltips ? undefined : false}>
+          <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
@@ -228,7 +226,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({
                 </motion.span>
               </Button>
             </TooltipTrigger>
-            {!sidebarExpanded && (
+            {!sidebarExpanded && showTooltips && (
               <TooltipContent side="right">
                 <p>Settings</p>
               </TooltipContent>
@@ -241,7 +239,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.0, duration: 0.4 }}
         >
-          <Tooltip open={!sidebarExpanded && showTooltips ? undefined : false}>
+          <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
@@ -271,7 +269,7 @@ const SidebarLeft: React.FC<SidebarLeftProps> = ({
                 </motion.span>
               </Button>
             </TooltipTrigger>
-            {!sidebarExpanded && (
+            {!sidebarExpanded && showTooltips && (
               <TooltipContent side="right">
                 <p>Help</p>
               </TooltipContent>

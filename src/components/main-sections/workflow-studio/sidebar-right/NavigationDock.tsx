@@ -20,7 +20,6 @@ const NavigationDock: React.FC<NavigationDockProps> = ({
     >
       <DockComponent
         position="top"
-        responsive="top"
         collapsible={false}
         items={sidebarRightItems}
         onItemClick={onTabChange}

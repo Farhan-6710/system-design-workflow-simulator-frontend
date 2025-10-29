@@ -67,7 +67,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           transition={{ delay: 0.3 + index * 0.1, duration: 0.4 }}
           className={`${sidebarExpanded ? "w-full" : "w-fit"}`}
         >
-          <Tooltip open={!sidebarExpanded && showTooltips ? undefined : false}>
+          <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant={currentPage === navItem.id ? "default" : "ghost"}
@@ -100,7 +100,7 @@ export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                 </motion.span>
               </Button>
             </TooltipTrigger>
-            {!sidebarExpanded && (
+            {!sidebarExpanded && showTooltips && (
               <TooltipContent side="right">
                 <p>{navItem.label}</p>
               </TooltipContent>

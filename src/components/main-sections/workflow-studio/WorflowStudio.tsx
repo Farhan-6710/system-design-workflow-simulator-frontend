@@ -112,7 +112,6 @@ const WorkflowEditorContent: React.FC = () => {
               <DockComponent
                 collapsible={false}
                 position="top-left"
-                responsive="top-left"
                 items={canvasDockItems}
                 onItemClick={handleWorkflowDockItemClick}
                 activeItem={activeTool}
