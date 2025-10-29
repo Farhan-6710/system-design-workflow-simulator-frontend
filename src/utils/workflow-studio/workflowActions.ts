@@ -67,7 +67,7 @@ interface DockItemHandlers {
 export const createDockItemHandlers = (
   canvasControls: CanvasControlsHook,
   fullscreenHandlers?: {
-    toggleFullscreen: () => void;
+    toggleFullScreen: () => void;
   },
   annotationHandlers?: {
     setActiveTool: (tool: Tool) => void;
@@ -84,7 +84,7 @@ export const createDockItemHandlers = (
     handleZoomIn: zoomIn,
     handleZoomOut: zoomOut,
     handleResetZoom: resetViewport,
-    handleFullscreen: fullscreenHandlers?.toggleFullscreen || (() => {}),
+    handleFullscreen: fullscreenHandlers?.toggleFullScreen || (() => {}),
     handleAnnotationTool: annotationHandlers?.setActiveTool || (() => {}),
     handleUndo: () => {
       annotationHandlers?.annotationLayerRef?.current?.undo();

@@ -224,7 +224,7 @@ export interface WorkflowStoreState {
   dragOffset: DragOffset;
   connecting: number | null;
   tempLine: TempLine | null;
-  isFullscreen: boolean;
+  isFullScreen: boolean;
 
   // Sidebar state
   sidebarRightExpanded: boolean;
@@ -296,8 +296,8 @@ export interface WorkflowActions {
   clearSelection: () => void;
 
   // Fullscreen actions
-  toggleFullscreen: () => void;
-  setFullscreen: (isFullscreen: boolean) => void;
+  toggleFullScreen: () => void;
+  setFullScreen: (isFullScreen: boolean) => void;
 }
 
 // Combined store interface

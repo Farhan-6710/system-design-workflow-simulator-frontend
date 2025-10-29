@@ -35,7 +35,7 @@ const initialState: WorkflowStoreState = {
   dragOffset: { x: 0, y: 0 },
   connecting: null,
   tempLine: null,
-  isFullscreen: false,
+  isFullScreen: false,
   sidebarRightExpanded: false,
   selectedTab: null,
   requestsPerSecond: 1,
@@ -270,15 +270,15 @@ export const useWorkflowStore = create<WorkflowStore>()(
       },
 
       // Fullscreen actions
-      toggleFullscreen: () => {
+      toggleFullScreen: () => {
         set((state) => {
-          state.isFullscreen = !state.isFullscreen;
+          state.isFullScreen = !state.isFullScreen;
         });
       },
 
-      setFullscreen: (isFullscreen) => {
+      setFullScreen: (isFullScreen) => {
         set((state) => {
-          state.isFullscreen = isFullscreen;
+          state.isFullScreen = isFullScreen;
         });
       },
     })),
@@ -294,6 +294,7 @@ export const useWorkflowStore = create<WorkflowStore>()(
         runCode: state.runCode, // Persist run code as user preference
         canvasTransform: state.canvasTransform, // Persist zoom and pan position
         // Note: dragOffset is for individual node dragging (temporary), not persisted
+        isFullScreen: state.isFullScreen,
       }),
       // Reset temporary UI state on rehydration (keep persistent preferences)
       onRehydrateStorage: () => (state) => {

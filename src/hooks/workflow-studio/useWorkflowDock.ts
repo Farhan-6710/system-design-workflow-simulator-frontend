@@ -25,20 +25,20 @@ export const useWorkflowDock = ({
   // Store and context hooks
   const { selectTool } = useAnnotationStore();
   const canvasControls = useCanvasControlsContext();
-  const toggleFullscreen = useWorkflowStore((state) => state.toggleFullscreen);
+  const toggleFullScreen = useWorkflowStore((state) => state.toggleFullScreen);
 
   // Refs
   const annotationLayerRef = useRef<AnnotationLayerHandle>(null);
 
   // Fullscreen handler
-  const handleFullscreenToggle = useCallback(() => {
-    toggleFullscreen();
-  }, [toggleFullscreen]);
+  const handleFullScreenToggle = useCallback(() => {
+    toggleFullScreen();
+  }, [toggleFullScreen]);
 
   // Create dock handlers
   const dockHandlers = createDockItemHandlers(
     canvasControls,
-    { toggleFullscreen: handleFullscreenToggle },
+    { toggleFullScreen: handleFullScreenToggle },
     {
       setActiveTool: selectTool,
       annotationLayerRef:

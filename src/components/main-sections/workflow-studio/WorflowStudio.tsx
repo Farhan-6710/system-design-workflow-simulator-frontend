@@ -25,8 +25,8 @@ const WorkflowEditorContent: React.FC = () => {
   const updateNode = useWorkflowStore((state) => state.updateNode);
   const setRunCode = useWorkflowStore((state) => state.setRunCode);
   const activeTool = useAnnotationStore((state) => state.activeTool);
-  const isFullscreen = useWorkflowStore((state) => state.isFullscreen);
-  const setFullscreen = useWorkflowStore((state) => state.setFullscreen);
+  const isFullScreen = useWorkflowStore((state) => state.isFullScreen);
+  const setFullScreen = useWorkflowStore((state) => state.setFullScreen);
 
   // Computed values
   const nodeCount = nodes.length;
@@ -57,8 +57,8 @@ const WorkflowEditorContent: React.FC = () => {
   const canvasControls = useCanvasControlsContext();
 
   // Exit fullscreen handler
-  const handleExitFullscreen = () => {
-    setFullscreen(false);
+  const handleExitFullScreen = () => {
+    setFullScreen(false);
   };
 
   const workflowContent = (
@@ -67,7 +67,7 @@ const WorkflowEditorContent: React.FC = () => {
         {/* Main content area - with right margin for sidebar */}
         <div className="flex-1 flex flex-col mr-[74px]">
           {/* Only show header in normal mode, not in fullscreen */}
-          {!isFullscreen && <WorkflowHeader onAddNode={addNode} />}
+          {!isFullScreen && <WorkflowHeader onAddNode={addNode} />}
 
           <div
             className="flex-1 flex flex-col select-none bg-white dark:bg-slate-950 relative"
@@ -107,7 +107,7 @@ const WorkflowEditorContent: React.FC = () => {
               </div>
             </div>
 
-            {!isFullscreen && (
+            {!isFullScreen && (
               <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
             )}
           </div>
@@ -122,15 +122,15 @@ const WorkflowEditorContent: React.FC = () => {
   return (
     <>
       {/* Normal workflow content */}
-      {!isFullscreen && workflowContent}
+      {!isFullScreen && workflowContent}
 
       {/* Fullscreen content using Portal */}
-      {isFullscreen &&
+      {isFullScreen &&
         createPortal(
           <div className="fixed inset-0 z-[9999] bg-white dark:bg-slate-950">
             {/* Exit fullscreen button */}
             <button
-              onClick={handleExitFullscreen}
+              onClick={handleExitFullScreen}
               className="fixed top-6 left-24 z-[10000] w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
               title="Exit Fullscreen"
             >

@@ -13,7 +13,6 @@ import {
 import ConfigurationForm from "../ConfigurationForm";
 import { Node } from "@/types/workflow-studio/workflow";
 import { nodeOptions } from "@/data/nodeOptions";
-import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface NodeEditModalProps {
   isOpen: boolean;
@@ -47,9 +46,6 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
 }) => {
   const [selectedNodeType, setSelectedNodeType] = useState<string>("");
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
-  // Get delete function from store
-  const deleteNode = useWorkflowStore((state) => state.deleteNode);
 
   // Reset node type selection and delete confirmation when modal opens
   useEffect(() => {

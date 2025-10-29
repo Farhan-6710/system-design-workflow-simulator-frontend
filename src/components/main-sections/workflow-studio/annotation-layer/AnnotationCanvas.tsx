@@ -60,7 +60,7 @@ export const AnnotationCanvas = forwardRef<
     setCanvasState,
     isLoadingFromHistory,
   } = useAnnotationStore();
-  const isFullscreen = useWorkflowStore((state) => state.isFullscreen);
+  const isFullScreen = useWorkflowStore((state) => state.isFullScreen);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<FabricCanvas | null>(null);
@@ -435,7 +435,7 @@ export const AnnotationCanvas = forwardRef<
     <div
       ref={containerRef}
       className={`annotation-canvas-container absolute inset-0 w-full h-full overflow-hidden ${
-        isFullscreen ? "z-50" : "z-20"
+        isFullScreen ? "z-50" : "z-20"
       } ${className}`}
       style={style}
       tabIndex={0}
