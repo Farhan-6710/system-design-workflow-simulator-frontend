@@ -301,8 +301,14 @@ export const AnnotationCanvas = forwardRef<
       onFinish?.();
     };
 
+    const handleObjectModified = () => {
+      debouncedSave();
+      // Auto-switch back to select tool after object modification
+      onFinish?.();
+    };
+
     canvas.on("path:created", handlePathCreated);
-    canvas.on("object:modified", debouncedSave);
+    canvas.on("object:modified", handleObjectModified);
 
     // Text editing events
     const handleTextEditingExited = (e?: unknown) => {
@@ -321,7 +327,7 @@ export const AnnotationCanvas = forwardRef<
       canvas.off("mouse:move", handleMouseMove);
       canvas.off("mouse:up", handleMouseUp);
       canvas.off("path:created", handlePathCreated);
-      canvas.off("object:modified", debouncedSave);
+      canvas.off("object:modified", handleObjectModified);
       canvas.off("text:editing:exited", handleTextEditingExited);
     };
   }, [
