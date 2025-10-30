@@ -4,10 +4,8 @@ import { WorkflowNode } from "./WorkflowNode";
 import { WorkflowEdge } from "./WorkflowEdge";
 import { TempConnectionLine } from "./TempConnectionLine";
 import { useWorkflowAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
-import {
-  NodeHandlers,
-  EdgeHandlers,
-} from "@/types/workflow-studio/workflow";
+import { getWorkflowTransformStyle } from "@/utils/workflow-studio/workflow";
+import { NodeHandlers, EdgeHandlers } from "@/types/workflow-studio/workflow";
 import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface WorkflowLayerProps {
@@ -65,7 +63,7 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
       <div
         ref={ref}
         className="absolute inset-0 w-full h-full"
-        style={globalAnimationStyle}
+        style={{ ...globalAnimationStyle, ...getWorkflowTransformStyle() }}
       >
         {/* SVG for edges - transform handled by parent container */}
         <svg

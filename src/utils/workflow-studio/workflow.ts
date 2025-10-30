@@ -5,6 +5,9 @@ import {
   MAX_ZOOM,
   INTERACTIVE_SELECTORS,
   ZOOM_STEP,
+  ZOOM_BASELINE,
+  PAN_DISABLED_THRESHOLD,
+  WORKFLOW_LAYER_INITIAL_SCALE,
 } from "@/constants/canvas";
 
 // ============================================================================
@@ -215,6 +218,13 @@ export const getCanvasTransformStyle = (
   transition: isPanning ? "none" : "transform 0.15s ease-out",
 });
 
+// Static workflow transform style - always 100% zoom, no pan
+export const getWorkflowTransformStyle = (): React.CSSProperties => ({
+  transform: `translate(0px, 0px) scale(${WORKFLOW_LAYER_INITIAL_SCALE})`,
+  transformOrigin: "center center",
+  transition: "none",
+});
+
 // Calculate optimal zoom and position to fit content bounds
 export const calculateZoomToFit = (
   bounds: { x: number; y: number; width: number; height: number },
@@ -257,32 +267,105 @@ export const getCanvasCoordinates = (
 // Zoom action creators - pure functions that return state updates
 export const createZoomActions = () => ({
   // Zoom in by step amount
-  zoomIn: (currentTransform: CanvasTransform): CanvasTransform => ({
-    ...currentTransform,
-    scale: constrainScale(currentTransform.scale + ZOOM_STEP),
-  }),
+  zoomIn: (
+    currentTransform: CanvasTransform,
+    canvasWidth: number = 800,
+    canvasHeight: number = 600
+  ): CanvasTransform => {
+    const newTransform = {
+      ...currentTransform,
+      scale: constrainScale(currentTransform.scale + ZOOM_STEP),
+    };
+    // Apply boundary constraints after zoom change
+    return createZoomActions().constrainPan(
+      newTransform,
+      canvasWidth,
+      canvasHeight
+    );
+  },
 
   // Zoom out by step amount
-  zoomOut: (currentTransform: CanvasTransform): CanvasTransform => ({
-    ...currentTransform,
-    scale: constrainScale(currentTransform.scale - ZOOM_STEP),
-  }),
+  zoomOut: (
+    currentTransform: CanvasTransform,
+    canvasWidth: number = 800,
+    canvasHeight: number = 600
+  ): CanvasTransform => {
+    const newTransform = {
+      ...currentTransform,
+      scale: constrainScale(currentTransform.scale - ZOOM_STEP),
+    };
+    // Apply boundary constraints after zoom change
+    return createZoomActions().constrainPan(
+      newTransform,
+      canvasWidth,
+      canvasHeight
+    );
+  },
 
   // Set specific zoom level
   setZoom: (
     currentTransform: CanvasTransform,
-    scale: number
-  ): CanvasTransform => ({
-    ...currentTransform,
-    scale: constrainScale(scale),
-  }),
+    scale: number,
+    canvasWidth: number = 800,
+    canvasHeight: number = 600
+  ): CanvasTransform => {
+    const newTransform = {
+      ...currentTransform,
+      scale: constrainScale(scale),
+    };
+    // Apply boundary constraints after zoom change
+    return createZoomActions().constrainPan(
+      newTransform,
+      canvasWidth,
+      canvasHeight
+    );
+  },
 
   // Reset viewport to default state
   resetViewport: (): CanvasTransform => ({
-    scale: 1,
+    scale: ZOOM_BASELINE, // Reset to baseline (displays as 100% to user)
     translateX: 0,
     translateY: 0,
   }),
+
+  // Constrain pan within canvas boundaries
+  constrainPan: (
+    currentTransform: CanvasTransform,
+    canvasWidth: number,
+    canvasHeight: number
+  ): CanvasTransform => {
+    const { scale, translateX, translateY } = currentTransform;
+
+    // Allow panning when content is scaled larger than canvas
+    // At ZOOM_BASELINE (10.0) and above, content is larger than canvas
+    if (scale <= PAN_DISABLED_THRESHOLD) {
+      return { ...currentTransform, translateX: 0, translateY: 0 };
+    }
+
+    // Calculate the scaled content dimensions
+    const scaledWidth = canvasWidth * scale;
+    const scaledHeight = canvasHeight * scale;
+
+    // Calculate maximum allowed translation to keep content within bounds
+    const maxTranslateX = (scaledWidth - canvasWidth) / 2;
+    const maxTranslateY = (scaledHeight - canvasHeight) / 2;
+
+    // Constrain translation within boundaries
+    const constrainedX = Math.max(
+      -maxTranslateX,
+      Math.min(maxTranslateX, translateX)
+    );
+    const constrainedY = Math.max(
+      -maxTranslateY,
+      Math.min(maxTranslateY, translateY)
+    );
+
+    return {
+      ...currentTransform,
+      translateX: constrainedX,
+      translateY: constrainedY,
+    };
+  },
 
   // Zoom to fit content bounds (with container dimensions)
   zoomToFit: (

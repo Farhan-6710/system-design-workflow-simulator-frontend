@@ -273,12 +273,17 @@ export interface WorkflowActions {
 
   // Canvas actions
   setCanvasTransform: (transform: CanvasTransform) => void;
+  setCanvasTransformConstrained: (
+    transform: CanvasTransform,
+    canvasWidth?: number,
+    canvasHeight?: number
+  ) => void;
   updateCanvasTransform: (updates: Partial<CanvasTransform>) => void;
 
   // Zoom actions
-  zoomIn: () => void;
-  zoomOut: () => void;
-  setZoom: (scale: number) => void;
+  zoomIn: (canvasWidth?: number, canvasHeight?: number) => void;
+  zoomOut: (canvasWidth?: number, canvasHeight?: number) => void;
+  setZoom: (scale: number, canvasWidth?: number, canvasHeight?: number) => void;
   resetViewport: () => void;
   zoomToFit: (bounds?: {
     x: number;

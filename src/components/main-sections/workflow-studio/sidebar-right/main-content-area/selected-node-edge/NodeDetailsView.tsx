@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Node } from "@/types/workflow-studio/workflow";
 import { useWorkflowStore } from "@/stores/workflowStore";
-import { nodeOptions } from "@/data/nodeOptions";
+import { nodeOptions } from "@/constants/nodeOptions";
 import NodeDetailsHeader from "./NodeDetailsHeader";
 import NodeDetailsConfiguration from "./NodeDetailsConfiguration";
 import NodeEditModal from "./NodeEditModal";

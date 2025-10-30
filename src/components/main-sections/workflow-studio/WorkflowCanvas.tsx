@@ -16,7 +16,6 @@ interface WorkflowCanvasProps {
 
 export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
   ({ annotationLayerRef }, ref) => {
-
     // Canvas controls
     const { getCanvasTransformStyle } = useCanvasControlsContext();
 
@@ -40,7 +39,7 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
     return (
       <motion.div
         ref={ref}
-        data-canvas-area="true"
+        data-canvas-area="true" // Defines pan boundaries - content cannot be dragged outside this area
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3, ease: "easeOut" }}

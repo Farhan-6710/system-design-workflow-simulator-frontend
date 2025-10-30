@@ -6,7 +6,7 @@ import { useAnnotationStore } from "@/stores/annotationStore";
 import { WorkflowProvider } from "@/contexts/WorkflowContext";
 import { CanvasControlsProvider } from "@/contexts/CanvasControlsContext";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { canvasDockItems } from "@/data/canvasDockItems";
+import { canvasDockItems } from "@/constants/canvasDockItems";
 import { useWorkflowDialogs } from "@/hooks/workflow-studio/useWorkflowDialogs";
 import { useWorkflowDock } from "@/hooks/workflow-studio/useWorkflowDock";
 import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
@@ -113,6 +113,7 @@ const WorkflowEditorContent: React.FC = () => {
                 collapsible={false}
                 position="top-left"
                 direction="vertical"
+                tooltipPosition="right"
                 items={canvasDockItems}
                 onItemClick={handleWorkflowDockItemClick}
                 activeItem={activeTool}
@@ -124,6 +125,7 @@ const WorkflowEditorContent: React.FC = () => {
               </div>
 
               {/* Zoom Indicator - positioned on the right side before sidebar */}
+              {/* Note: Uses Visual Faking system - see /constants/canvas.ts for details */}
               <div
                 className={cn(
                   isFullScreen ? "top-24" : "top-4",

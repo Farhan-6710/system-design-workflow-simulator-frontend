@@ -7,7 +7,11 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { Node, NodeType } from "@/types/workflow-studio/workflow";
+import {
+  Node,
+  NodeType,
+  CanvasTransform,
+} from "@/types/workflow-studio/workflow";
 import { WorkflowStore, WorkflowStoreState } from "@/types/workflow-studio";
 import {
   generateNodeId,
@@ -17,10 +21,11 @@ import {
   filterEdgesForNode,
   createZoomActions,
 } from "@/utils/workflow-studio/workflow";
-import { initialEdges, initialNodes } from "@/data/initialNodesAndEdges";
+import { initialEdges, initialNodes } from "@/constants/initialNodesAndEdges";
+import { ZOOM_BASELINE } from "@/constants/canvas";
 
 // Re-export constants for backward compatibility
-export { MIN_ZOOM, MAX_ZOOM } from "@/constants/canvas";
+export { MIN_ZOOM, MAX_ZOOM, ZOOM_BASELINE } from "@/constants/canvas";
 
 // Create zoom action utilities
 const zoomActions = createZoomActions();
@@ -41,7 +46,7 @@ const initialState: WorkflowStoreState = {
   requestsPerSecond: 1,
   runCode: false,
   canvasTransform: {
-    scale: 1,
+    scale: ZOOM_BASELINE, // Start at baseline (displays as 100% to user)
     translateX: 0,
     translateY: 0,
   },
@@ -198,6 +203,21 @@ export const useWorkflowStore = create<WorkflowStore>()(
         });
       },
 
+      // Set canvas transform with boundary constraints
+      setCanvasTransformConstrained: (
+        transform: CanvasTransform,
+        canvasWidth = 800,
+        canvasHeight = 600
+      ) => {
+        set((state) => {
+          state.canvasTransform = zoomActions.constrainPan(
+            transform,
+            canvasWidth,
+            canvasHeight
+          );
+        });
+      },
+
       updateCanvasTransform: (updates) => {
         set((state) => {
           Object.assign(state.canvasTransform, updates);
@@ -205,23 +225,33 @@ export const useWorkflowStore = create<WorkflowStore>()(
       },
 
       // Zoom actions - using clean utility functions
-      zoomIn: () => {
+      zoomIn: (canvasWidth = 800, canvasHeight = 600) => {
         set((state) => {
-          state.canvasTransform = zoomActions.zoomIn(state.canvasTransform);
+          state.canvasTransform = zoomActions.zoomIn(
+            state.canvasTransform,
+            canvasWidth,
+            canvasHeight
+          );
         });
       },
 
-      zoomOut: () => {
+      zoomOut: (canvasWidth = 800, canvasHeight = 600) => {
         set((state) => {
-          state.canvasTransform = zoomActions.zoomOut(state.canvasTransform);
+          state.canvasTransform = zoomActions.zoomOut(
+            state.canvasTransform,
+            canvasWidth,
+            canvasHeight
+          );
         });
       },
 
-      setZoom: (scale) => {
+      setZoom: (scale, canvasWidth = 800, canvasHeight = 600) => {
         set((state) => {
           state.canvasTransform = zoomActions.setZoom(
             state.canvasTransform,
-            scale
+            scale,
+            canvasWidth,
+            canvasHeight
           );
         });
       },

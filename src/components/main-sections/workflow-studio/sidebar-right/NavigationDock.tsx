@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { sidebarRightItems } from "@/data/sidebarRightItems";
+import { sidebarRightItems } from "@/constants/sidebarRightItems";
 import { NavigationDockProps } from "@/types/workflow-studio/sidebar-right";
 import DockComponent from "../../../atoms/DockComponent";
 

@@ -123,17 +123,17 @@ export const handleDockItemClick = (
     case "fullscreen":
       handlers.handleFullscreen();
       break;
-    // Annotation tools
-    case "selection-tool":
+    // Annotation tools - Fixed to match actual dock item IDs
+    case "select":
       handlers.handleAnnotationTool("select");
       break;
-    case "rectangle-tool":
+    case "rectangle":
       handlers.handleAnnotationTool("rectangle");
       break;
-    case "ellipse-tool":
+    case "circle":
       handlers.handleAnnotationTool("circle");
       break;
-    case "free-draw":
+    case "freedraw":
       handlers.handleAnnotationTool("freedraw");
       break;
     case "arrow":

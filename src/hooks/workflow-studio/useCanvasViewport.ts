@@ -18,19 +18,39 @@ import {
 export const useCanvasViewport = () => {
   // Store state and actions
   const transform = useWorkflowStore((state) => state.canvasTransform);
-  const setCanvasTransform = useWorkflowStore(
-    (state) => state.setCanvasTransform
+  const setCanvasTransformConstrained = useWorkflowStore(
+    (state) => state.setCanvasTransformConstrained
   );
 
   // Zoom actions from store - cleaner architecture
-  const zoomIn = useWorkflowStore((state) => state.zoomIn);
-  const zoomOut = useWorkflowStore((state) => state.zoomOut);
-  const setZoom = useWorkflowStore((state) => state.setZoom);
+  const zoomInStore = useWorkflowStore((state) => state.zoomIn);
+  const zoomOutStore = useWorkflowStore((state) => state.zoomOut);
+  const setZoomStore = useWorkflowStore((state) => state.setZoom);
   const resetViewport = useWorkflowStore((state) => state.resetViewport);
   const zoomToFit = useWorkflowStore((state) => state.zoomToFit);
 
   // Local interaction state
   const [isPanning, setIsPanning] = useState(false);
+  const [canvasDimensions, setCanvasDimensions] = useState({
+    width: 800,
+    height: 600,
+  });
+
+  // Wrap zoom functions to automatically pass canvas dimensions
+  const zoomIn = useCallback(() => {
+    zoomInStore(canvasDimensions.width, canvasDimensions.height);
+  }, [zoomInStore, canvasDimensions.width, canvasDimensions.height]);
+
+  const zoomOut = useCallback(() => {
+    zoomOutStore(canvasDimensions.width, canvasDimensions.height);
+  }, [zoomOutStore, canvasDimensions.width, canvasDimensions.height]);
+
+  const setZoom = useCallback(
+    (scale: number) => {
+      setZoomStore(scale, canvasDimensions.width, canvasDimensions.height);
+    },
+    [setZoomStore, canvasDimensions.width, canvasDimensions.height]
+  );
 
   // Interaction tracking refs
   const lastPosition = useRef({ x: 0, y: 0 });
@@ -44,6 +64,27 @@ export const useCanvasViewport = () => {
   // Keep current transform in ref for stable access in callbacks
   const transformRef = useRef(transform);
   transformRef.current = transform;
+
+  // Helper to get canvas dimensions from data-canvas-area element
+  const updateCanvasDimensions = useCallback(() => {
+    const canvasElement = document.querySelector(
+      '[data-canvas-area="true"]'
+    ) as HTMLElement;
+    if (canvasElement) {
+      const rect = canvasElement.getBoundingClientRect();
+      setCanvasDimensions({ width: rect.width, height: rect.height });
+    }
+  }, []);
+
+  // Update canvas dimensions on mount and resize
+  useEffect(() => {
+    updateCanvasDimensions();
+
+    const handleResize = () => updateCanvasDimensions();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [updateCanvasDimensions]);
 
   // Pan controls
   const handlePanStart = useCallback(
@@ -65,13 +106,25 @@ export const useCanvasViewport = () => {
       const deltaX = event.clientX - lastPosition.current.x;
       const deltaY = event.clientY - lastPosition.current.y;
 
-      setCanvasTransform({
+      const newTransform = {
         ...transformRef.current,
         translateX: panStartTransform.current.translateX + deltaX,
         translateY: panStartTransform.current.translateY + deltaY,
-      });
+      };
+
+      // Use constrained transform to keep content within boundaries
+      setCanvasTransformConstrained(
+        newTransform,
+        canvasDimensions.width,
+        canvasDimensions.height
+      );
     },
-    [isPanning, setCanvasTransform] // Removed transform dependency - using transformRef.current
+    [
+      isPanning,
+      setCanvasTransformConstrained,
+      canvasDimensions.width,
+      canvasDimensions.height,
+    ]
   );
 
   const handlePanEnd = useCallback(() => {
@@ -123,14 +176,27 @@ export const useCanvasViewport = () => {
         const deltaX = touch.clientX - lastPosition.current.x;
         const deltaY = touch.clientY - lastPosition.current.y;
 
-        setCanvasTransform({
+        const newTransform = {
           ...transformRef.current,
           translateX: panStartTransform.current.translateX + deltaX,
           translateY: panStartTransform.current.translateY + deltaY,
-        });
+        };
+
+        // Use constrained transform to keep content within boundaries
+        setCanvasTransformConstrained(
+          newTransform,
+          canvasDimensions.width,
+          canvasDimensions.height
+        );
       }
     },
-    [isPanning, setCanvasTransform, setZoom]
+    [
+      isPanning,
+      setCanvasTransformConstrained,
+      setZoom,
+      canvasDimensions.width,
+      canvasDimensions.height,
+    ]
   );
 
   const handleTouchEnd = useCallback((event: React.TouchEvent) => {

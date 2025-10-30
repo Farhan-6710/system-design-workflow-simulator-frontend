@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { nodeOptions } from "@/data/nodeOptions";
+import { nodeOptions } from "@/constants/nodeOptions";
 import { EditNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
 

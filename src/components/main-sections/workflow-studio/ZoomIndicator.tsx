@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
+import { internalToDisplayZoom } from "@/constants/canvas";
 
 interface ZoomIndicatorProps {
   currentZoom: number;
@@ -57,7 +58,9 @@ export const ZoomIndicator: React.FC<ZoomIndicatorProps> = ({
   };
 
   const currentSliderValue = zoomToSliderValue(currentZoom);
-  const zoomPercentage = Math.round(currentZoom * 100);
+
+  // Convert internal zoom scale to user-friendly display percentage
+  const displayPercentage = Math.round(internalToDisplayZoom(currentZoom));
 
   return (
     <motion.div
@@ -108,7 +111,7 @@ export const ZoomIndicator: React.FC<ZoomIndicatorProps> = ({
           style={{ top: `${tooltipY}px`, transform: "translateY(-50%)" }}
         >
           <div className="text-xs font-medium py-1 px-2 rounded-md bg-black/90 backdrop-filter backdrop-blur-[10px] border border-white/10 text-white shadow-lg">
-            {zoomPercentage}%{/* Tooltip arrow pointing right */}
+            {displayPercentage}%{/* Tooltip arrow pointing right */}
             <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-4 border-transparent border-l-black/90"></div>
           </div>
         </div>

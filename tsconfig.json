@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/data/canvasDockItems.tsx"
+    "src/constants/canvasDockItems.tsx"
   ],
   "exclude": ["node_modules"]
 }

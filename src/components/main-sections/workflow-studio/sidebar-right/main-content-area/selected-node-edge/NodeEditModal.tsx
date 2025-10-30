@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import ConfigurationForm from "../ConfigurationForm";
 import { Node } from "@/types/workflow-studio/workflow";
-import { nodeOptions } from "@/data/nodeOptions";
+import { nodeOptions } from "@/constants/nodeOptions";
 
 interface NodeEditModalProps {
   isOpen: boolean;
