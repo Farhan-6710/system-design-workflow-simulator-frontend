@@ -283,7 +283,7 @@ export const useWorkflowStore = create<WorkflowStore>()(
 
       // Utility actions
       reset: () => {
-        set(() => ({ ...initialState }));
+        set((state) => ({ ...initialState, isFullScreen: state.isFullScreen }));
       },
 
       clearSelection: () => {
