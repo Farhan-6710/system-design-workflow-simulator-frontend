@@ -5,6 +5,7 @@
 
 import React from "react";
 import { useWorkflowStore } from "@/stores/workflowStore";
+import { OUTPUT_PORT_OFFSET_X, OUTPUT_PORT_OFFSET_Y } from "@/constants/canvas";
 
 // ============================================================================
 // Canvas Mouse & Touch Handlers
@@ -150,9 +151,9 @@ export const createNodeHandlers = (coordinateUtils?: {
 
       // Calculate output port position
       // Node is 55px x 55px with center at node.x, node.y
-      // Output port is positioned at -right-2 (8px from right edge) and center vertically
-      const outputPortX = node.x + 27; // center + half width + port offset = 35.5px from center
-      const outputPortY = node.y; // port is at vertical center
+      // Output port is positioned at right edge and center vertically
+      const outputPortX = node.x + OUTPUT_PORT_OFFSET_X;
+      const outputPortY = node.y + OUTPUT_PORT_OFFSET_Y;
 
       setConnecting(nodeId);
       setTempLine({

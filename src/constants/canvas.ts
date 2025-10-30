@@ -27,14 +27,14 @@
 // ============================================================================
 
 // Zoom baseline - the internal scale that displays as 100% to users (MOST IMPORTANT - DEFAULT UI STATE)
-export const ZOOM_BASELINE = 10.0;
+export const ZOOM_BASELINE = 2.0;
 
 // Workflow visual scale - for static workflow display (WHAT USER SEES INITIALLY)
-export const WORKFLOW_LAYER_INITIAL_SCALE = 0.1; // Makes workflow content render at proper visual size
+export const WORKFLOW_LAYER_INITIAL_SCALE = 0.5; // Makes workflow content render at proper visual size
 
 // Zoom range constraints (internal values)
 export const MIN_ZOOM = 1.0; // Shows as 10% to user (1.0 ÷ 10.0 = 0.1 = 10%) - No panning
-export const MAX_ZOOM = 20.0; // Shows as 200% to user (20.0 ÷ 10.0 = 2.0 = 200%) - Full panning
+export const MAX_ZOOM = 4.0; // Shows as 200% to user (20.0 ÷ 10.0 = 2.0 = 200%) - Full panning
 
 // Zoom interaction settings
 export const ZOOM_STEP = 0.1; // Amount to zoom in/out per step
@@ -88,3 +88,24 @@ export const CANVAS_BACKGROUND_TRANSITION = "background-color 0.3s ease";
 export const GRID_SIZE = 20;
 export const GRID_DOT_SIZE = 1;
 export const GRID_OPACITY = 0.3;
+
+// ============================================================================
+// NODE POSITIONING & CONNECTION CONSTANTS
+// ============================================================================
+
+// Node dimensions
+export const NODE_SIZE = 55; // Node width and height in pixels
+
+// Output port positioning (for starting connections)
+export const OUTPUT_PORT_OFFSET_X = 27.5; // Half of NODE_SIZE (right edge center)
+export const OUTPUT_PORT_OFFSET_Y = 0; // Vertical center of node
+
+// Input port positioning (for ending connections)
+export const INPUT_PORT_OFFSET_X = -27.5; // Negative half of NODE_SIZE (left edge center)
+export const INPUT_PORT_OFFSET_Y = 0; // Vertical center of node
+
+// Temp line constants (for connection previews)
+export const TEMP_LINE_START_OFFSET_X = OUTPUT_PORT_OFFSET_X; // Same as output port
+export const TEMP_LINE_START_OFFSET_Y = OUTPUT_PORT_OFFSET_Y; // Same as output port
+export const TEMP_LINE_END_OFFSET_X = 0; // Follows cursor exactly
+export const TEMP_LINE_END_OFFSET_Y = 0; // Follows cursor exactly

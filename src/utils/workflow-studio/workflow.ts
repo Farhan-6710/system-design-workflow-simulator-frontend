@@ -8,6 +8,10 @@ import {
   ZOOM_BASELINE,
   PAN_DISABLED_THRESHOLD,
   WORKFLOW_LAYER_INITIAL_SCALE,
+  OUTPUT_PORT_OFFSET_X,
+  OUTPUT_PORT_OFFSET_Y,
+  INPUT_PORT_OFFSET_X,
+  INPUT_PORT_OFFSET_Y,
 } from "@/constants/canvas";
 
 // ============================================================================
@@ -77,10 +81,10 @@ export const calculatePortToPortPath = (
   targetX: number,
   targetY: number
 ): string => {
-  const outputPortX = sourceX + 27.5; // Half node width
-  const outputPortY = sourceY;
-  const inputPortX = targetX - 27.5;
-  const inputPortY = targetY;
+  const outputPortX = sourceX + OUTPUT_PORT_OFFSET_X;
+  const outputPortY = sourceY + OUTPUT_PORT_OFFSET_Y;
+  const inputPortX = targetX + INPUT_PORT_OFFSET_X; // INPUT_PORT_OFFSET_X is negative (-27.5)
+  const inputPortY = targetY + INPUT_PORT_OFFSET_Y;
 
   const dx = inputPortX - outputPortX;
   const dy = inputPortY - outputPortY;
