@@ -10,7 +10,6 @@ import {
   restoreCanvas,
   debounce,
   type FabricCanvas,
-  type CanvasState,
 } from "@/utils/workflow-studio/annotation-layer";
 
 export interface UseCanvasHistoryProps {

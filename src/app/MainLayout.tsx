@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SidebarLeft from "@/components/sidebar-left/SidebarLeft";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import MainHeader from "../components/header/MainHeader";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -17,33 +18,27 @@ export function MainLayout({
   onNavigate,
 }: MainLayoutProps) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [showTooltips, setShowTooltips] = useState(true);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cleanup timeout on unmount
+  const setSidebarRightExpanded = useWorkflowStore(
+    (state) => state.setSidebarRightExpanded
+  );
+  const setSelectedTab = useWorkflowStore((state) => state.setSelectedTab);
+
+  // Auto-collapse sidebar when navigating to system-design
   useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+    if (currentPage === "system-design") {
+      setSidebarExpanded(false);
+      setSidebarRightExpanded(true);
+      setSelectedTab("add-node");
+    }
+  }, [currentPage, setSidebarRightExpanded, setSelectedTab]);
 
   const handleToggleSidebar = () => {
-    // Clear any existing timeout to prevent overlapping timeouts
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    setShowTooltips(false);
     setSidebarExpanded(!sidebarExpanded);
-
-    // Store timeout reference for cleanup
-    timeoutRef.current = setTimeout(() => {
-      setShowTooltips(true);
-      timeoutRef.current = null; // Clear reference after completion
-    }, 400);
   };
+
+  // Simple: show tooltips when sidebar is collapsed
+  const showTooltips = !sidebarExpanded;
 
   return (
     <TooltipProvider delayDuration={300}>

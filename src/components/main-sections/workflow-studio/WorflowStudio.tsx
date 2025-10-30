@@ -28,6 +28,7 @@ const WorkflowEditorContent: React.FC = () => {
   const activeTool = useAnnotationStore((state) => state.activeTool);
   const isFullScreen = useWorkflowStore((state) => state.isFullScreen);
   const setFullScreen = useWorkflowStore((state) => state.setFullScreen);
+  const isSidebarRightExpanded = useWorkflowStore((state) => state.sidebarRightExpanded);
 
   // Computed values
   const nodeCount = nodes.length;
@@ -92,63 +93,61 @@ const WorkflowEditorContent: React.FC = () => {
   const workflowContent = (
     <WorkflowProvider>
       <div className="relative flex h-full">
-        {/* Main content area - with right margin for sidebar */}
-        <div className="flex-1 flex flex-col mr-[74px]">
-          {/* Only show header in normal mode, not in fullscreen */}
+        {/* Main content area - simplified structure */}
+        <div
+          className="flex-1 flex flex-col select-none bg-white dark:bg-slate-950"
+          ref={containerRef}
+        >
+          {/* Header */}
           {!isFullScreen && <WorkflowHeader onAddNode={addNode} />}
 
-          <div
-            className="flex-1 flex flex-col select-none bg-white dark:bg-slate-950 relative"
-            ref={containerRef}
-          >
-            {/* Workflow Canvas */}
-            <div className="flex-1 flex relative">
-              <WorkflowCanvas
-                ref={canvasRef}
-                annotationLayerRef={annotationLayerRef}
-              />
+          {/* Workflow Canvas - takes remaining space */}
+          <div className="flex-1 flex relative">
+            <WorkflowCanvas
+              ref={canvasRef}
+              annotationLayerRef={annotationLayerRef}
+            />
 
-              {/* Dock Navigation - positioned in top-left of workflow editor */}
-              <DockComponent
-                collapsible={false}
-                position="top-left"
-                direction="vertical"
-                tooltipPosition="right"
-                items={canvasDockItems}
-                onItemClick={handleWorkflowDockItemClick}
-                activeItem={activeTool}
-              />
+            {/* Dock Navigation */}
+            <DockComponent
+              collapsible={false}
+              position="top-left"
+              direction="vertical"
+              tooltipPosition="right"
+              items={canvasDockItems}
+              onItemClick={handleWorkflowDockItemClick}
+              activeItem={activeTool}
+            />
 
-              {/* Run Button - positioned below DockNavigation */}
-              <div className="absolute bottom-4 right-4 z-20">
-                <RunButton runCode={runCode} onToggle={setRunCode} />
-              </div>
-
-              {/* Zoom Indicator - positioned on the right side before sidebar */}
-              {/* Note: Uses Visual Faking system - see /constants/canvas.ts for details */}
-              <div
-                className={cn(
-                  isFullScreen ? "top-24" : "top-4",
-                  "absolute right-4 z-20"
-                )}
-              >
-                <ZoomIndicator
-                  currentZoom={canvasControls.transform.scale}
-                  minZoom={MIN_ZOOM}
-                  maxZoom={MAX_ZOOM}
-                  onZoomChange={canvasControls.setZoom}
-                  onResetZoom={canvasControls.resetViewport}
-                />
-              </div>
+            {/* Run Button */}
+            <div className="absolute bottom-4 right-4 z-20">
+              <RunButton runCode={runCode} onToggle={setRunCode} />
             </div>
 
-            {!isFullScreen && (
-              <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
-            )}
+            {/* Zoom Indicator */}
+            <div
+              className={cn(
+                isFullScreen ? "top-24" : "top-4",
+                "absolute right-4 z-20"
+              )}
+            >
+              <ZoomIndicator
+                currentZoom={canvasControls.transform.scale}
+                minZoom={MIN_ZOOM}
+                maxZoom={MAX_ZOOM}
+                onZoomChange={canvasControls.setZoom}
+                onResetZoom={canvasControls.resetViewport}
+              />
+            </div>
           </div>
+
+          {/* Footer */}
+          {!isFullScreen && (
+            <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
+          )}
         </div>
 
-        {/* Right Sidebar - now sibling to main content, extends full height */}
+        {/* Right Sidebar - overlay */}
         <SidebarRight onAddNode={addNode} onUpdateNode={updateNode} />
       </div>
     </WorkflowProvider>
@@ -172,7 +171,10 @@ const WorkflowEditorContent: React.FC = () => {
             {/* Exit fullscreen button */}
             <button
               onClick={handleExitFullScreen}
-              className="fixed top-6 right-24 z-40 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
+              className={cn(
+                "fixed top-6 z-40 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all ease-in-out duration-300 flex items-center justify-center group",
+                isSidebarRightExpanded ? "right-88" : "right-24"
+              )}
               title="Exit Fullscreen"
             >
               <X
