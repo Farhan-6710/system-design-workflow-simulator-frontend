@@ -1,8 +1,7 @@
 /**
- * Enhanced canvas controls with improved performance and cleaner API
- * Optimized for zoom, pan, and viewport management
- *
- * Note: Zoom actions moved to WorkflowStore for better architecture consistency
+ * Canvas Controls Hook
+ * Handles zoom, pan, viewport management and touch/wheel interactions
+ * Optimized for performance with cleaner API
  */
 
 import { useCallback, useRef, useEffect, useState } from "react";
@@ -15,7 +14,7 @@ import {
   getCanvasTransformStyle,
 } from "@/utils/workflow-studio/workflow";
 
-export const useCanvasViewport = () => {
+export const useCanvasControls = () => {
   // Store state and actions
   const transform = useWorkflowStore((state) => state.canvasTransform);
   const setCanvasTransformConstrained = useWorkflowStore(

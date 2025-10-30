@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { useCanvasViewport } from "@/hooks/workflow-studio/useCanvasViewport";
+import { useCanvasControls } from "@/hooks/workflow-studio/useCanvasControls";
 import { CanvasControlsHook } from "@/types/workflow-studio";
 
 const CanvasControlsContext = createContext<CanvasControlsHook | undefined>(
@@ -23,7 +23,7 @@ interface CanvasControlsProviderProps {
 export const CanvasControlsProvider: React.FC<CanvasControlsProviderProps> = ({
   children,
 }) => {
-  const canvasControls = useCanvasViewport();
+  const canvasControls = useCanvasControls();
 
   return (
     <CanvasControlsContext.Provider value={canvasControls}>

@@ -6,7 +6,7 @@ import {
   type AnnotationLayerHandle,
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { useWorkflowCanvasEvents } from "@/hooks/workflow-studio/useWorkflowCanvasEvents";
+import { useCanvasEventHandlers } from "@/hooks/workflow-studio/useCanvasEventHandlers";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +31,7 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
       nodeHandlers,
       edgeHandlers,
       activeTool,
-    } = useWorkflowCanvasEvents({
+    } = useCanvasEventHandlers({
       canvasRef: ref as React.RefObject<HTMLDivElement>,
       annotationLayerRef,
     });

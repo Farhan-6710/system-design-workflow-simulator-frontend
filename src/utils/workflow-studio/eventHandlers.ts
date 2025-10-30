@@ -1,6 +1,7 @@
 /**
- * Canvas Event Handlers & Mouse/Touch Interactions
- * Focused on low-level canvas interaction logic
+ * Workflow Event Handlers
+ * Core mouse/touch interaction handlers for nodes, edges, and canvas
+ * Handles dragging, connecting, selection, and coordinate transformations
  */
 
 import React from "react";

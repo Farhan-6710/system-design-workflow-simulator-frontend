@@ -1,6 +1,6 @@
 /**
- * Custom hook for WorkflowCanvas event handling
- * Handles canvas events, coordinate transformations, and business logic integration
+ * Canvas Event Handlers Hook
+ * Handles canvas mouse/touch events, coordinate transformations, and workflow interactions
  */
 
 import { useEffect, useRef, useCallback } from "react";
@@ -12,18 +12,18 @@ import {
   createNodeHandlers,
   createEdgeHandlers,
   createCanvasHandlers,
-} from "@/utils/workflow-studio/canvasHandlers";
+} from "@/utils/workflow-studio/eventHandlers";
 import type { AnnotationLayerHandle } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
-interface UseWorkflowCanvasEventsProps {
+interface UseCanvasEventHandlersProps {
   canvasRef: React.RefObject<HTMLDivElement>;
   annotationLayerRef?: React.MutableRefObject<AnnotationLayerHandle | null>;
 }
 
-export const useWorkflowCanvasEvents = ({
+export const useCanvasEventHandlers = ({
   canvasRef,
   annotationLayerRef,
-}: UseWorkflowCanvasEventsProps) => {
+}: UseCanvasEventHandlersProps) => {
   // Store state
   const activeTool = useAnnotationStore((state) => state.activeTool);
   const selectTool = useAnnotationStore((state) => state.selectTool);
