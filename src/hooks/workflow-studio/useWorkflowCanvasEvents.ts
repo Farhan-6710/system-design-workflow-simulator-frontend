@@ -12,7 +12,7 @@ import {
   createNodeHandlers,
   createEdgeHandlers,
   createCanvasHandlers,
-} from "@/utils/workflow-studio/canvasHandlers";
+} from "@/utils/workflow-studio/eventHandlers";
 import type { AnnotationLayerHandle } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
 interface UseWorkflowCanvasEventsProps {

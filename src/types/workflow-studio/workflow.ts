@@ -18,7 +18,7 @@ export type NodeType = "start" | "process" | "end";
 
 // Node definition with all properties
 export interface Node {
-  id: number;
+  id: string | number; // Support both UUID strings and legacy numeric IDs
   label: string;
   x: number;
   y: number;

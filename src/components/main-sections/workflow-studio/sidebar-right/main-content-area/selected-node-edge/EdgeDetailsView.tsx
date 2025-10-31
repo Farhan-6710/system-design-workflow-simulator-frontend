@@ -54,7 +54,7 @@ const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
           <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
             Edge ID:
           </span>
-          <span className="text-xs font-mono text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">
+          <span className="text-xs text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-md">
             {edge.id}
           </span>
         </div>

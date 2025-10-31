@@ -12,6 +12,7 @@ const NodeDetailsHeader: React.FC<NodeDetailsHeaderProps> = ({
   node,
   onEditClick,
 }) => {
+  console.log("📝 Rendering NodeDetailsHeader for Node ID:", node);
   return (
     <>
       <div className="flex items-center justify-between">
@@ -36,7 +37,7 @@ const NodeDetailsHeader: React.FC<NodeDetailsHeaderProps> = ({
             Selected Node:
           </span>
           <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-            Node {node.id} - {node.label}
+            Node - {node.label}
           </span>
         </div>
 
@@ -44,7 +45,7 @@ const NodeDetailsHeader: React.FC<NodeDetailsHeaderProps> = ({
           <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
             Node ID:
           </span>
-          <span className="text-xs font-mono text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded">
+          <span className="text-xs text-slate-800 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-md">
             {node.id}
           </span>
         </div>
