@@ -34,7 +34,7 @@ export const WORKFLOW_LAYER_INITIAL_SCALE = 0.5; // Makes workflow content rende
 
 // Zoom range constraints (internal values)
 export const MIN_ZOOM = 1.0; // Shows as 67% to user (1.0 ÷ 1.5 ≈ 0.67 = 67%) - No panning
-export const MAX_ZOOM = 3.0; // Shows as 200% to user (3.0 ÷ 1.5 = 2.0 = 200%) - Full panning
+export const MAX_ZOOM = 5.0; // Shows as 200% to user (3.0 ÷ 1.5 = 2.0 = 200%) - Full panning
 
 // Zoom interaction settings
 export const ZOOM_STEP = 0.1; // Amount to zoom in/out per step

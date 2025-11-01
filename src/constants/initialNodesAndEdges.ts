@@ -42,25 +42,25 @@ export const initialNodes: Node[] = [
   // API Gateway
   createNodeFromOption("api-gateway", 2, "Gateway", 260, 290),
   // Services Layer - aligned vertically around the baseline with increased spacing
-  createNodeFromOption("sync-compute", 3, "User Service", 390, 110), // 180px above baseline (was 140)
-  createNodeFromOption("sync-compute", 4, "Order Service", 390, 290), // On baseline - unchanged
-  createNodeFromOption("sync-compute", 5, "Payment", 390, 470), // 180px below baseline (was 440)
+  createNodeFromOption("service", 3, "Service", 390, 110), // 180px above baseline (was 140)
+  createNodeFromOption("service", 4, "Service", 390, 290), // On baseline - unchanged
+  createNodeFromOption("service", 5, "Service", 390, 470), // 180px below baseline (was 440)
   // Load Balancers - aligned vertically with increased spacing
   createNodeFromOption("load-balancer", 6, "User LB", 520, 110),
   createNodeFromOption("load-balancer", 7, "Order LB", 520, 290), // On baseline - unchanged
   createNodeFromOption("load-balancer", 8, "Pay LB", 520, 470),
-  // User Service Servers - aligned vertically above baseline with 30px gaps
-  createNodeFromOption("sync-compute", 9, "User S1", 650, 50), // 240px above baseline (was 80)
-  createNodeFromOption("sync-compute", 10, "User S2", 650, 110), // 210px above baseline (was 110)
-  createNodeFromOption("sync-compute", 11, "User S3", 650, 170), // 180px above baseline (was 140)
-  // Order Service Servers - aligned around Order LB with 30px gaps
-  createNodeFromOption("sync-compute", 12, "Order S1", 650, 230), // 30px above Order LB (y=290)
-  createNodeFromOption("sync-compute", 13, "Order S2", 650, 290), // Aligned with Order LB (y=290)
-  createNodeFromOption("sync-compute", 14, "Order S3", 650, 350), // 30px below Order LB (y=290)
-  // Payment Service Servers - aligned around Pay LB with 30px gaps
-  createNodeFromOption("sync-compute", 15, "Pay S1", 650, 410), // 30px above Pay LB (y=470)
-  createNodeFromOption("sync-compute", 16, "Pay S2", 650, 470), // Aligned with Pay LB (y=470)
-  createNodeFromOption("sync-compute", 17, "Pay S3", 650, 530), // 30px below Pay LB (y=470)
+  // User Server Servers - aligned vertically above baseline with 30px gaps
+  createNodeFromOption("sync-compute", 9, "Server", 650, 50), // 240px above baseline (was 80)
+  createNodeFromOption("sync-compute", 10, "Server", 650, 110), // 210px above baseline (was 110)
+  createNodeFromOption("sync-compute", 11, "Server", 650, 170), // 180px above baseline (was 140)
+  // Order Server Servers - aligned around Order LB with 30px gaps
+  createNodeFromOption("sync-compute", 12, "Server", 650, 230), // 30px above Order LB (y=290)
+  createNodeFromOption("sync-compute", 13, "Server", 650, 290), // Aligned with Order LB (y=290)
+  createNodeFromOption("sync-compute", 14, "Server", 650, 350), // 30px below Order LB (y=290)
+  // Payment Server Servers - aligned around Pay LB with 30px gaps
+  createNodeFromOption("sync-compute", 15, "Server", 650, 410), // 30px above Pay LB (y=470)
+  createNodeFromOption("sync-compute", 16, "Server", 650, 470), // Aligned with Pay LB (y=470)
+  createNodeFromOption("sync-compute", 17, "Server", 650, 530), // 30px below Pay LB (y=470)
   // Databases - aligned vertically with increased spacing
   createNodeFromOption("database", 18, "User DB", 770, 110),
   createNodeFromOption("database", 19, "Order DB", 770, 290), // On baseline - unchanged

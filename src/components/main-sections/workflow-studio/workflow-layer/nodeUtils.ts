@@ -21,6 +21,7 @@ import {
   Activity,
   Link,
   Circle,
+  Box,
 } from "lucide-react";
 
 // Icon mapping for dynamic icon rendering
@@ -43,6 +44,7 @@ export const getIconComponent = (iconName: string) => {
     Activity,
     Link,
     Circle,
+    Box,
   };
   return iconMap[iconName as keyof typeof iconMap] || Circle;
 };

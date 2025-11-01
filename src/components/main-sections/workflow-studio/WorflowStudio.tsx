@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 const WorkflowEditorContent: React.FC = () => {
   // Direct store selectors for better performance (single subscriptions)
   const nodes = useWorkflowStore((state) => state.nodes);
+  const edges = useWorkflowStore((state) => state.edges);
   const runCode = useWorkflowStore((state) => state.runCode);
   const addNode = useWorkflowStore((state) => state.addNode);
   const updateNode = useWorkflowStore((state) => state.updateNode);
@@ -29,6 +30,9 @@ const WorkflowEditorContent: React.FC = () => {
   const isFullScreen = useWorkflowStore((state) => state.isFullScreen);
   const setFullScreen = useWorkflowStore((state) => state.setFullScreen);
   const isSidebarRightExpanded = useWorkflowStore((state) => state.sidebarRightExpanded);
+
+  console.log("nodes:", nodes);
+  console.log("edges", edges);
 
   // Computed values
   const nodeCount = nodes.length;
