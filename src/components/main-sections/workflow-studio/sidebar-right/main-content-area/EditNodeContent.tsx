@@ -110,7 +110,7 @@ const EditNodeContent: React.FC<EditNodeContentProps> = ({
       </h3>
 
       {/* Node Selection */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
           Select Node to Edit:
         </label>
@@ -152,9 +152,9 @@ const EditNodeContent: React.FC<EditNodeContentProps> = ({
                       <span className="text-sm font-medium">
                         {nodeType.label}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      {/* <span className="text-xs text-slate-500">
                         {nodeType.category}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </SelectItem>

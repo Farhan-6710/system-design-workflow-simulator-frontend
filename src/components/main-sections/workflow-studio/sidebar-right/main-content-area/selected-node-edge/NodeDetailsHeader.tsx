@@ -37,7 +37,7 @@ const NodeDetailsHeader: React.FC<NodeDetailsHeaderProps> = ({
             Selected Node:
           </span>
           <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-            Node - {node.label}
+            {node.label}
           </span>
         </div>
 

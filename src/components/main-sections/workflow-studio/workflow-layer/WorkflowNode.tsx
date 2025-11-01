@@ -34,7 +34,7 @@ export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
         handlers.onSelect(node.id);
       }}
       className={`workflow-node ${getNodeClasses(
-        node.type,
+        node.position,
         isSelected,
         isDragging
       )} ${glowClassName}`}
@@ -78,7 +78,7 @@ export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
         <IconComponent size={24} className={`${iconColor} mb-1`} />
         <p
           className={`text-[8px] font-medium text-center leading-tight ${getNodeTextClasses(
-            node.type
+            node.position
           )}`}
         >
           {node.label}

@@ -31,10 +31,11 @@ export const nodeOptions: NodeOption[] = [
   // Entry Layer
   {
     id: "client-app",
-    label: "Client / User Node",
+    type: "client",
+    label: "Client",
     icon: "Smartphone",
     category: "Entry Layer",
-    type: "start",
+    position: "start",
     component: <Smartphone size={16} className="text-blue-600" />,
     configurations: {
       rps: {
@@ -49,10 +50,19 @@ export const nodeOptions: NodeOption[] = [
         key: "requestSize",
         label: "Request size",
         type: "number",
-        unit: "KB",
         defaultValue: 50,
         min: 1,
         max: 1024,
+      },
+      requestSizeUnit: {
+        key: "requestSizeUnit",
+        label: "Request size unit",
+        type: "select",
+        options: [
+          { value: "KB", label: "KB (Kilobytes)" },
+          { value: "MB", label: "MB (Megabytes)" },
+        ],
+        defaultValue: "KB",
       },
       // requestType: {
       //   key: "requestType",
@@ -75,10 +85,11 @@ export const nodeOptions: NodeOption[] = [
   },
   {
     id: "dns-resolver",
+    type: "dns_resolver",
     label: "DNS Resolver",
     icon: "Globe",
     category: "Entry Layer",
-    type: "process",
+    position: "process",
     component: <Globe size={16} className="text-green-600" />,
     configurations: {
       lookupLatency: {
@@ -112,10 +123,11 @@ export const nodeOptions: NodeOption[] = [
   },
   {
     id: "api-gateway",
+    type: "api_gateway",
     label: "API Gateway",
     icon: "Router",
     category: "Entry Layer",
-    type: "process",
+    position: "process",
     component: <Router size={16} className="text-purple-600" />,
     configurations: {
       maxRps: {
@@ -147,16 +159,26 @@ export const nodeOptions: NodeOption[] = [
         type: "boolean",
         defaultValue: true,
       },
+      authLatency: {
+        key: "authLatency",
+        label: "Authentication Latency",
+        type: "number",
+        unit: "ms",
+        defaultValue: 10,
+        min: 0,
+        max: 1000,
+      },
     },
   },
 
   // Routing & Compute
   {
     id: "load-balancer",
+    type: "load_balancer",
     label: "Load Balancer",
     icon: "Network",
     category: "Routing & Compute",
-    type: "process",
+    position: "process",
     component: <Network size={16} className="text-orange-600" />,
     configurations: {
       algorithm: {
@@ -187,20 +209,21 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 10000,
       },
-      failoverPolicy: {
-        key: "failoverPolicy",
-        label: "Failover policy",
-        type: "text",
-        defaultValue: "automatic",
-      },
+      // failoverPolicy: {
+      //   key: "failoverPolicy",
+      //   label: "Failover policy",
+      //   type: "text",
+      //   defaultValue: "automatic",
+      // },
     },
   },
   {
     id: "sync-compute",
+    type: "sync_compute_node",
     label: "Synchronous Compute Node",
     icon: "Server",
     category: "Routing & Compute",
-    type: "process",
+    position: "process",
     component: <Server size={16} className="text-blue-500" />,
     configurations: {
       cpuCores: {
@@ -237,23 +260,24 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 10000,
       },
-      failureRate: {
-        key: "failureRate",
-        label: "Failure rate",
-        type: "number",
-        unit: "%",
-        defaultValue: 0.1,
-        min: 0,
-        max: 100,
-      },
+      // failureRate: {
+      //   key: "failureRate",
+      //   label: "Failure rate",
+      //   type: "number",
+      //   unit: "%",
+      //   defaultValue: 0.1,
+      //   min: 0,
+      //   max: 100,
+      // },
     },
   },
   {
     id: "async-compute",
+    type: "async_compute_node",
     label: "Asynchronous Compute Node",
     icon: "Zap",
     category: "Routing & Compute",
-    type: "process",
+    position: "process",
     component: <Zap size={16} className="text-yellow-500" />,
     configurations: {
       cpuCores: {
@@ -281,26 +305,27 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 10000,
       },
-      retryPolicy: {
-        key: "retryPolicy",
-        label: "Retry policy",
-        type: "text",
-        defaultValue: "exponential-backoff",
-      },
-      boundQueueId: {
-        key: "boundQueueId",
-        label: "Bound queue ID",
-        type: "text",
-        defaultValue: "main-queue",
-      },
+      // retryPolicy: {
+      //   key: "retryPolicy",
+      //   label: "Retry policy",
+      //   type: "text",
+      //   defaultValue: "exponential-backoff",
+      // },
+      // boundQueueId: {
+      //   key: "boundQueueId",
+      //   label: "Bound queue ID",
+      //   type: "text",
+      //   defaultValue: "main-queue",
+      // },
     },
   },
   {
     id: "message-queue",
+    type: "message_queue",
     label: "Message Queue",
     icon: "GitBranch",
     category: "Routing & Compute",
-    type: "process",
+    position: "process",
     component: <GitBranch size={16} className="text-red-500" />,
     configurations: {
       queueSize: {
@@ -321,39 +346,40 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 100000,
       },
-      retryAttempts: {
-        key: "retryAttempts",
-        label: "Retry attempts",
-        type: "number",
-        defaultValue: 3,
-        min: 0,
-        max: 10,
-      },
-      messageTtl: {
-        key: "messageTtl",
-        label: "Message TTL",
-        type: "number",
-        unit: "seconds",
-        defaultValue: 3600,
-        min: 1,
-        max: 86400,
-      },
-      consumerCount: {
-        key: "consumerCount",
-        label: "Consumer count",
-        type: "number",
-        defaultValue: 5,
-        min: 1,
-        max: 100,
-      },
+      // retryAttempts: {
+      //   key: "retryAttempts",
+      //   label: "Retry attempts",
+      //   type: "number",
+      //   defaultValue: 3,
+      //   min: 0,
+      //   max: 10,
+      // },
+      // messageTtl: {
+      //   key: "messageTtl",
+      //   label: "Message TTL",
+      //   type: "number",
+      //   unit: "seconds",
+      //   defaultValue: 3600,
+      //   min: 1,
+      //   max: 86400,
+      // },
+      // consumerCount: {
+      //   key: "consumerCount",
+      //   label: "Consumer count",
+      //   type: "number",
+      //   defaultValue: 5,
+      //   min: 1,
+      //   max: 100,
+      // },
     },
   },
   {
     id: "service",
+    type: "service_abstraction",
     label: "Service",
     icon: "Box",
     category: "Routing & Compute",
-    type: "process",
+    position: "process",
     component: <Box size={16} className="text-indigo-600" />,
     configurations: {},
   },
@@ -361,10 +387,11 @@ export const nodeOptions: NodeOption[] = [
   // Data & Storage
   {
     id: "database",
+    type: "database",
     label: "Database",
     icon: "Database",
     category: "Data & Storage",
-    type: "end",
+    position: "end",
     component: <Database size={16} className="text-green-500" />,
     configurations: {
       type: {
@@ -425,10 +452,11 @@ export const nodeOptions: NodeOption[] = [
   },
   {
     id: "cache",
+    type: "cache_server",
     label: "Cache",
     icon: "HardDrive",
     category: "Data & Storage",
-    type: "process",
+    position: "process",
     component: <HardDrive size={16} className="text-blue-400" />,
     configurations: {
       memory: {
@@ -440,17 +468,17 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 512,
       },
-      evictionPolicy: {
-        key: "evictionPolicy",
-        label: "Eviction policy",
-        type: "select",
-        options: [
-          { value: "lru", label: "LRU" },
-          { value: "fifo", label: "FIFO" },
-          { value: "lfu", label: "LFU" },
-        ],
-        defaultValue: "lru",
-      },
+      // evictionPolicy: {
+      //   key: "evictionPolicy",
+      //   label: "Eviction policy",
+      //   type: "select",
+      //   options: [
+      //     { value: "lru", label: "LRU" },
+      //     { value: "fifo", label: "FIFO" },
+      //     { value: "lfu", label: "LFU" },
+      //   ],
+      //   defaultValue: "lru",
+      // },
       cacheHitRatio: {
         key: "cacheHitRatio",
         label: "Cache hit ratio",
@@ -473,10 +501,11 @@ export const nodeOptions: NodeOption[] = [
   },
   {
     id: "object-storage",
+    type: "object_storage",
     label: "Object Storage",
     icon: "HardDrive",
     category: "Data & Storage",
-    type: "process",
+    position: "process",
     component: <HardDrive size={16} className="text-gray-500" />,
     configurations: {
       storageCapacity: {
@@ -506,24 +535,24 @@ export const nodeOptions: NodeOption[] = [
         min: 1,
         max: 10000,
       },
-      throughput: {
-        key: "throughput",
-        label: "Throughput",
-        type: "number",
-        unit: "MB/s",
-        defaultValue: 100,
-        min: 1,
-        max: 10000,
-      },
-      availability: {
-        key: "availability",
-        label: "Availability",
-        type: "number",
-        unit: "%",
-        defaultValue: 99.9,
-        min: 90,
-        max: 100,
-      },
+      // throughput: {
+      //   key: "throughput",
+      //   label: "Throughput",
+      //   type: "number",
+      //   unit: "MB/s",
+      //   defaultValue: 100,
+      //   min: 1,
+      //   max: 10000,
+      // },
+      // availability: {
+      //   key: "availability",
+      //   label: "Availability",
+      //   type: "number",
+      //   unit: "%",
+      //   defaultValue: 99.9,
+      //   min: 90,
+      //   max: 100,
+      // },
     },
   },
   // {
@@ -531,7 +560,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "Search Service",
   //   icon: "Search",
   //   category: "Data & Storage",
-  //   type: "process",
+  //   position: "process",
   //   component: <Search size={16} className="text-indigo-500" />,
   //   configurations: {
   //     queryLatency: {
@@ -577,7 +606,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "CDN",
   //   icon: "Globe",
   //   category: "Performance & Access",
-  //   type: "process",
+  //   position: "process",
   //   component: <Globe size={16} className="text-cyan-500" />,
   //   configurations: {
   //     cacheSize: {
@@ -623,7 +652,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "Authentication Service",
   //   icon: "Shield",
   //   category: "Performance & Access",
-  //   type: "process",
+  //   position: "process",
   //   component: <Shield size={16} className="text-emerald-600" />,
   //   configurations: {
   //     tokenExpiry: {
@@ -670,7 +699,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "Monitoring Node",
   //   icon: "Monitor",
   //   category: "Monitoring & Infra",
-  //   type: "process",
+  //   position: "process",
   //   component: <Monitor size={16} className="text-slate-600" />,
   //   configurations: {
   //     samplingInterval: {
@@ -704,7 +733,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "Network Link",
   //   icon: "Link",
   //   category: "Monitoring & Infra",
-  //   type: "process",
+  //   position: "process",
   //   component: <Link size={16} className="text-gray-400" />,
   //   configurations: {
   //     bandwidth: {
@@ -752,7 +781,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "User Service",
   //   icon: "Users",
   //   category: "Routing & Compute",
-  //   type: "process",
+  //   position: "process",
   //   component: <Users size={16} className="text-violet-500" />,
   //   configurations: {
   //     cpuCores: {
@@ -796,7 +825,7 @@ export const nodeOptions: NodeOption[] = [
   //   label: "Payment Service",
   //   icon: "CreditCard",
   //   category: "Routing & Compute",
-  //   type: "process",
+  //   position: "process",
   //   component: <CreditCard size={16} className="text-pink-500" />,
   //   configurations: {
   //     cpuCores: {

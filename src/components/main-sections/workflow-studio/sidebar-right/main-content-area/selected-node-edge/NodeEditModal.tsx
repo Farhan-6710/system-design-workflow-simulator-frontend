@@ -13,6 +13,7 @@ import {
 import ConfigurationForm from "../ConfigurationForm";
 import { Node } from "@/types/workflow-studio/workflow";
 import { nodeOptions } from "@/constants/nodeOptions";
+import { getConfigurationDisplay } from "@/utils/workflow-studio/sidebar-right/configurationUtils";
 
 interface NodeEditModalProps {
   isOpen: boolean;
@@ -83,9 +84,9 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
       title="Edit Node"
       description="Modify node details and configuration settings"
     >
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         {/* Node Label Input with ID */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
               Node Label:
@@ -104,7 +105,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
         </div>
 
         {/* Change Node Type */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
             Change Node To:
           </label>
@@ -121,9 +122,9 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
                       <span className="text-sm font-medium">
                         {nodeType.label}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      {/* <span className="text-xs text-slate-500">
                         {nodeType.category}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </SelectItem>
@@ -132,87 +133,31 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
           </Select>
         </div>
 
-        {/* Configuration Form */}
-        {selectedNodeType &&
-          (() => {
-            const nodeOption = nodeOptions.find(
-              (option) => option.id === selectedNodeType
-            );
-            const nodeConfig = nodeOption?.configurations;
-            return (
-              nodeConfig && (
-                <div className="mt-4 space-y-4">
-                  <div className="border rounded-lg p-4 dark:border-gray-700">
-                    <ConfigurationForm
-                      configurations={nodeConfig}
-                      values={configurations}
-                      onChange={onConfigurationChange}
-                    />
-                  </div>
-                </div>
-              )
-            );
-          })()}
+        {/* Unified Configuration Form */}
+        {(() => {
+          // Get configuration display data using utility function
+          const { configurationsToShow, configTitle } = getConfigurationDisplay(
+            selectedNodeType || undefined,
+            node
+          );
 
-        {/* Current Configuration Form (if no new node type selected) */}
-        {!selectedNodeType &&
-          node.configurations &&
-          Object.keys(node.configurations).length > 0 && (
-            <div className="space-y-4">
-              <h4 className="text-md font-medium text-slate-700 dark:text-slate-300">
-                Configuration Settings
-              </h4>
-              <div className="border rounded-lg p-4 dark:border-gray-700">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(node.configurations).map(([key, value]) => (
-                    <div key={key} className="space-y-1.5">
-                      <label className="text-xs font-medium text-slate-600 dark:text-slate-400 capitalize">
-                        {key.replace(/([A-Z])/g, " $1").trim()}:
-                      </label>
-                      {typeof value === "boolean" ? (
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={configurations[key] as boolean}
-                            onChange={(e) =>
-                              onConfigurationChange(key, e.target.checked)
-                            }
-                            className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-1 dark:bg-gray-700 dark:border-gray-600"
-                          />
-                          <span className="text-xs text-slate-600 dark:text-slate-400">
-                            {configurations[key] ? "Yes" : "No"}
-                          </span>
-                        </div>
-                      ) : typeof value === "number" ? (
-                        <input
-                          type="number"
-                          value={configurations[key] as number}
-                          onChange={(e) => {
-                            const numValue =
-                              e.target.value === ""
-                                ? 0
-                                : Number(e.target.value);
-                            onConfigurationChange(key, numValue);
-                          }}
-                          className="w-full px-2 py-1 text-sm border border-slate-200 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          min="0"
-                        />
-                      ) : (
-                        <input
-                          type="text"
-                          value={String(configurations[key] || "")}
-                          onChange={(e) =>
-                            onConfigurationChange(key, e.target.value)
-                          }
-                          className="w-full px-2 py-1 text-sm border border-slate-200 dark:border-slate-600 rounded bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        />
-                      )}
-                    </div>
-                  ))}
+          return (
+            configurationsToShow &&
+            Object.keys(configurationsToShow).length > 0 && (
+              <div className="space-y-4">
+                <div className="border rounded-lg p-4 dark:border-gray-700">
+                  <ConfigurationForm
+                    configurations={configurationsToShow}
+                    values={configurations}
+                    onChange={onConfigurationChange}
+                    twoCols={true}
+                    title={configTitle}
+                  />
                 </div>
               </div>
-            </div>
-          )}
+            )
+          );
+        })()}
 
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4">

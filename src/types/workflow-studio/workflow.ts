@@ -22,7 +22,7 @@ export interface Node {
   label: string;
   x: number;
   y: number;
-  type: NodeType;
+  position: NodeType;
   icon: string;
   configurations?: Record<string, string | number | boolean>;
 }
@@ -72,10 +72,11 @@ export interface NodeConfiguration {
 // Complete node option definition with all metadata
 export interface NodeOption {
   id: string;
+  type: string;
   label: string;
   icon: string;
   category: string;
-  type: NodeType;
+  position: NodeType;
   component: ReactNode;
   configurations: NodeConfiguration;
 }

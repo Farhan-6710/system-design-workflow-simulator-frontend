@@ -76,7 +76,7 @@ export const useWorkflowStore = create<WorkflowStore>()(
             label: nodeType?.label || `Node ${newId}`,
             x: position.x,
             y: position.y,
-            type: nodePositionType,
+            position: nodePositionType,
             icon: nodeType?.icon || "Circle",
             configurations: nodeType?.configurations || {},
           };

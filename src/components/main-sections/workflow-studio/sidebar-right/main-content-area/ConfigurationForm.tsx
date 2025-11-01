@@ -14,17 +14,59 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   configurations,
   values,
   onChange,
+  twoCols = false,
+  title = "Configuration",
 }) => {
   const renderField = (field: NodeConfigField) => {
     const value = values[field.key] ?? field.defaultValue;
+    const baseSpacing = "flex flex-col gap-1.5";
 
     switch (field.type) {
       case "number":
+        // Special handling for request size field - show unit from requestSizeUnit
+        if (field.key === "requestSize") {
+          const unit = (values["requestSizeUnit"] as string) || "KB";
+
+          return (
+            <div key={field.key} className={baseSpacing}>
+              <label
+                htmlFor={field.key}
+                className={
+                  twoCols
+                    ? "text-xs font-medium text-slate-600 dark:text-slate-400"
+                    : "text-sm font-medium text-slate-600 dark:text-slate-400"
+                }
+              >
+                {field.label} ({unit})
+              </label>
+              <Input
+                id={field.key}
+                type="number"
+                value={value as number}
+                min={field.min}
+                max={field.max}
+                onChange={(e) =>
+                  onChange(
+                    field.key,
+                    parseFloat(e.target.value) || (field.defaultValue as number)
+                  )
+                }
+                className="w-full"
+              />
+            </div>
+          );
+        }
+
+        // Default number field handling
         return (
-          <div key={field.key} className="space-y-2">
+          <div key={field.key} className={baseSpacing}>
             <label
               htmlFor={field.key}
-              className="text-sm font-medium text-slate-600 dark:text-slate-400"
+              className={
+                twoCols
+                  ? "text-xs font-medium text-slate-600 dark:text-slate-400"
+                  : "text-sm font-medium text-slate-600 dark:text-slate-400"
+              }
             >
               {field.label} {field.unit && `(${field.unit})`}
             </label>
@@ -44,13 +86,16 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             />
           </div>
         );
-
       case "text":
         return (
-          <div key={field.key} className="space-y-2">
+          <div key={field.key} className={baseSpacing}>
             <label
               htmlFor={field.key}
-              className="text-sm font-medium text-slate-600 dark:text-slate-400"
+              className={
+                twoCols
+                  ? "text-xs font-medium text-slate-600 dark:text-slate-400"
+                  : "text-sm font-medium text-slate-600 dark:text-slate-400"
+              }
             >
               {field.label}
             </label>
@@ -66,10 +111,14 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
       case "select":
         return (
-          <div key={field.key} className="space-y-2">
+          <div key={field.key} className={baseSpacing}>
             <label
               htmlFor={field.key}
-              className="text-sm font-medium text-slate-600 dark:text-slate-400"
+              className={
+                twoCols
+                  ? "text-xs font-medium text-slate-600 dark:text-slate-400"
+                  : "text-sm font-medium text-slate-600 dark:text-slate-400"
+              }
             >
               {field.label}
             </label>
@@ -105,7 +154,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             />
             <label
               htmlFor={field.key}
-              className="text-sm font-medium text-slate-600 dark:text-slate-400"
+              className={
+                twoCols
+                  ? "text-xs font-medium text-slate-600 dark:text-slate-400"
+                  : "text-sm font-medium text-slate-600 dark:text-slate-400"
+              }
             >
               {field.label}
             </label>
@@ -120,9 +173,13 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   return (
     <div className="space-y-4">
       <h4 className="text-md font-semibold text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-600 pb-2">
-        Configuration
+        {title}
       </h4>
-      <div className="space-y-4">
+      <div
+        className={
+          twoCols ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"
+        }
+      >
         {Object.values(configurations).map(renderField)}
       </div>
     </div>

@@ -9,7 +9,7 @@ const createNodeFromOption = (
   label: string,
   x: number,
   y: number,
-  type: "start" | "process" | "end" = "process"
+  position: "start" | "process" | "end" = "process"
 ): Node => {
   const nodeOption = nodeOptions.find((option) => option.id === nodeOptionId);
   if (!nodeOption) {
@@ -29,7 +29,7 @@ const createNodeFromOption = (
     label,
     x,
     y,
-    type,
+    position,
     icon: nodeOption.icon,
     configurations: defaultConfigurations,
   };

@@ -69,7 +69,7 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
         const nodeData = {
           label: nodeType.label,
           icon: nodeType.icon,
-          type: nodeType.type, // Use predefined type from nodeOptions
+          type: nodeType.position, // Use predefined type from nodeOptions
           configurations: configurations,
         };
 
@@ -92,12 +92,12 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
   const allSelectionsMade = selectedCategory && selectedNewNodeType;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
         Add Node
       </h3>
       {/* Step 1: Category Selection */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
           Step 1: Select Category
         </label>
@@ -116,7 +116,7 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
       </div>
       {/* Step 2: Node Type Selection */}
       {selectedCategory && (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
             Step 2: Select Node Type
           </label>
@@ -136,9 +136,9 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
                       <span className="text-sm font-medium">
                         {nodeType.label}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      {/* <span className="text-xs text-slate-500">
                         {nodeType.category}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </SelectItem>

@@ -132,4 +132,6 @@ export interface ConfigurationFormProps {
   configurations: NodeConfiguration;
   values: Record<string, string | number | boolean>;
   onChange: (key: string, value: string | number | boolean) => void;
+  twoCols?: boolean; // Optional prop to enable 2-column layout
+  title?: string; // Optional custom title
 }

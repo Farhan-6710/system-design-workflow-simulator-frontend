@@ -38,17 +38,24 @@ const NodeDetailsConfiguration: React.FC<NodeDetailsConfigurationProps> = ({
           </h4>
           <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-600">
             <div className="space-y-2">
-              {Object.entries(node.configurations!).map(([key, value]) => (
+              {Object.entries(node.configurations!)
+                .filter(([key]) => key !== "requestSizeUnit") // Hide requestSizeUnit as separate field
+                .map(([key, value]) => (
                 <div key={key} className="flex items-center justify-between">
                   <span className="text-sm font-medium text-slate-600 dark:text-slate-400 capitalize">
-                    {key.replace(/([A-Z])/g, " $1").trim()}:
+                    {key === "requestSize" 
+                      ? `Request Size (${node.configurations!["requestSizeUnit"] || "KB"})`
+                      : key.replace(/([A-Z])/g, " $1").trim()
+                    }:
                   </span>
                   <span className="text-sm text-slate-800 dark:text-slate-200">
                     {typeof value === "boolean"
                       ? value
                         ? "Yes"
                         : "No"
-                      : value}
+                      : key === "requestSize" 
+                        ? `${value} ${node.configurations!["requestSizeUnit"] || "KB"}`
+                        : value}
                   </span>
                 </div>
               ))}
