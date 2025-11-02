@@ -120,13 +120,13 @@ export const getNodeClasses = (
   isDragging: boolean
 ): string => {
   const baseClasses = isDragging
-    ? "absolute w-40 rounded-2xl transform cursor-grabbing"
-    : "absolute w-40 rounded-2xl transition-all transform cursor-grab active:cursor-grabbing";
+    ? "absolute w-20 rounded-lg transform cursor-grabbing"
+    : "absolute w-20 rounded-md transition-all transform cursor-grab active:cursor-grabbing";
 
   const dragClasses = isDragging ? "active:scale-105" : "";
   const selectionClasses = isSelected
-    ? "ring-2 ring-blue-500 shadow-2xl shadow-blue-500/50"
-    : "shadow-lg hover:shadow-xl";
+    ? "ring-1 ring-blue-500 shadow-xl shadow-blue-500/50"
+    : "shadow-md hover:shadow-lg";
 
   const backgroundClasses =
     nodeType === "start" || nodeType === "end"
@@ -134,8 +134,8 @@ export const getNodeClasses = (
       : "bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-800 dark:to-slate-900";
 
   const borderClasses = isSelected
-    ? "border-2 border-blue-500"
-    : "border-2 border-slate-400 dark:border-slate-500";
+    ? "border border-blue-500"
+    : "border border-slate-400 dark:border-slate-500";
 
   return `${baseClasses} ${dragClasses} ${selectionClasses} ${backgroundClasses} ${borderClasses}`;
 };

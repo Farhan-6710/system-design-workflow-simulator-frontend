@@ -3,8 +3,8 @@
  * Centralized configuration for consistent zoom/pan behavior across the application
  *
  * ZOOM SYSTEM OVERVIEW:
- * - Users see: 67% (min) → 100% (default) → 200% (max)
- * - Internally: 1.0 (min) → 1.5 (baseline) → 3.0 (max)
+ * - Users see: 67% (min) → 100% (default) → 333% (max)
+ * - Internally: 1.0 (min) → 1.5 (baseline) → 5.0 (max)
  * - Visual faking allows smooth zoom-out while maintaining boundaries
  */
 
@@ -16,7 +16,7 @@
 // INTERNAL SCALE    →    DISPLAY TO USER
 // 1.0               →    67% (minimum zoom out)
 // 1.5               →    100% (default/baseline)
-// 3.0               →    200% (maximum zoom in)
+// 5.0               →    333% (maximum zoom in)
 //
 // Why? Starting at 1.5x internally (ZOOM_BASELINE = 1.5) gives users room to zoom out to 67%
 // while keeping content boundaries intact and providing smooth zoom experience.
@@ -27,14 +27,14 @@
 // ============================================================================
 
 // Zoom baseline - the internal scale that displays as 100% to users (MOST IMPORTANT - DEFAULT UI STATE)
-export const ZOOM_BASELINE = 1.5;
+export const ZOOM_BASELINE = 1.75;
 
 // Workflow visual scale - for static workflow display (WHAT USER SEES INITIALLY)
 export const WORKFLOW_LAYER_INITIAL_SCALE = 0.5; // Makes workflow content render at proper visual size
 
 // Zoom range constraints (internal values)
 export const MIN_ZOOM = 1.0; // Shows as 67% to user (1.0 ÷ 1.5 ≈ 0.67 = 67%) - No panning
-export const MAX_ZOOM = 5.0; // Shows as 200% to user (3.0 ÷ 1.5 = 2.0 = 200%) - Full panning
+export const MAX_ZOOM = 7; // Shows as 333% to user (5.0 ÷ 1.5 ≈ 3.33 = 333%) - Full panning
 
 // Zoom interaction settings
 export const ZOOM_STEP = 0.1; // Amount to zoom in/out per step
@@ -94,17 +94,17 @@ export const GRID_OPACITY = 0.3;
 // ============================================================================
 
 // Node dimensions
-export const NODE_SIZE = 55; // Node width and height in pixels
+export const NODE_SIZE = 27.5; // Node width and height in pixels (2x smaller than original 55px)
 
-// Output port positioning (for starting connections)
-export const OUTPUT_PORT_OFFSET_X = 27.5; // Half of NODE_SIZE (right edge center)
+// Port offset positions (adjusted for 2x smaller nodes)
+export const OUTPUT_PORT_OFFSET_X = 13.75; // Half of NODE_SIZE (right edge center) - 27.5px ÷ 2
 export const OUTPUT_PORT_OFFSET_Y = 0; // Vertical center of node
 
-// Input port positioning (for ending connections)
-export const INPUT_PORT_OFFSET_X = -27.5; // Negative half of NODE_SIZE (left edge center)
+// Input port offsets (left side of node)
+export const INPUT_PORT_OFFSET_X = -13.75; // Negative half of NODE_SIZE (left edge center) - -(27.5px ÷ 2)
 export const INPUT_PORT_OFFSET_Y = 0; // Vertical center of node
 
-// Temp line constants (for connection previews)
+// Temporary line offsets (for connecting while dragging)
 export const TEMP_LINE_START_OFFSET_X = OUTPUT_PORT_OFFSET_X; // Same as output port
 export const TEMP_LINE_START_OFFSET_Y = OUTPUT_PORT_OFFSET_Y; // Same as output port
 export const TEMP_LINE_END_OFFSET_X = 0; // Follows cursor exactly

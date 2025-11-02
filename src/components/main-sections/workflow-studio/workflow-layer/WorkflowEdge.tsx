@@ -49,7 +49,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
       <path
         d={path}
         stroke={isSelected ? "#ef4444" : "#60a5fa"}
-        strokeWidth="6"
+        strokeWidth="3"
         fill="none"
         strokeLinecap="round"
         strokeOpacity="0"
@@ -61,7 +61,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
       <path
         d={path}
         stroke="transparent"
-        strokeWidth="12"
+        strokeWidth="6"
         fill="none"
         strokeLinecap="round"
         onClick={handleEdgeClick}
@@ -83,7 +83,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
             ? "var(--edge-bg-stroke)"
             : "#8851e0"
         }
-        strokeWidth={isSelected ? "4" : "3"}
+        strokeWidth={isSelected ? "2" : "1.5"}
         fill="none"
         strokeLinecap="round"
         pointerEvents="none"
@@ -96,7 +96,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
           d={path}
           className={edgeStyle.className}
           stroke={edgeStyle.gradient}
-          strokeWidth="2.5"
+          strokeWidth="1.25"
           fill="none"
           strokeLinecap="round"
           pointerEvents="none"
