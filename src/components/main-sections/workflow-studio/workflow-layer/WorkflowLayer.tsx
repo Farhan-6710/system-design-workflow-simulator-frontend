@@ -4,9 +4,9 @@ import { WorkflowNode } from "./WorkflowNode";
 import { WorkflowEdge } from "./WorkflowEdge";
 import { TempConnectionLine } from "./TempConnectionLine";
 import { useWorkflowAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
-import { getWorkflowTransformStyle } from "@/utils/workflow-studio/workflow";
 import { NodeHandlers, EdgeHandlers } from "@/types/workflow-studio/workflow";
 import { useWorkflowStore } from "@/stores/workflowStore";
+import { NODE_SIZE } from "@/constants/canvas";
 
 interface WorkflowLayerProps {
   nodeHandlers: NodeHandlers;
@@ -33,7 +33,6 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
       }
 
       const padding = 500; // Extra padding around content
-      const nodeSize = 200; // Approximate node size for bounds calculation
 
       let minX = Infinity;
       let minY = Infinity;
@@ -41,10 +40,10 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
       let maxY = -Infinity;
 
       nodes.forEach((node) => {
-        minX = Math.min(minX, node.x - nodeSize / 2);
-        minY = Math.min(minY, node.y - nodeSize / 2);
-        maxX = Math.max(maxX, node.x + nodeSize / 2);
-        maxY = Math.max(maxY, node.y + nodeSize / 2);
+        minX = Math.min(minX, node.x - NODE_SIZE / 2);
+        minY = Math.min(minY, node.y - NODE_SIZE / 2);
+        maxX = Math.max(maxX, node.x + NODE_SIZE / 2);
+        maxY = Math.max(maxY, node.y + NODE_SIZE / 2);
       });
 
       return {
@@ -63,11 +62,11 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
       <div
         ref={ref}
         className="absolute inset-0 w-full h-full"
-        style={{ ...globalAnimationStyle, ...getWorkflowTransformStyle() }}
+        style={{ ...globalAnimationStyle }}
       >
         {/* SVG for edges - transform handled by parent container */}
         <svg
-          className="absolute SVG-for-edges"
+          className="SVG-for-edges absolute"
           style={{
             left: `${bounds.minX}px`,
             top: `${bounds.minY}px`,

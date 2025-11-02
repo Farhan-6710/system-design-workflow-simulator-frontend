@@ -52,7 +52,7 @@ const SidebarRight: React.FC<SidebarRightProps> = ({
         width: sidebarExpanded ? 340 : 74,
       }}
       transition={{ duration: 0.25, ease: "easeInOut" }}
-      className="relative bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col overflow-visible"
+      className="absolute top-0 right-0 h-full z-30 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col overflow-visible"
     >
       {/* Header */}
       <SidebarHeader sidebarExpanded={sidebarExpanded} />

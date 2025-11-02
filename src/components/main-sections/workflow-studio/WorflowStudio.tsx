@@ -67,6 +67,8 @@ const WorkflowEditorContent: React.FC = () => {
     setFullScreen(false);
   };
 
+  const marginForSidebar = isSidebarRightExpanded ? "mr-[340px]" : "mr-[74px]";
+
   // Confirmation modals component to be reused
   const confirmationModals = (
     <>
@@ -103,56 +105,73 @@ const WorkflowEditorContent: React.FC = () => {
           ref={containerRef}
         >
           {/* Header */}
-          {!isFullScreen && <WorkflowHeader onAddNode={addNode} />}
+          {!isFullScreen && (
+            <div className={cn("transition-all duration-300 ease-in-out", marginForSidebar)}>
+              <WorkflowHeader onAddNode={addNode} />
+            </div>
+          )}
 
-          {/* Workflow Canvas - takes remaining space */}
+          {/* Workflow Canvas - takes remaining space and extends beyond margins */}
           <div className="flex-1 flex relative">
-            <WorkflowCanvas
-              ref={canvasRef}
-              annotationLayerRef={annotationLayerRef}
-            />
-
-            {/* Dock Navigation */}
-            <DockComponent
-              collapsible={false}
-              position="top-left"
-              direction="vertical"
-              tooltipPosition="right"
-              items={canvasDockItems}
-              onItemClick={handleWorkflowDockItemClick}
-              activeItem={activeTool}
-            />
-
-            {/* Run Button */}
-            <div className="absolute bottom-4 right-4 z-20">
-              <RunButton runCode={runCode} onToggle={setRunCode} />
+            {/* Canvas takes full width, ignoring margins */}
+            <div className="absolute inset-0 w-full h-full z-0">
+              <WorkflowCanvas
+                ref={canvasRef}
+                annotationLayerRef={annotationLayerRef}
+              />
             </div>
 
-            {/* Zoom Indicator */}
-            <div
-              className={cn(
-                isFullScreen ? "top-24" : "top-4",
-                "absolute right-4 z-20"
-              )}
-            >
-              <ZoomIndicator
-                currentZoom={canvasControls.transform.scale}
-                minZoom={MIN_ZOOM}
-                maxZoom={MAX_ZOOM}
-                onZoomChange={canvasControls.setZoom}
-                onResetZoom={canvasControls.resetViewport}
-              />
+            {/* UI elements with responsive margins */}
+            <div className="relative w-full h-full z-10 pointer-events-none">
+              {/* Dock Navigation */}
+              <div className={cn("pointer-events-auto transition-all duration-300 ease-in-out", marginForSidebar)}>
+                <DockComponent
+                  collapsible={false}
+                  position="top-left"
+                  direction="vertical"
+                  tooltipPosition="right"
+                  items={canvasDockItems}
+                  onItemClick={handleWorkflowDockItemClick}
+                  activeItem={activeTool}
+                />
+              </div>
+
+              {/* Run Button */}
+              <div className={cn("absolute bottom-4 right-4 z-20 pointer-events-auto transition-all duration-300 ease-in-out", marginForSidebar)}>
+                <RunButton runCode={runCode} onToggle={setRunCode} />
+              </div>
+
+              {/* Zoom Indicator */}
+              <div
+                className={cn(
+                  isFullScreen ? "top-24" : "top-4",
+                  "absolute right-4 z-20 pointer-events-auto transition-all duration-300 ease-in-out",
+                  marginForSidebar
+                )}
+              >
+                <ZoomIndicator
+                  currentZoom={canvasControls.transform.scale}
+                  minZoom={MIN_ZOOM}
+                  maxZoom={MAX_ZOOM}
+                  onZoomChange={canvasControls.setZoom}
+                  onResetZoom={canvasControls.resetViewport}
+                />
+              </div>
             </div>
           </div>
 
           {/* Footer */}
           {!isFullScreen && (
-            <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
+            <div className={cn("transition-all duration-300 ease-in-out", marginForSidebar)}>
+              <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
+            </div>
           )}
         </div>
 
-        {/* Right Sidebar - overlay */}
-        <SidebarRight onAddNode={addNode} onUpdateNode={updateNode} />
+        {/* Right Sidebar - absolutely positioned overlay */}
+        <div className="absolute top-0 right-0 h-full z-30">
+          <SidebarRight onAddNode={addNode} onUpdateNode={updateNode} />
+        </div>
       </div>
     </WorkflowProvider>
   );
