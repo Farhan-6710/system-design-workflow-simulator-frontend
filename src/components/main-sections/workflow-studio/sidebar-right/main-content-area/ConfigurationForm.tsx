@@ -21,6 +21,12 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     const value = values[field.key] ?? field.defaultValue;
     const baseSpacing = "flex flex-col gap-1.5";
 
+    // Conditional display: only show authLatency when authEnabled is true
+    if (field.key === "authLatency") {
+      const authEnabled = !!values["authEnabled"];
+      if (!authEnabled) return null;
+    }
+
     switch (field.type) {
       case "number":
         // Special handling for request size field - show unit from requestSizeUnit
