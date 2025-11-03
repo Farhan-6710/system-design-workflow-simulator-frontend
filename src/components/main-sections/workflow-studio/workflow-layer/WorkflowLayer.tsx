@@ -61,7 +61,7 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
     return (
       <div
         ref={ref}
-        className="absolute inset-0 w-full h-full"
+        className="workflow-layer absolute inset-0 w-full h-full"
         style={{ ...globalAnimationStyle }}
       >
         {/* SVG for edges - transform handled by parent container */}

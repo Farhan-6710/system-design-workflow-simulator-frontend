@@ -13,6 +13,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
   isSelected = false,
 }) => {
   const requestsPerSecond = useWorkflowStore((state) => state.requestsPerSecond);
+  
   const path = calculatePortToPortPath(
     sourceNode.x,
     sourceNode.y,

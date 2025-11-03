@@ -83,7 +83,7 @@ export const AnnotationCanvas = forwardRef<
   return (
     <div
       ref={containerRef}
-      className={`annotation-canvas-container absolute inset-0 w-full h-full overflow-hidden ${
+      className={`annotation-layer absolute inset-0 w-full h-full overflow-hidden ${
         isFullScreen ? "z-50" : "z-20"
       } ${className}`}
       style={style}

@@ -42,27 +42,27 @@ export const initialNodes: Node[] = [
   // API Gateway - keep as is (15px push from original)
   createNodeFromOption("api-gateway", 2, "Gateway", 465, 280), // 450 + 15
   // Services Layer - push 40px right (was 20px, now +20px more)
-  createNodeFromOption("service", 3, "Service", 555, 190), // 515 + 40
+  // createNodeFromOption("service", 3, "Service", 555, 190), // 515 + 40
   createNodeFromOption("service", 4, "Service", 555, 280), // 515 + 40
-  createNodeFromOption("service", 5, "Service", 555, 370), // 515 + 40
+  // createNodeFromOption("service", 5, "Service", 555, 370), // 515 + 40
   // Load Balancers - push 45px right (was 25px, now +20px more)
-  createNodeFromOption("load-balancer", 6, "User LB", 625, 190), // 580 + 45
+  // createNodeFromOption("load-balancer", 6, "User LB", 625, 190), // 580 + 45
   createNodeFromOption("load-balancer", 7, "Order LB", 625, 280), // 580 + 45
-  createNodeFromOption("load-balancer", 8, "Pay LB", 625, 370), // 580 + 45
+  // createNodeFromOption("load-balancer", 8, "Pay LB", 625, 370), // 580 + 45
   // Servers - push 50px right (was 30px, now +20px more)
-  createNodeFromOption("sync-compute", 9, "Server", 695, 160), // 645 + 50
-  createNodeFromOption("sync-compute", 10, "Server", 695, 190), // 645 + 50
-  createNodeFromOption("sync-compute", 11, "Server", 695, 220), // 645 + 50
+  // createNodeFromOption("sync-compute", 9, "Server", 695, 160), // 645 + 50
+  // createNodeFromOption("sync-compute", 10, "Server", 695, 190), // 645 + 50
+  // createNodeFromOption("sync-compute", 11, "Server", 695, 220), // 645 + 50
   createNodeFromOption("sync-compute", 12, "Server", 695, 250), // 645 + 50
   createNodeFromOption("sync-compute", 13, "Server", 695, 280), // 645 + 50
   createNodeFromOption("sync-compute", 14, "Server", 695, 310), // 645 + 50
-  createNodeFromOption("sync-compute", 15, "Server", 695, 340), // 645 + 50
-  createNodeFromOption("sync-compute", 16, "Server", 695, 370), // 645 + 50
-  createNodeFromOption("sync-compute", 17, "Server", 695, 400), // 645 + 50
+  // createNodeFromOption("sync-compute", 15, "Server", 695, 340), // 645 + 50
+  // createNodeFromOption("sync-compute", 16, "Server", 695, 370), // 645 + 50
+  // createNodeFromOption("sync-compute", 17, "Server", 695, 400), // 645 + 50
   // Databases - push 55px right (was 35px, now +20px more)
-  createNodeFromOption("database", 18, "User DB", 760, 190), // 705 + 55
+  // createNodeFromOption("database", 18, "User DB", 760, 190), // 705 + 55
   createNodeFromOption("database", 19, "Order DB", 760, 280), // 705 + 55
-  createNodeFromOption("database", 20, "Pay DB", 760, 370), // 705 + 55
+  // createNodeFromOption("database", 20, "Pay DB", 760, 370), // 705 + 55
 ];
 
 // Initial edges connecting the nodes - using UUID format for consistency

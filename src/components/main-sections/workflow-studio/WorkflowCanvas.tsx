@@ -60,7 +60,7 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
 
         {/* Transform container - only workflow layer scales/moves */}
         <div
-          className="flex justify-center items-center workflow-and-annotation-container absolute z-20 inset-0"
+          className="workflow-and-annotation-container flex justify-center items-center  absolute z-20 inset-0"
           style={getCanvasTransformStyle()}
         >
           {/* Workflow Layer - handles nodes, edges */}

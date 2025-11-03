@@ -7,7 +7,6 @@ import { useEffect, useRef, useCallback } from "react";
 import { useAnnotationStore } from "@/stores/annotationStore";
 import { useWorkflowStore } from "@/stores/workflowStore";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { WORKFLOW_LAYER_INITIAL_SCALE } from "@/constants/canvas";
 import {
   createNodeHandlers,
   createEdgeHandlers,
@@ -61,12 +60,8 @@ export const useWorkflowCanvasEvents = ({
       const canvasX = (rawX - translateX) / scale;
       const canvasY = (rawY - translateY) / scale;
 
-      // Account for WorkflowLayer's fixed scale (WORKFLOW_LAYER_INITIAL_SCALE = 0.5)
-      // The WorkflowLayer has an additional scale(0.5) transform applied to it
-      const workflowX = canvasX / WORKFLOW_LAYER_INITIAL_SCALE;
-      const workflowY = canvasY / WORKFLOW_LAYER_INITIAL_SCALE;
-
-      return { x: workflowX, y: workflowY };
+      // No additional scaling needed since WorkflowLayer has no scale transform applied
+      return { x: canvasX, y: canvasY };
     },
     [canvasRef, canvasTransform]
   );
