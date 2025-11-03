@@ -18,9 +18,9 @@ export const TempConnectionLine = () => {
           tempLine.y2
         }`}
         stroke="#f97316"
-        strokeWidth="2"
+        strokeWidth="1"
         fill="none"
-        strokeDasharray="5,5"
+        strokeDasharray="2.5,2.5"
         opacity="0.7"
         strokeLinecap="round"
       />

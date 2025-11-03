@@ -2,6 +2,7 @@ import { WorkflowEdgeProps } from "@/types/workflow-studio";
 import { calculatePortToPortPath } from "@/utils/workflow-studio/workflow";
 import { useEdgeAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
 import "@/styles/workflowAnimations.css";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
   edge,
@@ -11,6 +12,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
   runCode = false,
   isSelected = false,
 }) => {
+  const requestsPerSecond = useWorkflowStore((state) => state.requestsPerSecond);
   const path = calculatePortToPortPath(
     sourceNode.x,
     sourceNode.y,
@@ -91,7 +93,7 @@ export const WorkflowEdge: React.FC<WorkflowEdgeProps> = ({
       />
 
       {/* Animated flowing line - only render if runCode is true */}
-      {runCode && (
+      {runCode && requestsPerSecond > 0 && (
         <path
           d={path}
           className={edgeStyle.className}

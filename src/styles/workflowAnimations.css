@@ -6,7 +6,7 @@
     stroke-dashoffset: 0;
   }
   100% {
-    stroke-dashoffset: -20;
+    stroke-dashoffset: -10;
   }
 }
 
@@ -91,19 +91,19 @@
 
 /* Optimized edge animation classes - NO EXPENSIVE FILTERS */
 .animated-edge {
-  stroke-dasharray: 5 15;
+  stroke-dasharray: 2.5 7.5;
   stroke: #3b82f6;
   /* Removed expensive drop-shadow filter */
 }
 
 .animated-edge-yellow {
-  stroke-dasharray: 5 15;
+  stroke-dasharray: 2.5 7.5;
   stroke: #f59e0b;
   /* Removed expensive drop-shadow filter */
 }
 
 .animated-edge-red {
-  stroke-dasharray: 5 15;
+  stroke-dasharray: 2.5 7.5;
   stroke: #ef4444;
   /* Removed expensive drop-shadow filter */
 }

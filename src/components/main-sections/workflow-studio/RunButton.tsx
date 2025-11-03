@@ -4,6 +4,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 import { Play, Square } from "lucide-react";
+import { useWorkflowStore } from "@/stores/workflowStore";
+import { toast } from "sonner";
 
 interface RunButtonProps {
   runCode: boolean;
@@ -11,6 +13,28 @@ interface RunButtonProps {
 }
 
 const RunButton: React.FC<RunButtonProps> = ({ runCode, onToggle }) => {
+  const requestsPerSecond = useWorkflowStore(
+    (state) => state.requestsPerSecond
+  );
+
+  const handleToggle = (checked: boolean) => {
+    if (checked && requestsPerSecond < 1) {
+      toast.error("0 requests per sec found", {
+        description: "Please increase client requests per sec",
+        duration: 3000,
+      });
+      onToggle(checked);
+      return;
+    }
+
+    if (checked && requestsPerSecond > 0) {
+      toast.success(`System running at ${requestsPerSecond} requests per sec`, {
+        duration: 2000,
+      });
+    }
+
+    onToggle(checked);
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,7 +88,7 @@ const RunButton: React.FC<RunButtonProps> = ({ runCode, onToggle }) => {
         </span>
         <Switch
           checked={runCode}
-          onCheckedChange={onToggle}
+          onCheckedChange={handleToggle}
           className="data-[state=checked]:bg-green-500"
         />
         <span

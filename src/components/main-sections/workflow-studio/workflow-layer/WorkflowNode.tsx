@@ -8,6 +8,7 @@ import {
 import { useNodeAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
 import { getIconComponent, getIconColor } from "./nodeUtils";
 import "@/styles/workflowAnimations.css";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
   node,
@@ -16,9 +17,10 @@ export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
   handlers,
 }) => {
   const { glowConfig, shouldGlow } = useNodeAnimation();
+  const requestsPerSecond = useWorkflowStore((state) => state.requestsPerSecond);
 
   // Get the glow class when node should glow
-  const glowClassName = shouldGlow ? glowConfig.className : "";
+  const glowClassName = shouldGlow && requestsPerSecond > 0 ? glowConfig.className : "";
 
   // Get the icon component
   const IconComponent = getIconComponent(node.icon);
