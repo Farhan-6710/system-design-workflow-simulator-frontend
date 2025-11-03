@@ -55,6 +55,13 @@ export const useNodeDetailsView = (node: Node) => {
     }));
   };
 
+  // Handler to replace configurations completely
+  const replaceConfigurations = (
+    newConfigurations: Record<string, string | number | boolean>
+  ) => {
+    setConfigurations(newConfigurations);
+  };
+
   // Save handlers
   const handleSave = () => {
     if (updateNode) {
@@ -104,6 +111,7 @@ export const useNodeDetailsView = (node: Node) => {
 
     // Configuration handlers
     handleConfigurationChange,
+    replaceConfigurations,
 
     // Save handlers
     handleSave,
@@ -132,6 +140,9 @@ export const useNodeEditModal = (
     key: string,
     value: string | number | boolean
   ) => void,
+  replaceConfigurations: (
+    newConfigurations: Record<string, string | number | boolean>
+  ) => void,
   onClose?: () => void
 ) => {
   // Get store actions for modal-specific operations
@@ -149,26 +160,27 @@ export const useNodeEditModal = (
     }
   }, [isOpen]);
 
-  // Node type change handler
+  // Node type change handler - automatically brings its own configurations
   const handleNodeTypeChange = (nodeType: string) => {
     setSelectedNodeType(nodeType);
 
-    // Set default configurations for the selected node type
+    // Find the new node type configuration
     const nodeOption = nodeOptions.find((option) => option.id === nodeType);
     if (nodeOption) {
       // Update the label to match the new node type
       onLabelChange(nodeOption.label);
 
-      // Set default configurations
+      // Automatically replace with new node type's default configurations
       if (nodeOption.configurations) {
         const defaultConfigs: Record<string, string | number | boolean> = {};
         Object.entries(nodeOption.configurations).forEach(([key, config]) => {
           defaultConfigs[key] = config.defaultValue;
         });
-        // Apply all default configurations at once
-        Object.entries(defaultConfigs).forEach(([key, value]) => {
-          onConfigurationChange(key, value);
-        });
+        // Replace all configurations with the new node type's defaults
+        replaceConfigurations(defaultConfigs);
+      } else {
+        // If no configurations, clear all configurations
+        replaceConfigurations({});
       }
     }
   };

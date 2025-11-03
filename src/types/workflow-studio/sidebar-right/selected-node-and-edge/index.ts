@@ -15,6 +15,9 @@ export interface NodeEditModalProps {
     key: string,
     value: string | number | boolean
   ) => void;
+  onReplaceConfigurations: (
+    newConfigurations: Record<string, string | number | boolean>
+  ) => void;
   onSave: () => void;
 }
 

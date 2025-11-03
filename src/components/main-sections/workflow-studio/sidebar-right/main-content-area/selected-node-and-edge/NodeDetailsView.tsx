@@ -21,6 +21,7 @@ const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
 
     // Configuration handlers
     handleConfigurationChange,
+    replaceConfigurations,
 
     // Save handlers
     handleSave,
@@ -74,6 +75,7 @@ const NodeDetailsView: React.FC<NodeDetailsViewProps> = ({ node }) => {
         onLabelChange={setEditingLabel}
         configurations={configurations}
         onConfigurationChange={handleConfigurationChange}
+        onReplaceConfigurations={replaceConfigurations}
         onSave={handleSave}
       />
     </div>

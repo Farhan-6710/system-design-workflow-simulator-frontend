@@ -24,6 +24,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
   onLabelChange,
   configurations,
   onConfigurationChange,
+  onReplaceConfigurations,
   onSave,
 }) => {
   // Use the modal-specific hook for node type changes and modal delete operations
@@ -39,6 +40,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
     node,
     onLabelChange,
     onConfigurationChange,
+    onReplaceConfigurations,
     onClose
   );
 
