@@ -9,6 +9,9 @@
 
 import { Node, NodeConfiguration } from "../workflow";
 
+// Export selected-node-and-edge specific types
+export * from "./selected-node-and-edge";
+
 // ======================================================================
 // SIDEBAR STRUCTURE TYPES
 // ======================================================================

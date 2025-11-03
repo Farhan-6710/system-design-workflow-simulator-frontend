@@ -361,6 +361,8 @@ const AiAssistantContent = () => {
         cancelText="Cancel"
         onConfirm={confirmClearChat}
         variant="destructive"
+        toastMessage="Chat history cleared"
+        toastDescription="All chat messages have been deleted"
       />
     </div>
   );

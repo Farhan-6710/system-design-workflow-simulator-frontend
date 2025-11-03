@@ -83,6 +83,8 @@ export function UserAvatar() {
         cancelText="Cancel"
         onConfirm={handleSignOut}
         variant="destructive"
+        toastMessage="Logged out successfully"
+        toastDescription="You have been signed out of your account"
       />
     </DropdownMenu>
   );

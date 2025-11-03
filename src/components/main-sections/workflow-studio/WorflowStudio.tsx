@@ -17,6 +17,7 @@ import ZoomIndicator from "./ZoomIndicator";
 import { MAX_ZOOM, MIN_ZOOM } from "@/stores/workflowStore";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const WorkflowEditorContent: React.FC = () => {
   // Direct store selectors for better performance (single subscriptions)
@@ -29,7 +30,9 @@ const WorkflowEditorContent: React.FC = () => {
   const activeTool = useAnnotationStore((state) => state.activeTool);
   const isFullScreen = useWorkflowStore((state) => state.isFullScreen);
   const setFullScreen = useWorkflowStore((state) => state.setFullScreen);
-  const isSidebarRightExpanded = useWorkflowStore((state) => state.sidebarRightExpanded);
+  const isSidebarRightExpanded = useWorkflowStore(
+    (state) => state.sidebarRightExpanded
+  );
 
   console.log("nodes:", nodes);
   console.log("edges", edges);
@@ -81,6 +84,8 @@ const WorkflowEditorContent: React.FC = () => {
         cancelText="Cancel"
         onConfirm={handleClearConfirm}
         variant="destructive"
+        toastMessage="All annotations cleared"
+        toastDescription="The canvas has been cleared of all annotations"
       />
 
       <ConfirmationModal
@@ -92,6 +97,8 @@ const WorkflowEditorContent: React.FC = () => {
         cancelText="Cancel"
         onConfirm={handleRefreshConfirm}
         variant="destructive"
+        toastMessage="Workflow reset complete"
+        toastDescription="All workflow data and annotations have been cleared"
       />
     </>
   );
@@ -106,7 +113,12 @@ const WorkflowEditorContent: React.FC = () => {
         >
           {/* Header */}
           {!isFullScreen && (
-            <div className={cn("transition-all duration-300 ease-in-out", marginForSidebar)}>
+            <div
+              className={cn(
+                "transition-all duration-300 ease-in-out",
+                marginForSidebar
+              )}
+            >
               <WorkflowHeader onAddNode={addNode} />
             </div>
           )}
@@ -124,7 +136,12 @@ const WorkflowEditorContent: React.FC = () => {
             {/* UI elements with responsive margins */}
             <div className="relative w-full h-full z-10 pointer-events-none">
               {/* Dock Navigation */}
-              <div className={cn("pointer-events-auto transition-all duration-300 ease-in-out", marginForSidebar)}>
+              <div
+                className={cn(
+                  "pointer-events-auto transition-all duration-300 ease-in-out",
+                  marginForSidebar
+                )}
+              >
                 <DockComponent
                   collapsible={false}
                   position="top-left"
@@ -137,7 +154,12 @@ const WorkflowEditorContent: React.FC = () => {
               </div>
 
               {/* Run Button */}
-              <div className={cn("absolute bottom-4 right-4 z-20 pointer-events-auto transition-all duration-300 ease-in-out", marginForSidebar)}>
+              <div
+                className={cn(
+                  "absolute bottom-4 right-4 z-20 pointer-events-auto transition-all duration-300 ease-in-out",
+                  marginForSidebar
+                )}
+              >
                 <RunButton runCode={runCode} onToggle={setRunCode} />
               </div>
 
@@ -162,7 +184,12 @@ const WorkflowEditorContent: React.FC = () => {
 
           {/* Footer */}
           {!isFullScreen && (
-            <div className={cn("transition-all duration-300 ease-in-out", marginForSidebar)}>
+            <div
+              className={cn(
+                "transition-all duration-300 ease-in-out",
+                marginForSidebar
+              )}
+            >
               <WorkflowFooter nodeCount={nodeCount} edgeCount={edgeCount} />
             </div>
           )}
@@ -192,7 +219,7 @@ const WorkflowEditorContent: React.FC = () => {
         createPortal(
           <div className="fixed inset-0 z-40 bg-white dark:bg-slate-950">
             {/* Exit fullscreen button */}
-            <button
+            <Button
               onClick={handleExitFullScreen}
               className={cn(
                 "fixed top-6 z-40 w-10 h-10 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-lg hover:bg-white dark:hover:bg-slate-800 hover:shadow-xl transition-all ease-in-out duration-300 flex items-center justify-center group",
@@ -201,10 +228,10 @@ const WorkflowEditorContent: React.FC = () => {
               title="Exit Fullscreen"
             >
               <X
-                size={20}
+                size={24}
                 className="text-slate-600 dark:text-slate-300 group-hover:text-slate-800 dark:group-hover:text-white transition-colors"
               />
-            </button>
+            </Button>
 
             {/* Fullscreen workflow content */}
             {workflowContent}

@@ -11,6 +11,7 @@ import {
 import { nodeOptions } from "@/constants/nodeOptions";
 import { EditNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
+import { toast } from "sonner";
 
 const EditNodeContent: React.FC<EditNodeContentProps> = ({
   nodes,
@@ -96,6 +97,13 @@ const EditNodeContent: React.FC<EditNodeContentProps> = ({
         icon: nodeType.icon,
         configurations: configurations,
       });
+
+      // Show success toast
+      toast.success("Node updated successfully", {
+        description: `Node ${selectedNodeId} has been updated to ${nodeType.label}`,
+        duration: 2000,
+      });
+
       // Reset selections after successful update
       setSelectedNodeId(null);
       setSelectedNodeType("");

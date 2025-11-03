@@ -11,6 +11,7 @@ import {
 import { nodeOptions, nodeCategories } from "@/constants/nodeOptions";
 import { AddNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
+import { toast } from "sonner";
 
 const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -74,6 +75,12 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
         };
 
         onAddNode(nodeData);
+
+        // Show success toast
+        toast.success("Node added successfully", {
+          description: `${nodeType.label} has been added to the workflow`,
+          duration: 2000,
+        });
       }
 
       // Reset all selections after adding
@@ -185,11 +192,11 @@ const AddNodeContent: React.FC<AddNodeContentProps> = ({ onAddNode }) => {
         {allSelectionsMade ? "Add New Node" : "Complete All Steps First"}
       </Button>
       {/* Progress indicator */}
-      <div className="text-xs text-slate-500 dark:text-slate-400">
+      {/* <div className="text-xs text-slate-500 dark:text-slate-400">
         Progress: {selectedCategory ? "1" : "0"}/3 steps completed
         {selectedNewNodeType && " → 2/3"}
         {selectedNewNodeType && " → 3/3 ✓"}
-      </div>
+      </div> */}
     </div>
   );
 };

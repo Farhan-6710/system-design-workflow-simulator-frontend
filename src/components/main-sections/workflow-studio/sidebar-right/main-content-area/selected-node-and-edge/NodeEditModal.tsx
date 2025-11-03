@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Check, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/atoms/Modal";
@@ -11,26 +11,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ConfigurationForm from "../ConfigurationForm";
-import { Node } from "@/types/workflow-studio/workflow";
+import { NodeEditModalProps } from "@/types/workflow-studio/sidebar-right/selected-node-and-edge";
 import { nodeOptions } from "@/constants/nodeOptions";
 import { getConfigurationDisplay } from "@/utils/workflow-studio/sidebar-right/configurationUtils";
-
-interface NodeEditModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  node: Node;
-  editingLabel: string;
-  onLabelChange: (label: string) => void;
-  configurations: Record<string, string | number | boolean>;
-  onConfigurationChange: (
-    key: string,
-    value: string | number | boolean
-  ) => void;
-  onSave: (nodeType?: string) => void;
-  handleDeleteClick: () => void;
-  handleDeleteConfirm: () => void;
-  handleDeleteCancel: () => void;
-}
+import { useNodeEditModal } from "@/hooks/workflow-studio/sidebar-right/selected-node-and-edge/useNodeDetailsView";
 
 const NodeEditModal: React.FC<NodeEditModalProps> = ({
   isOpen,
@@ -41,41 +25,22 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
   configurations,
   onConfigurationChange,
   onSave,
-  handleDeleteClick,
-  handleDeleteConfirm,
-  handleDeleteCancel,
 }) => {
-  const [selectedNodeType, setSelectedNodeType] = useState<string>("");
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
-  // Reset node type selection and delete confirmation when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setSelectedNodeType("");
-      setShowDeleteConfirmation(false);
-    }
-  }, [isOpen]);
-
-  const handleNodeTypeChange = (nodeType: string) => {
-    setSelectedNodeType(nodeType);
-
-    // Set default configurations for the selected node type
-    const nodeOption = nodeOptions.find((option) => option.id === nodeType);
-    if (nodeOption && nodeOption.configurations) {
-      const defaultConfigs: Record<string, string | number | boolean> = {};
-      Object.entries(nodeOption.configurations).forEach(([key, config]) => {
-        defaultConfigs[key] = config.defaultValue;
-      });
-      // Apply all default configurations at once
-      Object.entries(defaultConfigs).forEach(([key, value]) => {
-        onConfigurationChange(key, value);
-      });
-    }
-  };
-
-  const handleSave = () => {
-    onSave(selectedNodeType || undefined);
-  };
+  // Use the modal-specific hook for node type changes and modal delete operations
+  const {
+    selectedNodeType,
+    showDeleteConfirmation,
+    handleNodeTypeChange,
+    handleDeleteClick,
+    handleDeleteConfirm,
+    handleDeleteCancel,
+  } = useNodeEditModal(
+    isOpen,
+    node,
+    onLabelChange,
+    onConfigurationChange,
+    onClose
+  );
 
   return (
     <Modal
@@ -165,7 +130,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
             Cancel
           </Button>
           <Button
-            onClick={handleSave}
+            onClick={onSave}
             className="flex-1 bg-gradient-primary text-white"
           >
             <Check className="w-4 h-4 mr-2" />
@@ -187,7 +152,7 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
       {/* Delete Confirmation Modal */}
       <ConfirmationModal
         open={showDeleteConfirmation}
-        onOpenChange={setShowDeleteConfirmation}
+        onOpenChange={handleDeleteCancel}
         title="Delete Node"
         description={`Are you sure you want to delete "${node.label}" (ID: ${node.id})? This action cannot be undone and will also remove all connected edges.`}
         confirmText="Delete Node"
@@ -195,6 +160,8 @@ const NodeEditModal: React.FC<NodeEditModalProps> = ({
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
         variant="destructive"
+        toastMessage="Node deleted successfully"
+        toastDescription={`"${node.label}" (ID: ${node.id}) has been removed from the workflow`}
       />
     </Modal>
   );

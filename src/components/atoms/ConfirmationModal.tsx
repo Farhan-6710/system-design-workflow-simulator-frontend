@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -20,6 +21,8 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
   onCancel?: () => void;
   variant?: "default" | "destructive";
+  toastMessage?: string;
+  toastDescription?: string;
 }
 
 export function ConfirmationModal({
@@ -27,14 +30,22 @@ export function ConfirmationModal({
   onOpenChange,
   title = "Are you sure?",
   description = "This action cannot be undone.",
-  confirmText = "Yes",
+  confirmText = "Continue",
   cancelText = "Cancel",
   onConfirm,
   onCancel,
   variant = "default",
+  toastMessage,
+  toastDescription,
 }: ConfirmationModalProps) {
   const handleConfirm = () => {
     onConfirm();
+    if (toastMessage) {
+      toast.success(toastMessage, {
+        description: toastDescription,
+        duration: 3000,
+      });
+    }
     onOpenChange(false);
   };
 

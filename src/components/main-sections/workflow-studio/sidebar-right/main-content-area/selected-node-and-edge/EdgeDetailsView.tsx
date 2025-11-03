@@ -99,6 +99,8 @@ const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
         cancelText="Cancel"
         variant="destructive"
         onConfirm={handleDeleteEdge}
+        toastMessage="Edge deleted successfully"
+        toastDescription={`Connection between "${sourceNode?.label}" and "${targetNode?.label}" has been removed`}
       />
     </div>
   );

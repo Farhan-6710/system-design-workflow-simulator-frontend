@@ -4,7 +4,7 @@ import AddNodeContent from "./AddNodeContent";
 import EditNodeContent from "./EditNodeContent";
 import CollapsedState from "../CollapsedState";
 import { MainContentAreaProps } from "@/types/workflow-studio/sidebar-right";
-import SelectedEdgeNodeSummary from "./selected-node-edge/SelectedEdgeNodeSummary";
+import SelectedEdgeNodeSummary from "./selected-node-and-edge/SelectedEdgeNodeSummary";
 import AiAssistantContent from "./AiAssistantContent";
 import NotFoundContent from "./NotFoundContent";
 
