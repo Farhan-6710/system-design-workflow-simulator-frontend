@@ -56,11 +56,16 @@ export const useWorkflowCanvasEvents = ({
         translateY = 0,
       } = canvasTransform ?? {};
 
-      // Reverse canvas transform to get actual canvas coordinates
-      const canvasX = (rawX - translateX) / scale;
-      const canvasY = (rawY - translateY) / scale;
+      // Simple approach: reverse the exact CSS transform applied
+      // CSS: translate(translateX, translateY) scale(scale) with transform-origin: center center
 
-      // No additional scaling needed since WorkflowLayer has no scale transform applied
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      // To reverse: translate to origin, undo scale, undo translate, translate back
+      const canvasX = (rawX - centerX) / scale + centerX - translateX / scale;
+      const canvasY = (rawY - centerY) / scale + centerY - translateY / scale;
+
       return { x: canvasX, y: canvasY };
     },
     [canvasRef, canvasTransform]

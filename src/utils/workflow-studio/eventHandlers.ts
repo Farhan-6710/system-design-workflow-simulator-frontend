@@ -49,16 +49,21 @@ export const createCanvasHandlers = (coordinateUtils?: {
           setNodes(updatedNodes);
         }
       } else if (connecting !== null && tempLine) {
-        // Handle connection line drawing
+        // Handle connection line drawing with offset compensation (similar to node dragging)
         const canvasCoords = coordinateUtils?.getCanvasCoordinates(
           event.clientX,
           event.clientY
         );
         if (canvasCoords) {
+          // Apply the same offset compensation strategy as node dragging
+          // Subtract the stored offset to compensate for coordinate system mismatch
+          const compensatedX = canvasCoords.x - (tempLine.offsetX || 0);
+          const compensatedY = canvasCoords.y - (tempLine.offsetY || 0);
+
           setTempLine({
             ...tempLine,
-            x2: canvasCoords.x,
-            y2: canvasCoords.y,
+            x2: compensatedX,
+            y2: compensatedY,
           });
         }
       }
@@ -151,10 +156,25 @@ export const createNodeHandlers = (coordinateUtils?: {
       if (!node) return;
 
       // Calculate output port position
-      // Node is 55px x 55px with center at node.x, node.y
-      // Output port is positioned at right edge and center vertically
       const outputPortX = node.x + OUTPUT_PORT_OFFSET_X;
       const outputPortY = node.y + OUTPUT_PORT_OFFSET_Y;
+
+      // Calculate the initial temp line offset to compensate for coordinate system mismatch
+      // This mimics how node dragging works by calculating the difference between
+      // the expected coordinate and the actual transformed coordinate
+      let tempLineOffset = { x: 0, y: 0 };
+      if (coordinateUtils) {
+        const canvasCoords = coordinateUtils.getCanvasCoordinates(
+          event.clientX,
+          event.clientY
+        );
+        // The offset represents the difference between where we expect the cursor to be
+        // and where getCanvasCoordinates thinks it is
+        tempLineOffset = {
+          x: canvasCoords.x - outputPortX,
+          y: canvasCoords.y - outputPortY,
+        };
+      }
 
       setConnecting(nodeId);
       setTempLine({
@@ -162,6 +182,9 @@ export const createNodeHandlers = (coordinateUtils?: {
         y1: outputPortY,
         x2: outputPortX,
         y2: outputPortY,
+        // Store the offset for use in mouse move
+        offsetX: tempLineOffset.x,
+        offsetY: tempLineOffset.y,
       });
     },
 

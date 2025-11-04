@@ -40,6 +40,9 @@ export interface TempLine {
   y1: number;
   x2: number;
   y2: number;
+  // Offset compensation for coordinate system mismatches (similar to drag offset for nodes)
+  offsetX?: number;
+  offsetY?: number;
 }
 
 // Drag offset for node positioning

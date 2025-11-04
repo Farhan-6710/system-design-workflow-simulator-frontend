@@ -66,7 +66,7 @@ export const WorkflowLayer = forwardRef<HTMLDivElement, WorkflowLayerProps>(
       >
         {/* SVG for edges - transform handled by parent container */}
         <svg
-          className="SVG-for-edges absolute"
+          className="SVG-layer-for-edges absolute"
           style={{
             left: `${bounds.minX}px`,
             top: `${bounds.minY}px`,
