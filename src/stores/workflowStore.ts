@@ -7,20 +7,14 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import {
-  Node,
-  NodeType,
-  CanvasTransform,
-} from "@/types/workflow-studio/workflow";
+import { CanvasTransform } from "@/types/workflow-studio/workflow";
 import { WorkflowStore, WorkflowStoreState } from "@/types/workflow-studio";
 import {
-  generateNodeId,
-  generateEdgeId,
-  generateRandomPosition,
   edgeExists,
   filterEdgesForNode,
   createZoomActions,
 } from "@/utils/workflow-studio/workflow";
+import { createNode, createEdge } from "@/utils/store/workflowStoreHelpers";
 import { initialEdges, initialNodes } from "@/constants/initialNodesAndEdges";
 import { ZOOM_BASELINE } from "@/constants/canvas";
 
@@ -62,26 +56,8 @@ export const useWorkflowStore = create<WorkflowStore>()(
       // Node actions
       addNode: (nodeType) => {
         set((state) => {
-          const newId = generateNodeId(state.nodes);
-          const position = generateRandomPosition();
-
-          const validTypes: NodeType[] = ["start", "process", "end"];
-          const nodePositionType =
-            nodeType?.type && validTypes.includes(nodeType.type as NodeType)
-              ? (nodeType.type as NodeType)
-              : "process";
-
-          const newNode: Node = {
-            id: newId,
-            label: nodeType?.label || `Node ${newId}`,
-            x: position.x,
-            y: position.y,
-            position: nodePositionType,
-            icon: nodeType?.icon || "Circle",
-            configurations: nodeType?.configurations || {},
-          };
-
-          state.nodes.push(newNode);
+          const node = createNode(state.nodes, nodeType);
+          state.nodes.push(node);
         });
       },
 
@@ -118,11 +94,7 @@ export const useWorkflowStore = create<WorkflowStore>()(
       addEdge: (source, target) => {
         set((state) => {
           if (!edgeExists(state.edges, source, target)) {
-            state.edges.push({
-              id: generateEdgeId(state.edges),
-              source,
-              target,
-            });
+            state.edges.push(createEdge(state.edges, source, target));
           }
         });
       },
