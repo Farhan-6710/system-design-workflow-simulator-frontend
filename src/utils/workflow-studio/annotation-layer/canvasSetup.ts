@@ -3,7 +3,7 @@
  * Handles canvas initialization and mode management
  */
 
-import type { FabricCanvas, Tool } from "./types";
+import type { FabricCanvas, Tool, FabricObject } from "./types";
 import { getFabric } from "./fabricLoader";
 import { configureBrush } from "./themeUtils";
 
@@ -74,5 +74,20 @@ export function updateCanvasMode(canvas: FabricCanvas, tool: Tool): void {
     }
   } catch (error) {
     console.error("Error updating canvas mode:", error);
+  }
+
+  // Normalize object interactivity: finalized shapes (non-text) must remain
+  // non-interactive regardless of tool to prevent post-creation edits.
+  try {
+    canvas.getObjects().forEach((obj: FabricObject) => {
+      const t = obj.type;
+      if (t === "i-text" || t === "textbox" || t === "text") {
+        obj.set({ selectable: true, evented: true });
+      } else {
+        obj.set({ selectable: false, evented: false });
+      }
+    });
+  } catch {
+    // ignore normalization errors
   }
 }
