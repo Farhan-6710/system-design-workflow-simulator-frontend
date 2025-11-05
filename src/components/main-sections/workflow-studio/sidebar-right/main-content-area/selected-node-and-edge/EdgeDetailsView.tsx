@@ -9,14 +9,12 @@ interface EdgeDetailsViewProps {
   edge: Edge;
   sourceNode?: Node;
   targetNode?: Node;
-  edgeNumber: number;
 }
 
 const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
   edge,
   sourceNode,
   targetNode,
-  edgeNumber,
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const deleteEdge = useWorkflowStore((state) => state.deleteEdge);
@@ -46,7 +44,7 @@ const EdgeDetailsView: React.FC<EdgeDetailsViewProps> = ({
             Edge Number:
           </span>
           <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-            Edge {edgeNumber}
+            Edge {edge.edgeNumber}
           </span>
         </div>
 

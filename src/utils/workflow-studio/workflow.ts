@@ -1,4 +1,5 @@
 import { Node, Edge, CanvasTransform } from "@/types/workflow-studio/workflow";
+import { nodeOptions } from "@/constants/nodeOptions";
 import { v4 as uuidv4 } from "uuid";
 import {
   MIN_ZOOM,
@@ -22,6 +23,58 @@ export const generateNodeId = (existingNodes: Node[]): number => {
   return Math.max(...existingNodes.map((n) => n.id), 0) + 1;
 };
 
+// --------------------------------------------------------------------------
+// Initializer helpers (moved here from utils/initializers)
+// Build a Map for O(1) node option lookup
+const nodeOptionsMap = new Map(nodeOptions.map((n) => [n.id, n]));
+
+export interface NodeSpec {
+  optionId: string;
+  id: number;
+  label: string;
+  x: number;
+  y: number;
+  position?: "process" | "end" | "start";
+}
+
+export function buildNodeFromSpec(spec: NodeSpec): Node {
+  const opt = nodeOptionsMap.get(spec.optionId);
+  if (!opt) throw new Error(`Node option ${spec.optionId} not found`);
+
+  const configurations: Record<string, string | number | boolean> = {};
+  if (opt.configurations) {
+    Object.values(opt.configurations).forEach((f) => {
+      configurations[f.key] = f.defaultValue;
+    });
+  }
+
+  return {
+    id: spec.id,
+    label: spec.label,
+    x: spec.x,
+    y: spec.y,
+    position: spec.position || opt.position || "process",
+    icon: opt.icon,
+    configurations,
+  };
+}
+
+// Build edges from pairs while preserving edge id numeric suffix and the uuid-E<number> format
+export function buildEdgesFromPairs(
+  pairs: Array<[number, number]>,
+  startIndex: number = 1
+): Edge[] {
+  return pairs.map(([s, t], idx) => {
+    const edgeNumber = startIndex + idx;
+    return {
+      id: createEdgeId(edgeNumber),
+      source: s,
+      target: t,
+      edgeNumber,
+    };
+  });
+}
+
 export const generateEdgeId = (existingEdges: Edge[]): string => {
   let maxEdgeNumber = 0;
   existingEdges.forEach((edge) => {
@@ -33,12 +86,12 @@ export const generateEdgeId = (existingEdges: Edge[]): string => {
 
   const nextEdgeNumber = maxEdgeNumber + 1;
   const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
-  return `${uuid}-${nextEdgeNumber}`;
+  return `${uuid}-E${nextEdgeNumber}`;
 };
 
 export const createEdgeId = (edgeNumber: number): string => {
   const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
-  return `${uuid}-${edgeNumber}`;
+  return `${uuid}-E${edgeNumber}`;
 };
 
 export const getEdgeNumber = (edgeId: string): number => {

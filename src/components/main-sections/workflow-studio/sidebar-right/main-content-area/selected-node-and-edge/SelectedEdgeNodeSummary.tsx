@@ -31,7 +31,6 @@ const SelectedEdgeNodeSummary: React.FC = () => {
         edge={edgeDetails.edge}
         sourceNode={edgeDetails.sourceNode}
         targetNode={edgeDetails.targetNode}
-        edgeNumber={edgeDetails.edgeNumber}
       />
     );
   }

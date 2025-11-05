@@ -32,6 +32,7 @@ export interface Edge {
   id: string;
   source: number;
   target: number;
+  edgeNumber?: number;
 }
 
 // Temporary connection line during drag operations
