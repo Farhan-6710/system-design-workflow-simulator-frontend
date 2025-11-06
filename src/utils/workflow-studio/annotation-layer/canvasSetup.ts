@@ -29,7 +29,6 @@ export function initializeCanvas(
     return null;
   }
 
-  try {
     const canvas = new fabric.Canvas(canvasElement, {
       width: canvasElement.parentElement?.clientWidth || 800,
       height: canvasElement.parentElement?.clientHeight || 600,
@@ -56,10 +55,6 @@ export function initializeCanvas(
     configureBrush(canvas);
 
     return canvas;
-  } catch (error) {
-    console.error('[Canvas] Failed to initialize Fabric.js canvas:', error);
-    return null;
-  }
 }
 
 /**

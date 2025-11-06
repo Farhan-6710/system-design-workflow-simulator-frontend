@@ -44,20 +44,12 @@ export const useCanvasInitialization = ({
 
     return () => {
       if (fabricRef.current) {
-        try {
-          // Safely dispose canvas - wrap in try-catch to handle invalid contexts
-          fabricRef.current.dispose();
-        } catch (error) {
-          // Ignore disposal errors - context may already be invalid
-          console.warn('[Canvas] Disposal error (safe to ignore):', error);
-        } finally {
-          fabricRef.current = null;
-        }
+        fabricRef.current.dispose();
+        fabricRef.current = null;
       }
     };
     // Only run on mount - removed canvasState from dependencies to prevent re-initialization
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasRef, fabricRef, initialJSON]);
+  }, [canvasRef, fabricRef, initialJSON, canvasState]);
 
   // Update canvas mode when tool changes
   useEffect(() => {

@@ -38,11 +38,7 @@ export function restoreCanvas(
     const timeout = setTimeout(() => {
       if (!resolved) {
         resolved = true;
-        try {
-          canvas.renderAll();
-        } catch {
-          // Silently ignore - context may be invalid
-        }
+        canvas.renderAll();
         resolve();
       }
     }, 300);
@@ -53,11 +49,7 @@ export function restoreCanvas(
         if (!resolved) {
           resolved = true;
           clearTimeout(timeout);
-          try {
-            canvas.renderAll();
-          } catch {
-            // Silently ignore render errors
-          }
+          canvas.renderAll();
           resolve();
         }
       });

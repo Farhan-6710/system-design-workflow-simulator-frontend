@@ -172,15 +172,9 @@ export const useAnnotationCanvas = ({
 
   const clear = useCallback((): void => {
     if (fabricRef.current) {
-      try {
-        fabricRef.current.clear();
-        fabricRef.current.renderAll();
-        immediateSave();
-      } catch (error) {
-        console.warn('[Canvas] Clear operation failed (context may be invalid):', error);
-        // Still try to save even if clear failed
-        immediateSave();
-      }
+      fabricRef.current.clear();
+      fabricRef.current.renderAll();
+      immediateSave();
     }
   }, [immediateSave]);
 
