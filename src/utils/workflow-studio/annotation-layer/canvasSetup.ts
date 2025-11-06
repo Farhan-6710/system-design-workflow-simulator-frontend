@@ -29,21 +29,37 @@ export function initializeCanvas(
     return null;
   }
 
-  const canvas = new fabric.Canvas(canvasElement, {
-    width: canvasElement.parentElement?.clientWidth || 800,
-    height: canvasElement.parentElement?.clientHeight || 600,
-    backgroundColor: "transparent",
-    preserveObjectStacking: true,
-    selection: true,
-    defaultCursor: "default",
-    hoverCursor: "default",
-    moveCursor: "default",
-  });
+  try {
+    const canvas = new fabric.Canvas(canvasElement, {
+      width: canvasElement.parentElement?.clientWidth || 800,
+      height: canvasElement.parentElement?.clientHeight || 600,
+      backgroundColor: "transparent",
+      preserveObjectStacking: true,
+      selection: true,
+      defaultCursor: "default",
+      hoverCursor: "default",
+      moveCursor: "default",
+    });
 
-  // Configure brush for free drawing
-  configureBrush(canvas);
+    // CRITICAL FIX: Patch the clear method to handle undefined context
+    const originalClear = canvas.clear.bind(canvas);
+    canvas.clear = function(...args: unknown[]) {
+      try {
+        return originalClear(...args);
+      } catch {
+        // Silently catch clearRect errors - context may be invalid
+        return canvas;
+      }
+    };
 
-  return canvas;
+    // Configure brush for free drawing
+    configureBrush(canvas);
+
+    return canvas;
+  } catch (error) {
+    console.error('[Canvas] Failed to initialize Fabric.js canvas:', error);
+    return null;
+  }
 }
 
 /**

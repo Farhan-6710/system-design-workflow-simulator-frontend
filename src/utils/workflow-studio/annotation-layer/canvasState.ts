@@ -38,25 +38,34 @@ export function restoreCanvas(
     const timeout = setTimeout(() => {
       if (!resolved) {
         resolved = true;
-        canvas.renderAll();
+        try {
+          canvas.renderAll();
+        } catch {
+          // Silently ignore - context may be invalid
+        }
         resolve();
       }
     }, 300);
 
     try {
+      // loadFromJSON internally calls clear() which can fail with clearRect error
       canvas.loadFromJSON(canvasData, () => {
         if (!resolved) {
           resolved = true;
           clearTimeout(timeout);
-          canvas.renderAll();
+          try {
+            canvas.renderAll();
+          } catch {
+            // Silently ignore render errors
+          }
           resolve();
         }
       });
-    } catch (error) {
+    } catch {
+      // This catches the clearRect error from canvas.clear()
       if (!resolved) {
         resolved = true;
         clearTimeout(timeout);
-        console.error("Failed to restore canvas:", error);
         resolve();
       }
     }
