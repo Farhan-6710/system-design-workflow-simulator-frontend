@@ -3,6 +3,7 @@ import { Send, Bot, User, Loader2, Zap, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ConfirmationModal } from "@/components/atoms/ConfirmationModal";
+import { useWorkflowStore } from "@/stores/workflowStore";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -11,9 +12,14 @@ interface Message {
 }
 
 const AiAssistantContent = () => {
+  // Get workflow state for canvas context
+  const { nodes, edges, canvasTransform, requestsPerSecond } =
+    useWorkflowStore();
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [includeCanvasContext, setIncludeCanvasContext] = useState(true);
   console.log("API Key:", process.env.NEXT_PUBLIC_OPENROUTER_API_KEY);
   const apiKeyFromEnv = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
   const [apiKey, setApiKey] = useState(apiKeyFromEnv || "");
@@ -30,16 +36,85 @@ const AiAssistantContent = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Generate canvas context for AI
+  const generateCanvasContext = () => {
+    if (!includeCanvasContext || (nodes.length === 0 && edges.length === 0)) {
+      return "";
+    }
+
+    const nodesList = nodes.map((node) => ({
+      id: node.id,
+      label: node.label,
+      type: node.position,
+      icon: node.icon,
+      position: { x: node.x, y: node.y },
+      configurations: node.configurations || {},
+    }));
+
+    const edgesList = edges.map((edge) => ({
+      id: edge.id,
+      source: edge.source,
+      target: edge.target,
+      sourceNode:
+        nodes.find((n) => n.id === edge.source)?.label || `Node ${edge.source}`,
+      targetNode:
+        nodes.find((n) => n.id === edge.target)?.label || `Node ${edge.target}`,
+    }));
+
+    return `
+
+CURRENT SYSTEM ARCHITECTURE CONTEXT:
+===================================
+- Total Nodes: ${nodes.length}
+- Total Connections: ${edges.length}
+- Current RPS Setting: ${requestsPerSecond}
+- Canvas Zoom: ${Math.round(canvasTransform.scale * 100)}%
+
+NODES DETAILS:
+${nodesList
+  .map(
+    (node) =>
+      `• ${node.label} (${node.type}) - ID: ${node.id}
+    Icon: ${node.icon}
+    Position: (${Math.round(node.position.x)}, ${Math.round(node.position.y)})
+    ${
+      Object.keys(node.configurations).length > 0
+        ? `Config: ${JSON.stringify(node.configurations)}`
+        : ""
+    }`
+  )
+  .join("\n")}
+
+CONNECTIONS:
+${edgesList
+  .map((edge) => `• ${edge.sourceNode} → ${edge.targetNode} (ID: ${edge.id})`)
+  .join("\n")}
+
+Please analyze this architecture and provide relevant suggestions based on the current setup.
+`;
+  };
+
   // Auto-start with greeting message if API key is available from environment
   useEffect(() => {
     if (apiKeyFromEnv && messages.length === 0) {
-      setMessages([greetingMessage()]);
+      const createGreeting = (): Message => {
+        const hasArchitecture = nodes.length > 0 || edges.length > 0;
+        return {
+          role: "assistant",
+          content: hasArchitecture
+            ? `Hello! I'm your AI assistant for system design. I can see you have ${nodes.length} nodes and ${edges.length} connections in your current architecture. I can help you optimize this design, identify potential issues, suggest improvements, or answer any system design questions. How can I assist you?`
+            : "Hello! I'm your AI assistant for system design. I can help you design and optimize system architectures, suggest best practices, and answer questions about your system. Start building your architecture and I'll provide contextual suggestions based on your design!",
+          timestamp: new Date(),
+        };
+      };
+      setMessages([createGreeting()]);
     }
-  }, [apiKeyFromEnv, messages.length]);
+  }, [apiKeyFromEnv, messages.length, nodes.length, edges.length]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
+    // Create user message WITHOUT canvas context
     const userMessage: Message = {
       role: "user",
       content: input.trim(),
@@ -67,12 +142,13 @@ const AiAssistantContent = () => {
             "X-Title": "System Design AI Assistant",
           },
           body: JSON.stringify({
-            model: "deepseek/deepseek-chat",
+            model: "google/gemini-2.0-flash-001",
             messages: [
               {
                 role: "system",
                 content:
-                  "Reply only in a short, professional way. If a general question is asked, just give the definition of it.",
+                  "Reply only in a short, professional way. If a general question is asked, just give the definition of it. never give a one word reply, be concise and precise with your answers. You are an AI assistant specialized in system design and architecture. Your task is to help users optimize their system designs, suggest architectural improvements, and answer questions related to system design best practices." +
+                  generateCanvasContext(),
               },
               ...recentMessages.map((msg) => ({
                 role: msg.role,
@@ -129,10 +205,12 @@ const AiAssistantContent = () => {
   };
 
   const greetingMessage = (): Message => {
+    const hasArchitecture = nodes.length > 0 || edges.length > 0;
     return {
       role: "assistant",
-      content:
-        "Hello! I'm your AI assistant for system design. I can help you optimize your workflow, suggest architectural improvements, and answer questions about your system. How can I assist you today?",
+      content: hasArchitecture
+        ? `Hello! I'm your AI assistant for system design. I can see you have ${nodes.length} nodes and ${edges.length} connections in your current architecture. I can help you optimize this design, identify potential issues, suggest improvements, or answer any system design questions. How can I assist you?`
+        : "Hello! I'm your AI assistant for system design. I can help you design and optimize system architectures, suggest best practices, and answer questions about your system. Start building your architecture and I'll provide contextual suggestions based on your design!",
       timestamp: new Date(),
     };
   };
@@ -228,10 +306,6 @@ const AiAssistantContent = () => {
             AI Assistant
           </h3>
           <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs text-slate-500">Active</span>
-            </div>
             <button
               onClick={() => setShowKeyInput(true)}
               className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400"

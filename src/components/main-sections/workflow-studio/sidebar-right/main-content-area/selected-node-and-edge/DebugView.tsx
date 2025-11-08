@@ -10,7 +10,7 @@ interface EdgeDetails {
 
 interface DebugViewProps {
   selectedEdge: string | null;
-  selectedNode: number | null;
+  selectedNode: string | null;
   edgeDetails: EdgeDetails | null;
   nodeDetails: Node | null | undefined;
 }

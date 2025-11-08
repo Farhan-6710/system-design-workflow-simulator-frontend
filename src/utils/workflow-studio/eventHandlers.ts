@@ -100,7 +100,7 @@ export const createNodeHandlers = (coordinateUtils?: {
   ) => { x: number; y: number };
 }) => {
   return {
-    onMouseDown: (event: React.MouseEvent, nodeId: number) => {
+    onMouseDown: (event: React.MouseEvent, nodeId: string) => {
       event.stopPropagation();
       const { setDraggingNode, setDragOffset } = useWorkflowStore.getState();
 
@@ -133,7 +133,7 @@ export const createNodeHandlers = (coordinateUtils?: {
       setDragOffset(dragOffset);
     },
 
-    onSelect: (nodeId: number) => {
+    onSelect: (nodeId: string) => {
       const {
         setSelectedNode,
         setSelectedEdge,
@@ -148,7 +148,7 @@ export const createNodeHandlers = (coordinateUtils?: {
       setSelectedTab("selected-edge/node");
     },
 
-    onStartConnection: (event: React.MouseEvent, nodeId: number) => {
+    onStartConnection: (event: React.MouseEvent, nodeId: string) => {
       event.stopPropagation();
       const { setConnecting, setTempLine, nodes } = useWorkflowStore.getState();
 
@@ -188,7 +188,7 @@ export const createNodeHandlers = (coordinateUtils?: {
       });
     },
 
-    onEndConnection: (event: React.MouseEvent, targetNodeId: number) => {
+    onEndConnection: (event: React.MouseEvent, targetNodeId: string) => {
       event.stopPropagation();
       const { connecting, addEdge, setConnecting, setTempLine } =
         useWorkflowStore.getState();
@@ -201,7 +201,7 @@ export const createNodeHandlers = (coordinateUtils?: {
       setTempLine(null);
     },
 
-    onDelete: (nodeId: number) => {
+    onDelete: (nodeId: string) => {
       const { deleteNode } = useWorkflowStore.getState();
       deleteNode(nodeId);
     },

@@ -37,7 +37,7 @@ export interface SidebarRightProps {
     type?: string;
   }) => void;
   onUpdateNode?: (
-    nodeId: number,
+    nodeId: string,
     updates: { label: string; icon: string }
   ) => void;
 }
@@ -69,7 +69,7 @@ export interface MainContentAreaProps {
     type?: string;
   }) => void;
   onUpdateNode?: (
-    nodeId: number,
+    nodeId: string,
     updates: { label: string; icon: string }
   ) => void;
   onTabChange: (tabId: string) => void;
@@ -89,7 +89,7 @@ export interface AddNodeContentProps {
 export interface EditNodeContentProps {
   nodes: Node[];
   onUpdateNode?: (
-    nodeId: number,
+    nodeId: string,
     updates: {
       label: string;
       icon: string;

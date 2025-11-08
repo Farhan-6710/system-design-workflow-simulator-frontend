@@ -11,7 +11,7 @@ export default function ChatBot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [apiKey, setApiKey] = useState(
-    "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"
+    process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || ""
   );
   const [showKeyInput, setShowKeyInput] = useState(true);
   const [showCorsInfo, setShowCorsInfo] = useState(false);

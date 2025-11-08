@@ -12,12 +12,13 @@ import { nodeOptions } from "@/constants/nodeOptions";
 import { EditNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
 import { toast } from "sonner";
+import { getNodeNumber } from "@/utils/workflow-studio/workflow";
 
 const EditNodeContent: React.FC<EditNodeContentProps> = ({
   nodes,
   onUpdateNode,
 }) => {
-  const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedNodeType, setSelectedNodeType] = useState<string>("");
   const [configurations, setConfigurations] = useState<
     Record<string, string | number | boolean>
@@ -70,7 +71,7 @@ const EditNodeContent: React.FC<EditNodeContentProps> = ({
   }, [selectedNodeType]);
 
   const handleNodeSelect = (nodeId: string) => {
-    setSelectedNodeId(parseInt(nodeId));
+    setSelectedNodeId(nodeId);
     setSelectedNodeType(""); // Reset node type when changing node
     setConfigurations({});
   };
@@ -128,11 +129,15 @@ const EditNodeContent: React.FC<EditNodeContentProps> = ({
           </SelectTrigger>
           <SelectContent>
             {[...nodes]
-              .sort((a, b) => a.id - b.id)
+              .sort((a, b) => {
+                const aNumber = getNodeNumber(a.id);
+                const bNumber = getNodeNumber(b.id);
+                return aNumber - bNumber;
+              })
               .map((node) => (
                 <SelectItem key={node.id} value={node.id.toString()}>
                   <div className="flex items-center gap-2">
-                    <span>Node {node.id}</span>
+                    <span>Node {getNodeNumber(node.id)}</span>
                     <span className="text-slate-500">- {node.label}</span>
                   </div>
                 </SelectItem>

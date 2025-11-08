@@ -2,16 +2,27 @@ import { Node, Edge } from "@/types/workflow-studio";
 import {
   buildNodeFromSpec,
   buildEdgesFromPairs,
+  createNodeId,
 } from "@/utils/workflow-studio/workflow";
 
 // Nodes are now built from `nodeOptions` through the initializer helpers
+
+// Pre-define consistent node IDs for initial setup - sequential numbering
+const node1Id = createNodeId(1); // Client
+const node2Id = createNodeId(2); // API Gateway  
+const node3Id = createNodeId(3); // Service
+const node4Id = createNodeId(4); // Load Balancer
+const node5Id = createNodeId(5); // Server 1
+const node6Id = createNodeId(6); // Server 2
+const node7Id = createNodeId(7); // Server 3
+const node8Id = createNodeId(8); // Database
 
 // Initial nodes displayed on the workflow canvas
 export const initialNodes: Node[] = [
   // Client
   buildNodeFromSpec({
     optionId: "client-app",
-    id: 1,
+    id: node1Id,
     label: "Client",
     x: 385,
     y: 280,
@@ -20,7 +31,7 @@ export const initialNodes: Node[] = [
   // API Gateway
   buildNodeFromSpec({
     optionId: "api-gateway",
-    id: 2,
+    id: node2Id,
     label: "Gateway",
     x: 465,
     y: 280,
@@ -28,7 +39,7 @@ export const initialNodes: Node[] = [
   // Services Layer
   buildNodeFromSpec({
     optionId: "service",
-    id: 4,
+    id: node3Id,
     label: "Service",
     x: 545,
     y: 280,
@@ -36,7 +47,7 @@ export const initialNodes: Node[] = [
   // Load Balancers Layer
   buildNodeFromSpec({
     optionId: "load-balancer",
-    id: 7,
+    id: node4Id,
     label: "Load Balancer",
     x: 625,
     y: 280,
@@ -44,21 +55,21 @@ export const initialNodes: Node[] = [
   // Servers Layer
   buildNodeFromSpec({
     optionId: "sync-compute",
-    id: 12,
+    id: node5Id,
     label: "Server",
     x: 710,
     y: 200,
   }),
   buildNodeFromSpec({
     optionId: "sync-compute",
-    id: 13,
+    id: node6Id,
     label: "Server",
     x: 710,
     y: 280,
   }),
   buildNodeFromSpec({
     optionId: "sync-compute",
-    id: 14,
+    id: node7Id,
     label: "Server",
     x: 710,
     y: 360,
@@ -66,27 +77,27 @@ export const initialNodes: Node[] = [
   // Databases Layer
   buildNodeFromSpec({
     optionId: "database",
-    id: 19,
+    id: node8Id,
     label: "Database",
     x: 800,
     y: 280,
   }),
 ];
 
-// Initial edges connecting the nodes - using UUID format for consistency
+// Initial edges connecting the nodes - using the same sequential IDs as the nodes
 export const initialEdges: Edge[] = buildEdgesFromPairs([
   // Client to Gateway
-  [1, 2],
-  // Gateway to Services
-  [2, 4],
+  [node1Id, node2Id],
+  // Gateway to Services  
+  [node2Id, node3Id],
   // Services to Load Balancers
-  [4, 7],
+  [node3Id, node4Id],
   // Load Balancers to Servers
-  [7, 12],
-  [7, 13],
-  [7, 14],
+  [node4Id, node5Id],
+  [node4Id, node6Id],
+  [node4Id, node7Id],
   // Servers to Databases
-  [12, 19],
-  [13, 19],
-  [14, 19],
+  [node5Id, node8Id],
+  [node6Id, node8Id],
+  [node7Id, node8Id],
 ]);

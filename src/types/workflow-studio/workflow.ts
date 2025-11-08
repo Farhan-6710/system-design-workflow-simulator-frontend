@@ -18,7 +18,7 @@ export type NodeType = "start" | "process" | "end";
 
 // Node definition with all properties
 export interface Node {
-  id: number;
+  id: string;
   label: string;
   x: number;
   y: number;
@@ -30,8 +30,8 @@ export interface Node {
 // Edge connection between nodes
 export interface Edge {
   id: string;
-  source: number;
-  target: number;
+  source: string;
+  target: string;
   edgeNumber?: number;
 }
 
@@ -208,11 +208,11 @@ export interface NodeGlowConfig {
 export interface WorkflowState {
   nodes: Node[];
   edges: Edge[];
-  selectedNode: number | null;
+  selectedNode: string | null;
   selectedEdge: string | null;
-  draggingNode: number | null;
+  draggingNode: string | null;
   dragOffset: DragOffset;
-  connecting: number | null;
+  connecting: string | null;
   tempLine: TempLine | null;
 }
 
@@ -223,11 +223,11 @@ export interface WorkflowStoreState {
   edges: Edge[];
 
   // UI state
-  selectedNode: number | null;
+  selectedNode: string | null;
   selectedEdge: string | null;
-  draggingNode: number | null;
+  draggingNode: string | null;
   dragOffset: DragOffset;
-  connecting: number | null;
+  connecting: string | null;
   tempLine: TempLine | null;
   isFullScreen: boolean;
 
@@ -252,20 +252,20 @@ export interface WorkflowActions {
     type?: string;
     configurations?: Record<string, string | number | boolean>;
   }) => void;
-  deleteNode: (id: number) => void;
-  updateNode: (nodeId: number, updates: Partial<Node>) => void;
-  updateNodePosition: (nodeId: number, x: number, y: number) => void;
+  deleteNode: (id: string) => void;
+  updateNode: (nodeId: string, updates: Partial<Node>) => void;
+  updateNodePosition: (nodeId: string, x: number, y: number) => void;
 
   // Edge actions
-  addEdge: (source: number, target: number) => void;
+  addEdge: (source: string, target: string) => void;
   deleteEdge: (edgeId: string) => void;
 
   // UI state setters
-  setSelectedNode: (id: number | null) => void;
+  setSelectedNode: (id: string | null) => void;
   setSelectedEdge: (id: string | null) => void;
-  setDraggingNode: (id: number | null) => void;
+  setDraggingNode: (id: string | null) => void;
   setDragOffset: (offset: DragOffset) => void;
-  setConnecting: (id: number | null) => void;
+  setConnecting: (id: string | null) => void;
   setTempLine: (line: TempLine | null) => void;
 
   // Sidebar setters
@@ -327,11 +327,11 @@ export interface WorkflowPersistConfig {
 
 // Node event handlers
 export interface NodeHandlers {
-  onMouseDown: (e: React.MouseEvent, nodeId: number) => void;
-  onSelect: (nodeId: number) => void;
-  onStartConnection: (e: React.MouseEvent, nodeId: number) => void;
-  onEndConnection: (e: React.MouseEvent, targetId: number) => void;
-  onDelete: (nodeId: number) => void;
+  onMouseDown: (e: React.MouseEvent, nodeId: string) => void;
+  onSelect: (nodeId: string) => void;
+  onStartConnection: (e: React.MouseEvent, nodeId: string) => void;
+  onEndConnection: (e: React.MouseEvent, targetId: string) => void;
+  onDelete: (nodeId: string) => void;
 }
 
 // Edge event handlers
@@ -349,9 +349,9 @@ export interface WorkflowCanvasProps {
   nodes: Node[];
   edges: Edge[];
   tempLine: TempLine | null;
-  selectedNode: number | null;
+  selectedNode: string | null;
   selectedEdge: string | null;
-  draggingNode: number | null;
+  draggingNode: string | null;
   nodeHandlers: NodeHandlers;
   edgeHandlers: EdgeHandlers;
   onMouseMove: (e: React.MouseEvent) => void;
@@ -418,18 +418,18 @@ export interface UseNodeInteractionsProps {
 // Legacy Hook Props (Deprecated - kept for backward compatibility)
 export interface UseWorkflowInteractionsProps {
   nodes: Node[];
-  draggingNode: number | null;
-  connecting: number | null;
+  draggingNode: string | null;
+  connecting: string | null;
   dragOffset: DragOffset;
   canvasRef: React.RefObject<HTMLDivElement | null>;
-  setSelectedNode: (id: number | null) => void;
-  setDraggingNode: (id: number | null) => void;
+  setSelectedNode: (id: string | null) => void;
+  setDraggingNode: (id: string | null) => void;
   setDragOffset: (offset: DragOffset) => void;
-  setConnecting: (id: number | null) => void;
+  setConnecting: (id: string | null) => void;
   setTempLine: (line: TempLine | null) => void;
-  updateNodePosition: (nodeId: number, x: number, y: number) => void;
-  addEdge: (source: number, target: number) => void;
-  deleteNode: (id: number) => void;
+  updateNodePosition: (nodeId: string, x: number, y: number) => void;
+  addEdge: (source: string, target: string) => void;
+  deleteNode: (id: string) => void;
 }
 
 // ======================================================================

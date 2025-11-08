@@ -2,6 +2,7 @@ import { Node, NodeType, Edge } from "@/types/workflow-studio/workflow";
 import {
   generateNodeId,
   generateEdgeId,
+  getNodeNumber,
 } from "@/utils/workflow-studio/workflow";
 
 export type NodeCreateOptions = Partial<Pick<Node, "label" | "icon">> & {
@@ -14,6 +15,7 @@ export const createNode = (
   nodeType?: NodeCreateOptions
 ): Node => {
   const newId = generateNodeId(existingNodes);
+  const nodeNumber = getNodeNumber(newId);
   const validTypes: NodeType[] = ["start", "process", "end"];
   const nodePositionType =
     nodeType?.type && validTypes.includes(nodeType.type as NodeType)
@@ -27,7 +29,7 @@ export const createNode = (
 
   return {
     id: newId,
-    label: nodeType?.label || `Node ${newId}`,
+    label: nodeType?.label || `Node ${nodeNumber}`,
     x: position.x,
     y: position.y,
     position: nodePositionType,
@@ -38,8 +40,8 @@ export const createNode = (
 
 export const createEdge = (
   existingEdges: Edge[],
-  source: number,
-  target: number
+  source: string,
+  target: string
 ): Edge => {
   return {
     id: generateEdgeId(existingEdges),

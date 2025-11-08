@@ -19,8 +19,36 @@ import {
 // ID Generation
 // ============================================================================
 
-export const generateNodeId = (existingNodes: Node[]): number => {
-  return Math.max(...existingNodes.map((n) => n.id), 0) + 1;
+export const generateNodeId = (existingNodes: Node[]): string => {
+  // Find the highest node number from existing UUID-based node IDs
+  let maxNodeNumber = 0;
+  existingNodes.forEach((node) => {
+    const nodeNumber = getNodeNumber(node.id);
+    if (nodeNumber > maxNodeNumber) {
+      maxNodeNumber = nodeNumber;
+    }
+  });
+
+  const nextNodeNumber = maxNodeNumber + 1;
+  const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
+  return `${uuid}-N${nextNodeNumber}`;
+};
+
+export const createNodeId = (nodeNumber: number): string => {
+  const uuid = uuidv4().replace(/-/g, "").substring(0, 12);
+  return `${uuid}-N${nodeNumber}`;
+};
+
+export const getNodeNumber = (nodeId: string): number => {
+  const parts = nodeId.split("-");
+  if (parts.length > 1) {
+    const lastPart = parts[parts.length - 1];
+    if (lastPart.startsWith("N")) {
+      const number = parseInt(lastPart.substring(1));
+      return isNaN(number) ? 1 : number;
+    }
+  }
+  return 1;
 };
 
 // --------------------------------------------------------------------------
@@ -30,7 +58,7 @@ const nodeOptionsMap = new Map(nodeOptions.map((n) => [n.id, n]));
 
 export interface NodeSpec {
   optionId: string;
-  id: number;
+  id: string;
   label: string;
   x: number;
   y: number;
@@ -61,7 +89,7 @@ export function buildNodeFromSpec(spec: NodeSpec): Node {
 
 // Build edges from pairs while preserving edge id numeric suffix and the uuid-E<number> format
 export function buildEdgesFromPairs(
-  pairs: Array<[number, number]>,
+  pairs: Array<[string, string]>,
   startIndex: number = 1
 ): Edge[] {
   return pairs.map(([s, t], idx) => {
@@ -153,13 +181,13 @@ export const calculatePortToPortPath = (
 
 export const edgeExists = (
   edges: Edge[],
-  source: number,
-  target: number
+  source: string,
+  target: string
 ): boolean => {
   return edges.some((e) => e.source === source && e.target === target);
 };
 
-export const filterEdgesForNode = (edges: Edge[], nodeId: number): Edge[] => {
+export const filterEdgesForNode = (edges: Edge[], nodeId: string): Edge[] => {
   return edges.filter((e) => e.source !== nodeId && e.target !== nodeId);
 };
 
@@ -232,7 +260,7 @@ export const getSelectedEdgeDetails = (
 };
 
 export const getSelectedNodeDetails = (
-  selectedNodeId: number | null,
+  selectedNodeId: string | null,
   nodes: Node[]
 ) => {
   if (!selectedNodeId) return null;
