@@ -9,7 +9,7 @@ import {
 
 // Pre-define consistent node IDs for initial setup - sequential numbering
 const node1Id = createNodeId(1); // Client
-const node2Id = createNodeId(2); // API Gateway  
+const node2Id = createNodeId(2); // API Gateway
 const node3Id = createNodeId(3); // Service
 const node4Id = createNodeId(4); // Load Balancer
 const node5Id = createNodeId(5); // Server 1
@@ -88,7 +88,7 @@ export const initialNodes: Node[] = [
 export const initialEdges: Edge[] = buildEdgesFromPairs([
   // Client to Gateway
   [node1Id, node2Id],
-  // Gateway to Services  
+  // Gateway to Services
   [node2Id, node3Id],
   // Services to Load Balancers
   [node3Id, node4Id],
