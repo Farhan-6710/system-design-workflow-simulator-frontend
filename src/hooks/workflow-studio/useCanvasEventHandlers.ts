@@ -204,10 +204,10 @@ export const useCanvasEventHandlers = ({
   // Wheel event handler
   const handleWheelEvent = useCallback(
     (e: React.WheelEvent) => {
-      if (activeTool !== "select") return;
+      // Allow zooming regardless of active tool for better UX
       handleWheel(e);
     },
-    [activeTool, handleWheel]
+    [handleWheel]
   );
 
   // Canvas click handler
