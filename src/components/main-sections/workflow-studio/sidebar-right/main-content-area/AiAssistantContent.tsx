@@ -19,7 +19,6 @@ const AiAssistantContent = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [includeCanvasContext, setIncludeCanvasContext] = useState(true);
   console.log("API Key:", process.env.NEXT_PUBLIC_OPENROUTER_API_KEY);
   const apiKeyFromEnv = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
   const [apiKey, setApiKey] = useState(apiKeyFromEnv || "");
@@ -38,7 +37,7 @@ const AiAssistantContent = () => {
 
   // Generate canvas context for AI
   const generateCanvasContext = () => {
-    if (!includeCanvasContext || (nodes.length === 0 && edges.length === 0)) {
+    if ((nodes.length === 0 && edges.length === 0)) {
       return "";
     }
 

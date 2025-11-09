@@ -17,10 +17,13 @@ export const WorkflowNode: React.FC<WorkflowNodeProps> = ({
   handlers,
 }) => {
   const { glowConfig, shouldGlow } = useNodeAnimation();
-  const requestsPerSecond = useWorkflowStore((state) => state.requestsPerSecond);
+  const requestsPerSecond = useWorkflowStore(
+    (state) => state.requestsPerSecond
+  );
 
   // Get the glow class when node should glow
-  const glowClassName = shouldGlow && requestsPerSecond > 0 ? glowConfig.className : "";
+  const glowClassName =
+    shouldGlow && requestsPerSecond > 0 ? glowConfig.className : "";
 
   // Get the icon component
   const IconComponent = getIconComponent(node.icon);

@@ -41,7 +41,7 @@ export const createWorkflowActions = () => {
       addNode(nodeType);
     },
 
-    updateNode: (nodeId: number, updates: { label: string; icon: string }) => {
+    updateNode: (nodeId: string, updates: { label: string; icon: string }) => {
       const { updateNode } = useWorkflowStore.getState();
       updateNode(nodeId, updates);
     },

@@ -7,7 +7,7 @@ import {
   getEdgeStyle,
   getNodeGlowConfig,
   getNodeGlowConfigFromRPS,
-} from "@/utils/workflow-studio/animationUtils";
+} from "@/utils/workflow-studio/workflow-layer/animationUtils";
 
 /**
  * Custom hook for edge animations

@@ -11,7 +11,7 @@ import {
   createNodeHandlers,
   createEdgeHandlers,
   createCanvasHandlers,
-} from "@/utils/workflow-studio/eventHandlers";
+} from "@/utils/workflow-studio/workflow-layer/eventHandlers";
 import type { AnnotationLayerHandle } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
 interface UseCanvasEventHandlersProps {
