@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "System Design Studio",
-  description: "Create amazing system designs with AI assistance",
+  description: "Visual experience of system design with AI assistance",
 };
 
 export default function RootLayout({

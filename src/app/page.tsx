@@ -9,7 +9,7 @@ import { MainLayout } from "@/app/MainLayout";
 import WorkflowStudio from "@/components/main-sections/workflow-studio/WorflowStudio";
 
 export default function Dashboard() {
-  const [currentPage, setCurrentPage] = useState("my-progress");
+  const [currentPage, setCurrentPage] = useState("system-design");
 
   const renderPage = () => {
     switch (currentPage) {
