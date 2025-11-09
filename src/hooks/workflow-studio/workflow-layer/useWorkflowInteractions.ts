@@ -1,6 +1,6 @@
 /**
- * Canvas Event Handlers Hook
- * Handles canvas mouse/touch events, coordinate transformations, and workflow interactions
+ * Workflow Interactions Hook
+ * Handles workflow node/edge mouse/touch events and interactions
  */
 
 import { useEffect, useRef, useCallback } from "react";
@@ -11,7 +11,7 @@ import {
   createNodeHandlers,
   createEdgeHandlers,
   createCanvasHandlers,
-} from "@/utils/workflow-studio/workflow-layer/eventHandlers";
+} from "@/utils/workflow-studio/workflow-layer/workflowInteractionHandlers";
 import type { AnnotationLayerHandle } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
 interface UseCanvasEventHandlersProps {

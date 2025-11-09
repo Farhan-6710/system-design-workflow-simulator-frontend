@@ -1,3 +1,8 @@
+/**
+ * Workflow Animations Hook
+ * Edge and node animation utilities based on server load
+ */
+
 import { useMemo } from "react";
 import { useWorkflowContext } from "@/contexts/WorkflowContext";
 import { useWorkflowStore } from "@/stores/workflowStore";
@@ -7,7 +12,7 @@ import {
   getEdgeStyle,
   getNodeGlowConfig,
   getNodeGlowConfigFromRPS,
-} from "@/utils/workflow-studio/workflow-layer/animationUtils";
+} from "@/utils/workflow-studio/workflow-layer/systemLoadUtils";
 
 /**
  * Custom hook for edge animations

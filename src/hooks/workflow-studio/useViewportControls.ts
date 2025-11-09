@@ -12,7 +12,7 @@ import {
   isPinchGesture,
   getTouchDistance,
   getCanvasTransformStyle,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/canvasViewportUtils";
 
 export const useCanvasControls = () => {
   // Store state and actions

@@ -12,7 +12,7 @@ import { nodeOptions } from "@/constants/nodeOptions";
 import { EditNodeContentProps } from "@/types/workflow-studio/sidebar-right";
 import ConfigurationForm from "./ConfigurationForm";
 import { toast } from "sonner";
-import { getNodeNumber } from "@/utils/workflow-studio/workflow";
+import { getNodeNumber } from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
 
 const EditNodeContent: React.FC<EditNodeContentProps> = ({
   nodes,

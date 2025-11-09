@@ -3,7 +3,7 @@ import {
   generateNodeId,
   generateEdgeId,
   getNodeNumber,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
 
 export type NodeCreateOptions = Partial<Pick<Node, "label" | "icon">> & {
   type?: string;

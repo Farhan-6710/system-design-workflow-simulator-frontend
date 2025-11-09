@@ -3,7 +3,7 @@ import { useWorkflowStore } from "@/stores/workflowStore";
 import {
   getSelectedEdgeDetails,
   getSelectedNodeDetails,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
 import NoSelectionView from "./NoSelectionView";
 import EdgeDetailsView from "./EdgeDetailsView";
 import NodeDetailsView from "./NodeDetailsView";

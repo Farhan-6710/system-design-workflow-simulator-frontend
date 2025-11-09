@@ -10,7 +10,7 @@ import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
 import {
   createDockItemHandlers,
   handleDockItemClick,
-} from "@/utils/workflow-studio/workflow-layer/workflowActions";
+} from "@/utils/workflow-studio/workflow-layer/dockActionHandlers";
 import type { AnnotationLayerHandle } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 
 interface UseWorkflowDockProps {

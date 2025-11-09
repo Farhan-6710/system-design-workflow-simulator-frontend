@@ -12,8 +12,8 @@ import { WorkflowStore, WorkflowStoreState } from "@/types/workflow-studio";
 import {
   edgeExists,
   filterEdgesForNode,
-  createZoomActions,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
+import { createZoomActions } from "@/utils/workflow-studio/canvasViewportUtils";
 import { createNode, createEdge } from "@/utils/store/workflowStoreHelpers";
 import { initialEdges, initialNodes } from "@/constants/initialNodesAndEdges";
 import { ZOOM_BASELINE } from "@/constants/canvas";

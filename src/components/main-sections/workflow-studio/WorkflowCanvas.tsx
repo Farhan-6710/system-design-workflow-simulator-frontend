@@ -6,7 +6,7 @@ import {
   type AnnotationLayerHandle,
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
 import { useCanvasControlsContext } from "@/contexts/CanvasControlsContext";
-import { useCanvasEventHandlers } from "@/hooks/workflow-studio/useCanvasEventHandlers";
+import { useCanvasEventHandlers } from "@/hooks/workflow-studio/workflow-layer/useWorkflowInteractions";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +60,7 @@ export const WorkflowCanvas = forwardRef<HTMLDivElement, WorkflowCanvasProps>(
 
         {/* Transform container - only workflow layer scales/moves */}
         <div
-          className="workflow-and-annotation-container flex justify-center items-center  absolute z-20 inset-0"
+          className="both-layers-container flex justify-center items-center  absolute z-20 inset-0"
           style={getCanvasTransformStyle()}
         >
           {/* Workflow Layer - handles nodes, edges */}

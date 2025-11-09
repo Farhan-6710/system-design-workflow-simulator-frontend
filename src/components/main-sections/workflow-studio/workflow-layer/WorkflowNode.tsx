@@ -4,8 +4,8 @@ import { WorkflowNodeProps } from "@/types/workflow-studio";
 import {
   getNodeClasses,
   getNodeTextClasses,
-} from "@/utils/workflow-studio/workflow";
-import { useNodeAnimation } from "@/hooks/workflow-studio/useWorkflowAnimation";
+} from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
+import { useNodeAnimation } from "@/hooks/workflow-studio/workflow-layer/useWorkflowAnimations";
 import { getIconComponent, getIconColor } from "./nodeUtils";
 import "@/styles/workflowAnimations.css";
 import { useWorkflowStore } from "@/stores/workflowStore";

@@ -1,56 +1,14 @@
 /**
- * Workflow Actions & High-Level Operations
- * Focused on business logic and workflow management
+ * Dock Action Handlers
+ * User interactions with canvas dock items (zoom, annotations, undo/redo, etc.)
  */
 
 import React from "react";
 import { CanvasControlsHook } from "@/types/workflow-studio/workflow";
-import { useWorkflowStore } from "@/stores/workflowStore";
-import { useAnnotationStore } from "@/stores/annotationStore";
 import type {
   Tool,
   AnnotationLayerHandle,
 } from "@/components/main-sections/workflow-studio/annotation-layer/AnnotationLayer";
-
-// ============================================================================
-// Workflow Store Actions
-// ============================================================================
-
-export const createWorkflowActions = () => {
-  return {
-    resetAllStores: () => {
-      const { reset } = useWorkflowStore.getState();
-      const { clearHistory } = useAnnotationStore.getState();
-
-      reset();
-      clearHistory();
-    },
-
-    clearWorkflow: () => {
-      const { reset } = useWorkflowStore.getState();
-      reset();
-    },
-
-    addNode: (nodeType: {
-      label: string;
-      icon: string;
-      type?: string;
-      configurations?: Record<string, string | number | boolean>;
-    }) => {
-      const { addNode } = useWorkflowStore.getState();
-      addNode(nodeType);
-    },
-
-    updateNode: (nodeId: string, updates: { label: string; icon: string }) => {
-      const { updateNode } = useWorkflowStore.getState();
-      updateNode(nodeId, updates);
-    },
-  };
-};
-
-// ============================================================================
-// Dock Item Handlers
-// ============================================================================
 
 interface DockItemHandlers {
   handleZoomIn: () => void;
@@ -123,7 +81,6 @@ export const handleDockItemClick = (
     case "fullscreen":
       handlers.handleFullscreen();
       break;
-    // Annotation tools - Fixed to match actual dock item IDs
     case "select":
       handlers.handleAnnotationTool("select");
       break;

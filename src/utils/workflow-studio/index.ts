@@ -13,7 +13,7 @@ export {
   calculateZoomToFit,
   getCanvasCoordinates,
   createZoomActions,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/canvasViewportUtils";
 
 // Re-export constants for convenience
 export {

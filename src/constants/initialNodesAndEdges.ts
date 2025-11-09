@@ -3,7 +3,7 @@ import {
   buildNodeFromSpec,
   buildEdgesFromPairs,
   createNodeId,
-} from "@/utils/workflow-studio/workflow";
+} from "@/utils/workflow-studio/workflow-layer/workflowCoreUtils";
 
 // Nodes are now built from `nodeOptions` through the initializer helpers
 
