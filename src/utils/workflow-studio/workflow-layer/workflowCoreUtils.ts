@@ -37,15 +37,15 @@ export const createNodeId = (nodeNumber: number): string => {
 };
 
 export const getNodeNumber = (nodeId: string): number => {
-  const parts = nodeId.split("-");
-  if (parts.length > 1) {
-    const lastPart = parts[parts.length - 1];
-    if (lastPart.startsWith("N")) {
-      const number = parseInt(lastPart.substring(1));
-      return isNaN(number) ? 1 : number;
-    }
+  // Expect IDs like `<uuid>-N<number>`; use a trailing-suffix regex to extract the
+  // numeric suffix. Return 0 on failure so malformed IDs don't masquerade as
+  // valid numbered items (previously returned 1).
+  const m = nodeId.match(/-N(\d+)$/);
+  if (m && m[1]) {
+    const number = parseInt(m[1], 10);
+    return isNaN(number) ? 0 : number;
   }
-  return 1;
+  return 0;
 };
 
 export const generateEdgeId = (existingEdges: Edge[]): string => {
@@ -68,12 +68,15 @@ export const createEdgeId = (edgeNumber: number): string => {
 };
 
 export const getEdgeNumber = (edgeId: string): number => {
-  const parts = edgeId.split("-");
-  if (parts.length > 1) {
-    const number = parseInt(parts[parts.length - 1]);
-    return isNaN(number) ? 1 : number;
+  // Expect IDs like `<uuid>-E<number>`; use a trailing-suffix regex to extract the
+  // numeric suffix. Return 0 on failure so malformed IDs don't masquerade as
+  // valid numbered items (previously returned 1).
+  const m = edgeId.match(/-E(\d+)$/);
+  if (m && m[1]) {
+    const number = parseInt(m[1], 10);
+    return isNaN(number) ? 0 : number;
   }
-  return 1;
+  return 0;
 };
 
 // ============================================================================
