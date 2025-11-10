@@ -202,21 +202,16 @@ export const getNodeClasses = (
 ): string => {
   const baseClasses = isDragging
     ? "absolute w-20 rounded-lg transform cursor-grabbing"
-    : "absolute w-20 rounded-md transition-all transform cursor-grab active:cursor-grabbing";
+    : "absolute w-20 cursor-grab active:cursor-grabbing";
 
   const dragClasses = isDragging ? "active:scale-105" : "";
   const selectionClasses = isSelected
     ? "ring-1 ring-blue-500 shadow-xl shadow-blue-500/50"
     : "shadow-md hover:shadow-lg";
 
-  const backgroundClasses =
-    nodeType === "start" || nodeType === "end"
-      ? "bg-gradient-to-br from-violet-600 to-blue-600"
-      : "bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-800 dark:to-slate-900";
+  const backgroundClasses ="bg-gradient-to-br from-gray-200 to-gray-300 dark:from-slate-800 dark:to-slate-900";
 
-  const borderClasses = isSelected
-    ? "border border-blue-500"
-    : "border border-slate-400 dark:border-slate-500";
+  const borderClasses = "border border-slate-400 dark:border-slate-500";
 
   return `${baseClasses} ${dragClasses} ${selectionClasses} ${backgroundClasses} ${borderClasses}`;
 };
@@ -228,9 +223,7 @@ export const getNodeTextClasses = (nodeType: string): string => {
 };
 
 export const getNodeSecondaryTextClasses = (nodeType: string): string => {
-  return nodeType === "start" || nodeType === "end"
-    ? "text-slate-200"
-    : "text-slate-800 dark:text-slate-200";
+  return "text-slate-800 dark:text-slate-200";
 };
 
 // ============================================================================
